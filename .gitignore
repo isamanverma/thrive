@@ -1,0 +1,29 @@
+frontend/node_modules
+frontend/.next
+
+# Environments
+.venv/
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE and editor directories
+.vscode/
+.idea/
+
+# Testing
+.pytest_cache/
+.coverage
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
