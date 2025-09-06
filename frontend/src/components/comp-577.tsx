@@ -9,9 +9,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
 // import { Cherry } from "lucide-react";
 import Image from "next/image";
 
