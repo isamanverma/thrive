@@ -9,14 +9,14 @@ interface TipsInspirationProps {
 
 export function TipsInspiration({ title, tip }: TipsInspirationProps) {
   return (
-    <section className="lg:col-span-2">
-      <h2 className="text-2xl font-bold leading-tight tracking-[-0.015em] mb-4">
+    <section className="space-y-3 sm:space-y-4">
+      <h2 className="text-lg sm:text-xl font-bold text-gray-900">
         Tips &amp; Inspiration
       </h2>
-      <div className="bg-green-50 rounded-xl p-8 flex items-center gap-8">
+      <div className="bg-green-50 border border-green-100 rounded-xl p-4 sm:p-6 lg:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 lg:gap-8">
         <div className="flex-shrink-0 text-green-600">
           <svg
-            className="h-16 w-16"
+            className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -27,12 +27,16 @@ export function TipsInspiration({ title, tip }: TipsInspirationProps) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-            ></path>
+            />
           </svg>
         </div>
-        <div>
-          <h3 className="text-xl font-bold text-gray-800">{title}</h3>
-          <p className="text-base text-gray-600 mt-2">{tip}</p>
+        <div className="flex-1">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+            {title}
+          </h3>
+          <p className="text-sm sm:text-base text-gray-700 mt-2 leading-relaxed">
+            {tip}
+          </p>
         </div>
       </div>
     </section>

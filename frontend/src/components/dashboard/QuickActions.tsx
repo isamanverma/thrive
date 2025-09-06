@@ -15,21 +15,27 @@ interface QuickActionsProps {
 
 export function QuickActions({ actions }: QuickActionsProps) {
   return (
-    <section>
-      <h2 className="text-2xl font-bold leading-tight tracking-[-0.015em] mb-4">
+    <section className="space-y-3 sm:space-y-4">
+      <h2 className="text-lg sm:text-xl font-bold text-gray-900">
         Quick Actions
       </h2>
-      <Card className="p-6 space-y-3">
-        {actions.map((action, index) => (
-          <button
-            key={index}
-            onClick={action.onClick}
-            className="w-full text-left bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center gap-3"
-          >
-            {action.icon}
-            {action.label}
-          </button>
-        ))}
+      <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
+        <div className="space-y-3">
+          {actions.map((action, index) => (
+            <button
+              key={index}
+              onClick={action.onClick}
+              className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-green-600 hover:bg-green-50 transition-all duration-200 text-left group"
+            >
+              <div className="flex-shrink-0 group-hover:scale-110 transition-transform">
+                {action.icon}
+              </div>
+              <span className="text-sm sm:text-base font-medium text-gray-700 group-hover:text-green-700">
+                {action.label}
+              </span>
+            </button>
+          ))}
+        </div>
       </Card>
     </section>
   );

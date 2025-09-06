@@ -12,17 +12,17 @@ interface CalendarSectionProps {
 
 export function CalendarSection({ date, setDate }: CalendarSectionProps) {
   return (
-    <section className="lg:col-span-1">
-      <h2 className="text-2xl font-bold leading-tight tracking-[-0.015em] mb-4">
+    <section className="space-y-3 sm:space-y-4">
+      <h2 className="text-lg sm:text-xl font-bold text-gray-900">
         Upcoming / Weekly
       </h2>
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="border-0 shadow-sm bg-white">
+        <CardContent className="p-3 sm:p-6">
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="mx-auto [&_.rdp-day_button.rdp-day_selected]:bg-green-600 [&_.rdp-day_button.rdp-day_selected]:text-white [&_.rdp-day_button.rdp-day_today]:bg-green-50 [&_.rdp-day_button.rdp-day_today]:text-green-600"
+            className="mx-auto [&_.rdp-day_button.rdp-day_selected]:bg-green-600 [&_.rdp-day_button.rdp-day_selected]:text-white [&_.rdp-day_button.rdp-day_today]:bg-green-50 [&_.rdp-day_button.rdp-day_today]:text-green-600 [&_.rdp-day_button:hover]:bg-green-100"
           />
         </CardContent>
       </Card>

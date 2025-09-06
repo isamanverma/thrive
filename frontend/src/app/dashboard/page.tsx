@@ -1,19 +1,58 @@
 "use client";
 
-import React, { useState } from "react";
 import {
+  CalendarSection,
   DashboardHeader,
-  TodaysPlan,
   ProgressSnapshot,
   QuickActions,
-  CalendarSection,
   SavedSuggestedRecipes,
   ShoppingList,
   TipsInspiration,
+  TodaysPlan,
 } from "@/components/dashboard";
+import React, { useEffect, useState } from "react";
+
+import { useUser } from "@clerk/nextjs";
 
 export default function Dashboard() {
+  const { user, isLoaded } = useUser();
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [userName, setUserName] = useState<string>("User");
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (isLoaded && user) {
+        try {
+          // Try to fetch user data from your database
+          const response = await fetch(`/api/users?clerkId=${user.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.exists && data.user.name) {
+              setUserName(data.user.name);
+            } else {
+              // Fallback to Clerk's firstName if no name in database
+              setUserName(user.firstName || "User");
+            }
+          } else {
+            // Fallback to Clerk's firstName
+            setUserName(user.firstName || "User");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          // Fallback to Clerk's firstName
+          setUserName(user.firstName || "User");
+        } finally {
+          setIsLoadingUser(false);
+        }
+      } else if (isLoaded && !user) {
+        setUserName("User");
+        setIsLoadingUser(false);
+      }
+    };
+
+    fetchUserData();
+  }, [isLoaded, user]);
 
   // Data for Today's Plan section
   const meals = [
@@ -49,7 +88,7 @@ export default function Dashboard() {
       label: "Log a Meal",
       icon: (
         <svg
-          className="h-6 w-6 text-green-600"
+          className="h-5 w-5 text-green-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -69,7 +108,7 @@ export default function Dashboard() {
       label: "Add Note",
       icon: (
         <svg
-          className="h-6 w-6 text-green-600"
+          className="h-5 w-5 text-green-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -89,7 +128,7 @@ export default function Dashboard() {
       label: "Search by Ingredient",
       icon: (
         <svg
-          className="h-6 w-6 text-green-600"
+          className="h-5 w-5 text-green-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -151,48 +190,68 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 bg-[#f7fafc]">
-      <div className="flex flex-col w-full max-w-7xl mx-auto">
+    <main className="flex-1 overflow-y-auto bg-gray-50/50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Header Section */}
-        <DashboardHeader name="Sarah" />
+        <div className="mb-6 sm:mb-8">
+          {isLoaded && !isLoadingUser ? (
+            <DashboardHeader name={userName} />
+          ) : (
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-64 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-48"></div>
+            </div>
+          )}
+        </div>
 
         {/* Today's Plan Section */}
-        <TodaysPlan meals={meals} />
+        <div className="mb-6 sm:mb-8">
+          <TodaysPlan meals={meals} />
+        </div>
 
-        {/* Progress and Quick Actions Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Progress Snapshot */}
-            <ProgressSnapshot
-              streak={12}
-              consistency={92}
-              lastNote="Felt great after lunch, very energetic for my afternoon workout!"
-            />
-
-            {/* Quick Actions */}
-            <QuickActions actions={quickActions} />
+        {/* Progress and Actions Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+          {/* Left Column - Progress & Actions */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            {/* Progress and Quick Actions Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <ProgressSnapshot
+                streak={12}
+                consistency={92}
+                lastNote="Felt great after lunch, very energetic for my afternoon workout!"
+              />
+              <QuickActions actions={quickActions} />
+            </div>
           </div>
 
-          {/* Calendar Section */}
-          <CalendarSection date={date} setDate={setDate} />
+          {/* Right Column - Calendar */}
+          <div className="lg:col-span-1">
+            <CalendarSection date={date} setDate={setDate} />
+          </div>
         </div>
 
         {/* Saved & Suggested Recipes */}
-        <SavedSuggestedRecipes recipes={recipes} />
+        <div className="mb-6 sm:mb-8">
+          <SavedSuggestedRecipes recipes={recipes} />
+        </div>
 
-        {/* Bottom Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Bottom Section - Shopping List & Tips */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Shopping List */}
-          <ShoppingList
-            items={shoppingItems}
-            onViewFullList={handleViewFullList}
-          />
+          <div className="lg:col-span-1">
+            <ShoppingList
+              items={shoppingItems}
+              onViewFullList={handleViewFullList}
+            />
+          </div>
 
           {/* Tips & Inspiration */}
-          <TipsInspiration
-            title="Tip of the Day"
-            tip="Meal prep your grains like quinoa and rice at the start of the week to save time on lunches and dinners. They store well in the fridge for up to 4 days!"
-          />
+          <div className="lg:col-span-2">
+            <TipsInspiration
+              title="Tip of the Day"
+              tip="Meal prep your grains like quinoa and rice at the start of the week to save time on lunches and dinners. They store well in the fridge for up to 4 days!"
+            />
+          </div>
         </div>
       </div>
     </main>

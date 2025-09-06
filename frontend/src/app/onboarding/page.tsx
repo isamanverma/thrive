@@ -1,12 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Citrus } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
-import { getUserByClerkId, createOrUpdateUser } from "@/lib/api";
 
 type QuestionType = "number" | "single-choice" | "multi-choice";
 
@@ -74,41 +73,16 @@ const questions: Question[] = [
   },
 ];
 
-export default function ProfilePage() {
+export default function OnboardingPage() {
   const { user } = useUser();
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<FormDataState>({});
-  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentQuestion = questions[step];
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Check if user already exists and redirect to dashboard
-  useEffect(() => {
-    const checkExistingUser = async () => {
-      if (!user) return;
-
-      try {
-        const existingUser = await getUserByClerkId(user.id);
-        if (existingUser) {
-          // User already exists, redirect to dashboard
-          router.push("/dashboard");
-          return;
-        }
-      } catch (error) {
-        console.error("Error checking user:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (user) {
-      checkExistingUser();
-    }
-  }, [user, router]);
-
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!user) {
       console.error("No user found");
       return;
@@ -129,7 +103,19 @@ export default function ProfilePage() {
         height: formData.height,
       };
 
-      const savedUser = await createOrUpdateUser(userData);
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save user data");
+      }
+
+      const savedUser = await response.json();
       console.log("User saved successfully:", savedUser);
 
       // Redirect to dashboard after successful save
@@ -140,16 +126,19 @@ export default function ProfilePage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [user, formData, router]);
 
-  const handleNext = () => {
-    if (step < questions.length - 1) setStep(step + 1);
-    else handleSubmit();
-  };
+  const handleNext = useCallback(() => {
+    if (step < questions.length - 1) {
+      setStep(step + 1);
+    } else {
+      handleSubmit();
+    }
+  }, [step, handleSubmit]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (step > 0) setStep(step - 1);
-  };
+  }, [step]);
 
   const isAnswered = (q: Question): boolean => {
     const val = formData[q.name];
@@ -176,6 +165,8 @@ export default function ProfilePage() {
   // Global keyboard handling
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
+      if (isSubmitting) return; // Disable keyboard during submission
+
       const num = Number(e.key);
 
       if (
@@ -201,7 +192,16 @@ export default function ProfilePage() {
 
       if (e.key === "Enter" || e.key === "NumpadEnter") {
         e.preventDefault();
-        if (isAnswered(currentQuestion)) handleNext();
+        const val = formData[currentQuestion.name];
+        let answered = false;
+        if (currentQuestion.type === "number")
+          answered = typeof val === "number" && val > 0;
+        else if (currentQuestion.type === "single-choice")
+          answered = typeof val === "string" && val !== "";
+        else if (currentQuestion.type === "multi-choice")
+          answered = Array.isArray(val) && val.length > 0;
+
+        if (answered) handleNext();
       }
 
       if ((e.metaKey || e.ctrlKey) && e.key === "ArrowRight") {
@@ -216,18 +216,7 @@ export default function ProfilePage() {
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [step, currentQuestion, formData]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-lg font-medium text-gray-700">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  }, [step, currentQuestion, formData, isSubmitting, handleNext, handlePrev]);
 
   if (isSubmitting) {
     return (
@@ -235,7 +224,7 @@ export default function ProfilePage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-lg font-medium text-gray-700">
-            Saving your information...
+            Setting up your profile...
           </p>
         </div>
       </div>
@@ -243,7 +232,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <section className="mx-auto min-h-screen max-w-7xl p-5 flex flex-col">
+    <section className="mx-auto min-h-screen max-w-7xl p-5 flex flex-col bg-gradient-to-br from-green-50 to-blue-50">
       {/* Navbar */}
       <nav className="flex justify-between items-center h-16">
         <div className="flex flex-row items-center">
@@ -259,6 +248,24 @@ export default function ProfilePage() {
         </SignOutButton>
       </nav>
 
+      {/* Progress Bar */}
+      <div className="mb-8">
+        <div className="flex justify-between text-xs text-gray-500 mb-2">
+          <span>
+            Step {step + 1} of {questions.length}
+          </span>
+          <span>
+            {Math.round(((step + 1) / questions.length) * 100)}% Complete
+          </span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-green-600 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${((step + 1) / questions.length) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+
       {/* Progressive Form */}
       <main className="flex flex-1 items-center justify-center">
         <div className="w-full max-w-xl">
@@ -269,9 +276,9 @@ export default function ProfilePage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.3 }}
-              className="w-full"
+              className="w-full bg-white rounded-lg shadow-lg p-8"
             >
-              <h2 className="text-2xl font-semibold mb-6">
+              <h2 className="text-2xl font-semibold mb-6 text-gray-800">
                 {currentQuestion.question}
               </h2>
 
@@ -280,7 +287,7 @@ export default function ProfilePage() {
                   ref={inputRef}
                   type="number"
                   min={1}
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-600"
+                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-600 text-lg"
                   value={formData[currentQuestion.name] ?? ""}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -310,8 +317,8 @@ export default function ProfilePage() {
                       }
                       className={`px-4 py-3 border rounded-lg cursor-pointer transition ${
                         formData[currentQuestion.name] === opt
-                          ? "bg-green-600 text-white"
-                          : "border-gray-300 hover:bg-gray-50"
+                          ? "bg-green-600 text-white border-green-600"
+                          : "border-gray-300 hover:bg-gray-50 hover:border-green-300"
                       }`}
                     >
                       {idx + 1}. {opt}
@@ -346,8 +353,8 @@ export default function ProfilePage() {
                         }
                         className={`px-4 py-3 border rounded-lg cursor-pointer transition ${
                           arr.includes(opt)
-                            ? "bg-green-600 text-white"
-                            : "border-gray-300 hover:bg-gray-50"
+                            ? "bg-green-600 text-white border-green-600"
+                            : "border-gray-300 hover:bg-gray-50 hover:border-green-300"
                         }`}
                       >
                         {idx + 1}. {opt}
@@ -362,20 +369,20 @@ export default function ProfilePage() {
               */}
 
               {/* Navigation */}
-              <div className="flex justify-between mt-6">
+              <div className="flex justify-between mt-8">
                 <button
                   onClick={handlePrev}
                   disabled={step === 0}
-                  className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 disabled:opacity-50"
+                  className="px-6 py-2 rounded-lg border border-gray-300 text-gray-600 disabled:opacity-50 hover:bg-gray-50"
                 >
                   Back
                 </button>
                 <button
                   onClick={handleNext}
                   disabled={!isAnswered(currentQuestion)}
-                  className="px-4 py-2 rounded-lg bg-green-600 text-white disabled:opacity-50"
+                  className="px-6 py-2 rounded-lg bg-green-600 text-white disabled:opacity-50 hover:bg-green-700 font-medium"
                 >
-                  {step === questions.length - 1 ? "Submit" : "Next"}
+                  {step === questions.length - 1 ? "Complete Setup" : "Next"}
                 </button>
               </div>
             </motion.div>
