@@ -1,259 +1,300 @@
 "use client";
 
+import React from "react";
 import {
-  CalendarSection,
-  DashboardHeader,
-  ProgressSnapshot,
-  QuickActions,
-  SavedSuggestedRecipes,
-  ShoppingList,
-  TipsInspiration,
-  TodaysPlan,
-} from "@/components/dashboard";
-import React, { useEffect, useState } from "react";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-import { useUser } from "@clerk/nextjs";
-
-export default function Dashboard() {
-  const { user, isLoaded } = useUser();
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [userName, setUserName] = useState<string>("User");
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (isLoaded && user) {
-        try {
-          // Try to fetch user data from your database
-          const response = await fetch(`/api/users?clerkId=${user.id}`);
-          if (response.ok) {
-            const data = await response.json();
-            if (data.exists && data.user.name) {
-              setUserName(data.user.name);
-            } else {
-              // Fallback to Clerk's firstName if no name in database
-              setUserName(user.firstName || "User");
-            }
-          } else {
-            // Fallback to Clerk's firstName
-            setUserName(user.firstName || "User");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          // Fallback to Clerk's firstName
-          setUserName(user.firstName || "User");
-        } finally {
-          setIsLoadingUser(false);
-        }
-      } else if (isLoaded && !user) {
-        setUserName("User");
-        setIsLoadingUser(false);
-      }
-    };
-
-    fetchUserData();
-  }, [isLoaded, user]);
-
-  // Data for Today's Plan section
-  const meals = [
-    {
-      type: "Breakfast",
-      name: "Avocado Toast with Egg",
-      imageUrl:
-        "https://images.unsplash.com/photo-1525351484163-7529414344d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2680&q=80",
-    },
-    {
-      type: "Lunch",
-      name: "Quinoa Salad with Chickpeas",
-      imageUrl:
-        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
-    },
-    {
-      type: "Dinner",
-      name: "Grilled Salmon with Asparagus",
-      imageUrl:
-        "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
-    },
-    {
-      type: "Snacks",
-      name: "Apple Slices with Peanut Butter",
-      imageUrl:
-        "https://images.unsplash.com/photo-1533029736424-d8313986a67f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
-    },
-  ];
-
-  // Data for Quick Actions
-  const quickActions = [
-    {
-      label: "Log a Meal",
-      icon: (
-        <svg
-          className="h-5 w-5 text-green-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          ></path>
-        </svg>
-      ),
-      onClick: () => console.log("Log a meal clicked"),
-    },
-    {
-      label: "Add Note",
-      icon: (
-        <svg
-          className="h-5 w-5 text-green-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          ></path>
-        </svg>
-      ),
-      onClick: () => console.log("Add note clicked"),
-    },
-    {
-      label: "Search by Ingredient",
-      icon: (
-        <svg
-          className="h-5 w-5 text-green-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          ></path>
-        </svg>
-      ),
-      onClick: () => console.log("Search by ingredient clicked"),
-    },
-  ];
-
-  // Data for Saved & Suggested Recipes
-  const recipes = [
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2681&q=80",
-      category: "Recommended for You",
-      title: "Spicy Chicken Tacos",
-    },
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
-      category: "Trending Now",
-      title: "Buddha Bowl",
-    },
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1674314646835-5886dd0e0f76?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
-      category: "Your Saved Recipes",
-      title: "Grilled Chicken & Veggies",
-    },
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1508736793122-0664bd5d81c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
-      category: "Seasonal Special",
-      title: "Summer Berry Tart",
-    },
-  ];
-
-  // Data for Shopping List
-  const shoppingItems = [
-    "Avocado",
-    "Sourdough Bread",
-    "Eggs",
-    "Quinoa",
-    "Chickpeas",
-    "Salmon Fillet",
-  ];
-
-  // Handle View Full List click
-  const handleViewFullList = () => {
-    console.log("View full shopping list clicked");
-  };
-
+const DashboardPage: React.FC = () => {
   return (
-    <main className="flex-1 overflow-y-auto bg-gray-50/50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-        {/* Header Section */}
-        <div className="mb-6 sm:mb-8">
-          {isLoaded && !isLoadingUser ? (
-            <DashboardHeader name={userName} />
-          ) : (
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-64 mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-48"></div>
-            </div>
-          )}
+    <div className="space-y-6">
+      {/* Welcome Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome back, Sarah!</h1>
+          <p className="text-gray-600 mt-1">Let&apos;s continue your healthy journey</p>
+        </div>
+        <Button className="bg-green-600 hover:bg-green-700">
+          Generate Meal Plan
+        </Button>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">7 days</div>
+            <p className="text-xs text-muted-foreground">+2 from last week</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Meals Planned</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">21</div>
+            <p className="text-xs text-muted-foreground">This week</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Recipes Tried</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12</div>
+            <p className="text-xs text-muted-foreground">This month</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Goals Met</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">85%</div>
+            <p className="text-xs text-muted-foreground">This month</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle>Today&apos;s Meal Plan</CardTitle>
+              <CardDescription>
+                Your personalized meals for today
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">Overnight Oats with Berries</p>
+                    <p className="text-sm text-gray-500">Breakfast • 8:00 AM</p>
+                  </div>
+                  <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded">
+                    ✓ Done
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">Mediterranean Quinoa Bowl</p>
+                    <p className="text-sm text-gray-500">Lunch • 12:30 PM</p>
+                  </div>
+                  <span className="text-xs px-2 py-1 bg-gray-100 text-gray-800 rounded">
+                    Upcoming
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">Grilled Salmon with Vegetables</p>
+                    <p className="text-sm text-gray-500">Dinner • 7:00 PM</p>
+                  </div>
+                  <span className="text-xs px-2 py-1 bg-gray-100 text-gray-800 rounded">
+                    Upcoming
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Today's Plan Section */}
-        <div className="mb-6 sm:mb-8">
-          <TodaysPlan meals={meals} />
-        </div>
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button variant="outline" className="w-full justify-start">
+                Find New Recipe
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                View Shopping List
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                Plan Next Week
+              </Button>
+            </CardContent>
+          </Card>
 
-        {/* Progress and Actions Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
-          {/* Left Column - Progress & Actions */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-            {/* Progress and Quick Actions Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              <ProgressSnapshot
-                streak={12}
-                consistency={92}
-                lastNote="Felt great after lunch, very energetic for my afternoon workout!"
-              />
-              <QuickActions actions={quickActions} />
-            </div>
-          </div>
-
-          {/* Right Column - Calendar */}
-          <div className="lg:col-span-1">
-            <CalendarSection date={date} setDate={setDate} />
-          </div>
-        </div>
-
-        {/* Saved & Suggested Recipes */}
-        <div className="mb-6 sm:mb-8">
-          <SavedSuggestedRecipes recipes={recipes} />
-        </div>
-
-        {/* Bottom Section - Shopping List & Tips */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          {/* Shopping List */}
-          <div className="lg:col-span-1">
-            <ShoppingList
-              items={shoppingItems}
-              onViewFullList={handleViewFullList}
-            />
-          </div>
-
-          {/* Tips & Inspiration */}
-          <div className="lg:col-span-2">
-            <TipsInspiration
-              title="Tip of the Day"
-              tip="Meal prep your grains like quinoa and rice at the start of the week to save time on lunches and dinners. They store well in the fridge for up to 4 days!"
-            />
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm">
+                <p className="text-gray-600">• Completed Mediterranean Bowl recipe</p>
+                <p className="text-gray-600">• Added 5 items to shopping list</p>
+                <p className="text-gray-600">• Updated dietary preferences</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
-    </main>
+    </div>
+  );
+};
+
+export default DashboardPage;
+  return (
+    <div className="space-y-6">
+      {/* Welcome Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome back, Sarah!</h1>
+          <p className="text-gray-600 mt-1">Let&apos;s continue your healthy journey</p>
+        </div>
+        <Button className="bg-green-600 hover:bg-green-700">
+          <ChefHat className="mr-2 h-4 w-4" />
+          Generate Meal Plan
+        </Button>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
+            <TrendingUp className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">7 days</div>
+            <p className="text-xs text-muted-foreground">+2 from last week</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Meals Planned</CardTitle>
+            <Calendar className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">21</div>
+            <p className="text-xs text-muted-foreground">This week</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Recipes Tried</CardTitle>
+            <ChefHat className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12</div>
+            <p className="text-xs text-muted-foreground">This month</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Goals Met</CardTitle>
+            <Target className="h-4 w-4 text-orange-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">85%</div>
+            <p className="text-xs text-muted-foreground">This month</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Today's Meals */}
+        <div className="lg:col-span-2">
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-5 w-5 text-green-600" />
+                Today&apos;s Meal Plan
+              </CardTitle>
+              <CardDescription>
+                Your personalized meals for today
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { meal: "Breakfast", dish: "Overnight Oats with Berries", time: "8:00 AM", status: "completed" },
+                { meal: "Lunch", dish: "Mediterranean Quinoa Bowl", time: "12:30 PM", status: "upcoming" },
+                { meal: "Dinner", dish: "Grilled Salmon with Vegetables", time: "7:00 PM", status: "upcoming" }
+              ].map((meal, index) => (
+                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <ChefHat className="h-6 w-6 text-gray-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{meal.dish}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">{meal.meal}</span>
+                        <span className="text-sm text-gray-500">{meal.time}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded ${
+                    meal.status === "completed" 
+                      ? "bg-green-100 text-green-800" 
+                      : "bg-gray-100 text-gray-800"
+                  }`}>
+                    {meal.status === "completed" ? "✓ Done" : "Upcoming"}
+                  </span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Actions & Info */}
+        <div className="space-y-6">
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button variant="outline" className="w-full justify-start">
+                <ChefHat className="mr-2 h-4 w-4" />
+                Find New Recipe
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                View Shopping List
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                <Calendar className="mr-2 h-4 w-4" />
+                Plan Next Week
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm">
+                <p className="text-gray-600">• Completed Mediterranean Bowl recipe</p>
+                <p className="text-gray-600">• Added 5 items to shopping list</p>
+                <p className="text-gray-600">• Updated dietary preferences</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }

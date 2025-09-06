@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String     @id @default(uuid())
+  clerkId         String     @unique
+  email           String     @unique
+  name            String?
+  age             Int?
+  weight          Float?
+  goals           String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  activityLevel   String?
+  height          Float?
+  diet_preference String?
+  mealPlans       MealPlan[]
+  progress        Progress[]
+}
+
+model Recipe {
+  id              String            @id @default(uuid())
+  title           String
+  ingredients     String[]
+  instructions    String[]
+  source          String?
+  link            String?
+  namedEntities   String[]
+  nutrition       Json?
+  cuisine         String?
+  mealType        String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  mealPlanRecipes MealPlanRecipe[]
+  embeddings      RecipeEmbedding[]
+}
+
+model RecipeEmbedding {
+  id        String  @id @default(uuid())
+  embedding Float[]
+  recipeId  String  @map("recipe_id")
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model MealPlan {
+  id          String           @id @default(uuid())
+  userId      String
+  startDate   DateTime
+  endDate     DateTime
+  constraints Json?
+  createdAt   DateTime         @default(now())
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipes     MealPlanRecipe[]
+}
+
+model MealPlanRecipe {
+  mealPlanId String
+  recipeId   String
+  day        Int
+  mealSlot   String
+  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  recipe     Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([mealPlanId, recipeId, day, mealSlot])
+}
+
+model Progress {
+  id               String   @id @default(uuid())
+  userId           String
+  date             DateTime
+  weight           Float?
+  caloriesConsumed Int?
+  notes            String?
+  createdAt        DateTime @default(now())
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

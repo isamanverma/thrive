@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String       @id @default(uuid())
+  clerkId         String       @unique
+  email           String       @unique
+  name            String?
+  age             Int?
+  weight          Float?
+  goals           String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  activityLevel   String?
+  height          Float?
+  diet_preference String?
+  mealPlans       MealPlan[]
+  progress        Progress[]
+  userRecipes     UserRecipe[]
+}
+
+model UserRecipe {
+  id             String   @id @default(uuid())
+  userId         String
+  spoonacularId  Int // Spoonacular recipe ID
+  status         String // "liked", "saved", "cooked"
+  dateAdded      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cachedRecipe   Recipe?  @relation(fields: [cachedRecipeId], references: [id])
+  cachedRecipeId String?
+
+  @@unique([userId, spoonacularId, status])
+}
+
+model MealPlan {
+  id            String         @id @default(uuid())
+  userId        String
+  startDate     DateTime
+  endDate       DateTime
+  constraints   Json?
+  createdAt     DateTime       @default(now())
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mealPlanItems MealPlanItem[]
+}
+
+model MealPlanItem {
+  id             String   @id @default(uuid())
+  mealPlanId     String
+  spoonacularId  Int // Spoonacular recipe ID
+  dayOfWeek      Int // 1-7 (Monday to Sunday)
+  mealType       String // "breakfast", "lunch", "dinner"
+  mealPlan       MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  cachedRecipe   Recipe?  @relation(fields: [cachedRecipeId], references: [id])
+  cachedRecipeId String?
+
+  @@unique([mealPlanId, dayOfWeek, mealType])
+}
+
+model Progress {
+  id               String   @id @default(uuid())
+  userId           String
+  date             DateTime
+  weight           Float?
+  caloriesConsumed Int?
+  notes            String?
+  createdAt        DateTime @default(now())
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Recipe {
+  id               String         @id @default(uuid())
+  spoonacularId    Int            @unique // Spoonacular recipe ID
+  title            String
+  summary          String?
+  ingredients      Json // Store as JSON for flexibility
+  instructions     Json // Store as JSON for flexibility
+  imageUrl         String?
+  fallbackImageUrl String? // Cached fallback image URL
+  readyInMinutes   Int?
+  servings         Int?
+  cuisines         String[]
+  dishTypes        String[]
+  diets            String[]
+  nutrition        Json? // Nutritional information
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  userRecipes      UserRecipe[]
+  mealPlanItems    MealPlanItem[]
+}
