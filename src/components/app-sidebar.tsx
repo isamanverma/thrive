@@ -4,10 +4,11 @@ import {
   Bell,
   BookOpen,
   ChefHat,
+  Dumbbell,
   Heart,
   Home,
+  Search,
   Settings,
-  TrendingUp,
   User,
 } from "lucide-react";
 import {
@@ -79,9 +80,19 @@ const items = [
     icon: Heart,
   },
   {
-    title: "Progress Tracker",
-    url: "/dashboard/progress-tracker",
-    icon: TrendingUp,
+    title: "Exercise Plans",
+    url: "/dashboard/exercise-plans",
+    icon: Dumbbell,
+  },
+  {
+    title: "Exercise Explorer",
+    url: "/dashboard/exercise-explorer",
+    icon: Search,
+  },
+  {
+    title: "Saved Exercises",
+    url: "/dashboard/saved-exercises",
+    icon: Heart,
   },
 ];
 
