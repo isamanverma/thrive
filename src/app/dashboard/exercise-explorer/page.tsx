@@ -143,7 +143,10 @@ export default function ExerciseExplorerPage() {
             muscles: ["Full Body", "Cardio"],
           },
         ].map((exercise, index) => (
-          <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+          <Card
+            key={index}
+            className="cursor-pointer hover:shadow-lg transition-shadow"
+          >
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
@@ -174,13 +177,15 @@ export default function ExerciseExplorerPage() {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">Difficulty:</span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    exercise.difficulty === "Beginner" 
-                      ? "bg-green-100 text-green-800"
-                      : exercise.difficulty === "Intermediate"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      exercise.difficulty === "Beginner"
+                        ? "bg-green-100 text-green-800"
+                        : exercise.difficulty === "Intermediate"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                    }`}
+                  >
                     {exercise.difficulty}
                   </span>
                 </div>
@@ -192,7 +197,7 @@ export default function ExerciseExplorerPage() {
                   <span className="text-gray-600">Target Muscles:</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {exercise.muscles.map((muscle, muscleIndex) => (
-                      <span 
+                      <span
                         key={muscleIndex}
                         className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
                       >

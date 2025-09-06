@@ -88,7 +88,10 @@ export default function ExercisePlansPage() {
             progress: "75%",
           },
         ].map((plan, index) => (
-          <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+          <Card
+            key={index}
+            className="cursor-pointer hover:shadow-lg transition-shadow"
+          >
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
@@ -112,23 +115,27 @@ export default function ExercisePlansPage() {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">Difficulty:</span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    plan.difficulty === "Beginner" 
-                      ? "bg-green-100 text-green-800"
-                      : plan.difficulty === "Intermediate"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      plan.difficulty === "Beginner"
+                        ? "bg-green-100 text-green-800"
+                        : plan.difficulty === "Intermediate"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                    }`}
+                  >
                     {plan.difficulty}
                   </span>
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Progress:</span>
-                    <span className="text-green-600 font-medium">{plan.progress}</span>
+                    <span className="text-green-600 font-medium">
+                      {plan.progress}
+                    </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-green-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: plan.progress }}
                     ></div>

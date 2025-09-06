@@ -109,7 +109,10 @@ export default function SavedExercisesPage() {
             lastPerformed: "2 days ago",
           },
         ].map((exercise, index) => (
-          <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+          <Card
+            key={index}
+            className="cursor-pointer hover:shadow-lg transition-shadow"
+          >
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
@@ -140,13 +143,15 @@ export default function SavedExercisesPage() {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">Difficulty:</span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    exercise.difficulty === "Beginner" 
-                      ? "bg-green-100 text-green-800"
-                      : exercise.difficulty === "Intermediate"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      exercise.difficulty === "Beginner"
+                        ? "bg-green-100 text-green-800"
+                        : exercise.difficulty === "Intermediate"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                    }`}
+                  >
                     {exercise.difficulty}
                   </span>
                 </div>
@@ -158,7 +163,7 @@ export default function SavedExercisesPage() {
                   <span className="text-gray-600">Target Muscles:</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {exercise.muscles.map((muscle, muscleIndex) => (
-                      <span 
+                      <span
                         key={muscleIndex}
                         className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
                       >
@@ -195,7 +200,9 @@ export default function SavedExercisesPage() {
       {false && (
         <div className="text-center py-12">
           <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No saved exercises yet</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No saved exercises yet
+          </h3>
           <p className="text-gray-500 mb-6">
             Start exploring exercises and save your favorites to see them here.
           </p>
@@ -207,7 +214,9 @@ export default function SavedExercisesPage() {
 
       {/* Quick actions */}
       <div className="bg-gray-50 rounded-lg p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Quick Actions
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <button className="flex items-center space-x-3 p-4 bg-white rounded-lg hover:shadow-md transition-shadow text-left">
             <div className="bg-green-100 p-2 rounded-lg">
@@ -215,7 +224,9 @@ export default function SavedExercisesPage() {
             </div>
             <div>
               <h4 className="font-medium text-gray-900">Create Workout</h4>
-              <p className="text-sm text-gray-500">Build a workout from saved exercises</p>
+              <p className="text-sm text-gray-500">
+                Build a workout from saved exercises
+              </p>
             </div>
           </button>
           <button className="flex items-center space-x-3 p-4 bg-white rounded-lg hover:shadow-md transition-shadow text-left">
@@ -224,7 +235,9 @@ export default function SavedExercisesPage() {
             </div>
             <div>
               <h4 className="font-medium text-gray-900">Schedule Session</h4>
-              <p className="text-sm text-gray-500">Plan your next workout time</p>
+              <p className="text-sm text-gray-500">
+                Plan your next workout time
+              </p>
             </div>
           </button>
           <button className="flex items-center space-x-3 p-4 bg-white rounded-lg hover:shadow-md transition-shadow text-left">
@@ -233,7 +246,9 @@ export default function SavedExercisesPage() {
             </div>
             <div>
               <h4 className="font-medium text-gray-900">Quick Workout</h4>
-              <p className="text-sm text-gray-500">Start a 15-minute session now</p>
+              <p className="text-sm text-gray-500">
+                Start a 15-minute session now
+              </p>
             </div>
           </button>
         </div>
