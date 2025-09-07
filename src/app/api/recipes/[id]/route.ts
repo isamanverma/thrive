@@ -69,7 +69,7 @@ interface SpoonacularRecipeDetail {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -77,7 +77,8 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const recipeId = params.id;
+    const { id } = await params;
+    const recipeId = id;
     
     if (!recipeId || isNaN(Number(recipeId))) {
       return NextResponse.json(

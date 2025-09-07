@@ -1,12 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { createOrUpdateUser, getUserByClerkId } from "@/lib/api";
 import { useEffect, useRef, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+
 import { Citrus } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
-import { getUserByClerkId, createOrUpdateUser } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 type QuestionType = "number" | "single-choice" | "multi-choice";
 
@@ -98,13 +99,29 @@ export default function ProfilePage() {
         }
       } catch (error) {
         console.error("Error checking user:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+
+        // Only handle client-side errors
+        if (typeof window !== "undefined") {
+          // For network errors, just continue with the form instead of redirecting
+          if (
+            !errorMessage.includes("Network error") &&
+            !errorMessage.includes("timeout")
+          ) {
+            console.error("Client-side error checking user:", error);
+          }
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (user) {
+    // Only run check if we're in the browser
+    if (typeof window !== "undefined") {
       checkExistingUser();
+    } else {
+      setIsLoading(false);
     }
   }, [user, router]);
 

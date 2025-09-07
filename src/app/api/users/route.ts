@@ -49,6 +49,18 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Add database connection check
+    try {
+      const { prisma } = await import('@/lib/prisma');
+      await prisma.$queryRaw`SELECT 1`;
+    } catch (dbError) {
+      console.error('Database connection error:', dbError);
+      return NextResponse.json(
+        { error: 'Database temporarily unavailable' },
+        { status: 503 } // Service Unavailable
+      );
+    }
+
     const user = await getUserByClerkIdServer(clerkId);
     
     if (!user) {
@@ -61,8 +73,19 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ exists: true, user }, { status: 200 });
   } catch (error) {
     console.error('API Error:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined,
+      code: (error as { code?: string })?.code,
+      meta: (error as { meta?: unknown })?.meta
+    });
+    
     return NextResponse.json(
-      { error: 'Failed to fetch user data' },
+      { 
+        error: 'Failed to fetch user data', 
+        details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined 
+      },
       { status: 500 }
     );
   }

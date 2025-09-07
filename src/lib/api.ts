@@ -182,22 +182,103 @@ export async function createOrUpdateUser(userData: UserData) {
   }
 }
 
-export async function getUserByClerkId(clerkId: string) {
+// Request deduplication cache
+const userRequestCache = new Map<string, Promise<UserData | null>>();
+
+export async function getUserByClerkId(clerkId: string): Promise<UserData | null> {
+  // Check if we already have a pending request for this user
+  if (userRequestCache.has(clerkId)) {
+    return userRequestCache.get(clerkId)!;
+  }
+  
+  // Create the request promise
+  const requestPromise = getUserByClerkIdInternal(clerkId);
+  
+  // Cache the promise
+  userRequestCache.set(clerkId, requestPromise);
+  
   try {
-    const response = await fetch(`/api/users?clerkId=${clerkId}`);
-    
-    if (response.status === 404) {
-      return null; // User doesn't exist
-    }
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch user');
-    }
-    
-    const data = await response.json();
-    return data.exists ? data.user : null;
+    const result = await requestPromise;
+    // Clear cache after successful completion
+    userRequestCache.delete(clerkId);
+    return result;
   } catch (error) {
-    console.error('Error fetching user:', error);
+    // Clear cache on error too
+    userRequestCache.delete(clerkId);
+    throw error;
+  }
+}
+
+async function getUserByClerkIdInternal(clerkId: string, retries = 3): Promise<UserData | null> {
+  try {
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') {
+      console.warn('getUserByClerkId called on server side, this should only be used client-side');
+      return null;
+    }
+    
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        const response = await fetch(`/api/users?clerkId=${clerkId}`, {
+          signal: controller.signal,
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.status === 404) {
+          return null; // User doesn't exist
+        }
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          
+          // Don't retry on client errors (4xx)
+          if (response.status >= 400 && response.status < 500 && response.status !== 404) {
+            throw new Error(`Client error: ${response.status} ${response.statusText} - ${errorText}`);
+          }
+          
+          // Retry on server errors (5xx) or network issues
+          if (attempt === retries) {
+            throw new Error(`Failed to fetch user after ${retries} attempts: ${response.status} ${response.statusText} - ${errorText}`);
+          }
+          
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+          continue;
+        }
+        
+        const data = await response.json();
+        return data.exists ? data.user : null;
+        
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          if (attempt === retries) {
+            throw new Error('Request timed out after multiple attempts');
+          }
+          continue;
+        }
+        
+        if (attempt === retries) {
+          throw error;
+        }
+        
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+      }
+    }
+    
+    // This should never be reached, but TypeScript needs it
+    throw new Error('All retry attempts failed');
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to the API. Please check your internet connection.');
+    }
     throw error;
   }
 }
