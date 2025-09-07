@@ -25,23 +25,24 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
         const userData = await getUserByClerkId(user.id);
         setDbUser(userData);
       } catch (error) {
-        console.error("Error fetching user data:", error);
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error";
 
-        // Only log significant errors for client-side execution
+        // Only log errors that aren't database availability issues
         if (typeof window !== "undefined") {
-          // Don't spam logs for network issues
+          // Don't spam logs for network issues or database unavailability
           if (
             !errorMessage.includes("Network error") &&
-            !errorMessage.includes("timeout")
+            !errorMessage.includes("timeout") &&
+            !errorMessage.includes("Database temporarily unavailable") &&
+            !errorMessage.includes("Service Unavailable")
           ) {
-            console.error(
-              "Significant error fetching user data:",
-              errorMessage
-            );
+            console.error("Error fetching user data:", errorMessage);
           }
         }
+
+        // For database unavailability, silently continue with fallback data
+        // The app will still work with the Clerk user data
       } finally {
         setLoading(false);
       }

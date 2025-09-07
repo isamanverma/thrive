@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createOrUpdateUserServer, getUserByClerkIdServer } from '@/lib/prisma';
+import { checkDatabaseConnection, createOrUpdateUserServer, getUserByClerkIdServer } from '@/lib/prisma';
 
 import { UserData } from '@/lib/api';
 
@@ -18,6 +18,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check database connection before proceeding
+    const isDbConnected = await checkDatabaseConnection();
+    if (!isDbConnected) {
+      console.error('Database connection check failed for user creation');
+      return NextResponse.json(
+        { error: 'Database temporarily unavailable' },
+        { status: 503 }
+      );
+    }
+
     console.log('Attempting to save user data...');
     const savedUser = await createOrUpdateUserServer(userData);
     console.log('User data saved successfully:', savedUser.id);
@@ -30,6 +40,23 @@ export async function POST(request: NextRequest) {
       stack: error instanceof Error ? error.stack : undefined,
       name: error instanceof Error ? error.name : undefined
     });
+    
+    // Check if it's a database connection error
+    const isDatabaseError = 
+      (error as { code?: string })?.code === 'P1001' || // Can't reach database server
+      (error as { code?: string })?.code === 'P1017' || // Server has closed the connection
+      (error as { message?: string })?.message?.includes('connection') ||
+      (error as { message?: string })?.message?.includes('timeout') ||
+      (error as { message?: string })?.message?.includes('ECONNREFUSED') ||
+      (error as { message?: string })?.message?.includes('ETIMEDOUT');
+    
+    if (isDatabaseError) {
+      return NextResponse.json(
+        { error: 'Database temporarily unavailable' },
+        { status: 503 }
+      );
+    }
+    
     return NextResponse.json(
       { error: 'Failed to save user data', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
@@ -49,12 +76,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Add database connection check
-    try {
-      const { prisma } = await import('@/lib/prisma');
-      await prisma.$queryRaw`SELECT 1`;
-    } catch (dbError) {
-      console.error('Database connection error:', dbError);
+    // Check database connection before proceeding
+    const isDbConnected = await checkDatabaseConnection();
+    if (!isDbConnected) {
+      console.error('Database connection check failed');
       return NextResponse.json(
         { error: 'Database temporarily unavailable' },
         { status: 503 } // Service Unavailable
@@ -80,6 +105,22 @@ export async function GET(request: NextRequest) {
       code: (error as { code?: string })?.code,
       meta: (error as { meta?: unknown })?.meta
     });
+    
+    // Check if it's a database connection error
+    const isDatabaseError = 
+      (error as { code?: string })?.code === 'P1001' || // Can't reach database server
+      (error as { code?: string })?.code === 'P1017' || // Server has closed the connection
+      (error as { message?: string })?.message?.includes('connection') ||
+      (error as { message?: string })?.message?.includes('timeout') ||
+      (error as { message?: string })?.message?.includes('ECONNREFUSED') ||
+      (error as { message?: string })?.message?.includes('ETIMEDOUT');
+    
+    if (isDatabaseError) {
+      return NextResponse.json(
+        { error: 'Database temporarily unavailable' },
+        { status: 503 }
+      );
+    }
     
     return NextResponse.json(
       { 
