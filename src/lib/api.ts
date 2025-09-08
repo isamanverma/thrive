@@ -371,7 +371,18 @@ export async function addUserRecipe(spoonacularId: number, status: 'liked' | 'sa
     });
     
     if (!response.ok) {
-      throw new Error('Failed to add recipe to user collection');
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.error || `Failed to add recipe to user collection (${response.status})`;
+      
+      // Log the full error details for debugging
+      console.error('API error details:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData,
+        requestData: { spoonacularId, status }
+      });
+      
+      throw new Error(errorMessage);
     }
     
     return await response.json();

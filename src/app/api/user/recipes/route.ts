@@ -10,6 +10,17 @@ interface UserRecipeRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    // Test database connection first
+    try {
+      await prisma.$connect();
+    } catch (dbError) {
+      console.error('Database connection error:', dbError);
+      return NextResponse.json(
+        { error: 'Database connection failed', details: dbError instanceof Error ? dbError.message : 'Unknown database error' },
+        { status: 503 }
+      );
+    }
+
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -17,6 +28,8 @@ export async function POST(request: NextRequest) {
 
     const body: UserRecipeRequest = await request.json();
     const { spoonacularId, status } = body;
+
+    console.log('Received request:', { userId, spoonacularId, status });
 
     if (!spoonacularId || !status) {
       return NextResponse.json(
@@ -38,8 +51,17 @@ export async function POST(request: NextRequest) {
       select: { id: true },
     });
 
+    console.log('Found user:', user);
+
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      console.error('User not found in database:', { clerkId: userId });
+      return NextResponse.json(
+        { 
+          error: 'User not found in database. Please complete the onboarding process first.',
+          details: 'The user exists in Clerk but not in our database. Complete onboarding to create your profile.'
+        }, 
+        { status: 404 }
+      );
     }
 
     // Check if user recipe already exists
@@ -53,6 +75,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    console.log('Existing user recipe:', existingUserRecipe);
+
     if (existingUserRecipe) {
       return NextResponse.json(
         { error: 'Recipe already marked with this status' },
@@ -61,6 +85,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user recipe entry
+    console.log('Creating user recipe with data:', {
+      userId: user.id,
+      spoonacularId: spoonacularId,
+      status: status,
+    });
+
     const userRecipe = await prisma.userRecipe.create({
       data: {
         userId: user.id,
@@ -68,6 +98,8 @@ export async function POST(request: NextRequest) {
         status: status,
       },
     });
+
+    console.log('Created user recipe:', userRecipe);
 
     return NextResponse.json({
       id: userRecipe.id,
@@ -78,8 +110,15 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Add user recipe error:', error);
+    
+    // Log more detailed error information
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
