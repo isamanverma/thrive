@@ -72,10 +72,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Allow public access to recipes - authentication is optional
     const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    console.log('Auth userId:', userId || 'Anonymous user');
 
     const { id } = await params;
     const recipeId = id;
@@ -104,14 +103,14 @@ export async function GET(
         cuisines: cachedRecipe.cuisines,
         dishTypes: cachedRecipe.dishTypes,
         diets: cachedRecipe.diets,
-        ingredients: cachedRecipe.ingredients,
-        instructions: cachedRecipe.instructions,
+        extendedIngredients: cachedRecipe.ingredients || [],
+        analyzedInstructions: cachedRecipe.instructions || [],
         nutrition: cachedRecipe.nutrition,
         isCached: true,
       });
     }
 
-    // If not cached, fetch from Spoonacular
+    // If not cached, fetch from Spoonacular API
     const apiKey = process.env.SPOONACULAR_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
@@ -140,56 +139,56 @@ export async function GET(
       );
     }
 
-    const data: SpoonacularRecipeDetail = await response.json();
+    const spoonacularData: SpoonacularRecipeDetail = await response.json();
 
     // Transform and structure the data
     const transformedRecipe = {
-      id: data.id,
-      title: data.title,
-      summary: data.summary,
-      image: data.image,
-      readyInMinutes: data.readyInMinutes,
-      servings: data.servings,
-      cuisines: data.cuisines || [],
-      dishTypes: data.dishTypes || [],
-      diets: data.diets || [],
-      ingredients: data.extendedIngredients || [],
-      instructions: data.analyzedInstructions || [],
-      nutrition: data.nutrition,
+      id: spoonacularData.id,
+      title: spoonacularData.title,
+      summary: spoonacularData.summary,
+      image: spoonacularData.image,
+      readyInMinutes: spoonacularData.readyInMinutes,
+      servings: spoonacularData.servings,
+      cuisines: spoonacularData.cuisines || [],
+      dishTypes: spoonacularData.dishTypes || [],
+      diets: spoonacularData.diets || [],
+      extendedIngredients: spoonacularData.extendedIngredients || [],
+      analyzedInstructions: spoonacularData.analyzedInstructions || [],
+      nutrition: spoonacularData.nutrition,
       isCached: false,
     };
 
     // Cache the recipe in our database for future requests
     try {
       await prisma.recipe.upsert({
-        where: { spoonacularId: data.id },
+        where: { spoonacularId: spoonacularData.id },
         update: {
-          title: data.title,
-          summary: data.summary,
-          imageUrl: data.image,
-          readyInMinutes: data.readyInMinutes,
-          servings: data.servings,
-          cuisines: data.cuisines || [],
-          dishTypes: data.dishTypes || [],
-          diets: data.diets || [],
-          ingredients: data.extendedIngredients || [],
-          instructions: data.analyzedInstructions || [],
-          nutrition: data.nutrition || undefined,
+          title: spoonacularData.title,
+          summary: spoonacularData.summary,
+          imageUrl: spoonacularData.image,
+          readyInMinutes: spoonacularData.readyInMinutes,
+          servings: spoonacularData.servings,
+          cuisines: spoonacularData.cuisines || [],
+          dishTypes: spoonacularData.dishTypes || [],
+          diets: spoonacularData.diets || [],
+          ingredients: spoonacularData.extendedIngredients || [],
+          instructions: spoonacularData.analyzedInstructions || [],
+          nutrition: spoonacularData.nutrition || undefined,
           updatedAt: new Date(),
         },
         create: {
-          spoonacularId: data.id,
-          title: data.title,
-          summary: data.summary,
-          imageUrl: data.image,
-          readyInMinutes: data.readyInMinutes,
-          servings: data.servings,
-          cuisines: data.cuisines || [],
-          dishTypes: data.dishTypes || [],
-          diets: data.diets || [],
-          ingredients: data.extendedIngredients || [],
-          instructions: data.analyzedInstructions || [],
-          nutrition: data.nutrition || undefined,
+          spoonacularId: spoonacularData.id,
+          title: spoonacularData.title,
+          summary: spoonacularData.summary,
+          imageUrl: spoonacularData.image,
+          readyInMinutes: spoonacularData.readyInMinutes,
+          servings: spoonacularData.servings,
+          cuisines: spoonacularData.cuisines || [],
+          dishTypes: spoonacularData.dishTypes || [],
+          diets: spoonacularData.diets || [],
+          ingredients: spoonacularData.extendedIngredients || [],
+          instructions: spoonacularData.analyzedInstructions || [],
+          nutrition: spoonacularData.nutrition || undefined,
         },
       });
     } catch (dbError) {

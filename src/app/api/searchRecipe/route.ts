@@ -31,10 +31,9 @@ interface SpoonacularRecipe {
 
 export async function GET(request: NextRequest) {
   try {
+    // Allow public access to recipe search - authentication is optional
     const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    console.log('Search auth userId:', userId || 'Anonymous user');
 
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');

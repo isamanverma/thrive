@@ -24,6 +24,7 @@ const sampleMeals: Meal[] = [
     image:
       "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=300&h=300&fit=crop&crop=center",
     completed: true,
+    spoonacularId: 716429, // Avocado toast recipe ID
   },
   {
     id: "2",
@@ -32,6 +33,7 @@ const sampleMeals: Meal[] = [
     image:
       "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=300&fit=crop&crop=center",
     completed: true,
+    spoonacularId: 715538, // Chicken salad recipe ID
     ingredients: [
       "200g Chicken Breast",
       "1 cup Mixed Greens",
@@ -46,6 +48,7 @@ const sampleMeals: Meal[] = [
     image:
       "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=300&h=300&fit=crop&crop=center",
     completed: false,
+    spoonacularId: 716406, // Salmon recipe ID
   },
 ];
 

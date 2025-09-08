@@ -1,6 +1,14 @@
 "use client";
 
-import { Bookmark, ChefHat, Clock, Heart, Search, Users } from "lucide-react";
+import {
+  Bookmark,
+  ChefHat,
+  Clock,
+  ExternalLink,
+  Heart,
+  Search,
+  Users,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -13,6 +21,8 @@ import { Recipe, addUserRecipe, searchRecipes } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface RecipeSearchProps {
@@ -24,6 +34,7 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
+  const router = useRouter();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -44,6 +55,11 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getRecipeUrl = (recipeId: number) => {
+    // Always use the new recipe route
+    return `/recipe/${recipeId}`;
   };
 
   const handleLikeRecipe = async (recipeId: number) => {
@@ -74,6 +90,11 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
       console.error("Cook error:", error);
       alert("Failed to mark recipe as cooked. Please try again.");
     }
+  };
+
+  const handleViewRecipe = (recipeId: number) => {
+    const url = getRecipeUrl(recipeId);
+    router.push(url);
   };
 
   return (
@@ -175,14 +196,27 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
               </div>
 
               <div className="flex justify-between items-center pt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => window.open(`/recipes/${recipe.id}`, "_blank")}
-                  className="hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-colors"
-                >
-                  View Recipe
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleViewRecipe(recipe.id)}
+                    className="hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-colors"
+                  >
+                    Quick View
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="p-2 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+                    title="Open in new page"
+                  >
+                    <Link href={getRecipeUrl(recipe.id)} target="_blank">
+                      <ExternalLink className="w-4 h-4" />
+                    </Link>
+                  </Button>
+                </div>
 
                 <div className="flex gap-1">
                   <Button

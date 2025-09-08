@@ -101,7 +101,7 @@ export function DateSelector({
     <>
       {/* Desktop Version - Hover-based expandable */}
       <div
-        className="hidden md:flex bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-100 mx-auto max-w-fit transition-all duration-300 hover:shadow-md hover:bg-white"
+        className="hidden md:flex bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-100 mx-auto max-w-fit transition-all duration-500 ease-in-out hover:shadow-md hover:bg-white"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -116,19 +116,10 @@ export function DateSelector({
             </button>
 
             <div className="text-sm font-medium text-gray-700 min-w-[80px] text-center">
-              {isToday(selectedDate) ? (
-                <button
-                  onClick={navigateToToday}
-                  className="hover:text-green-600 transition-colors font-semibold"
-                >
-                  Today
-                </button>
-              ) : (
-                selectedDate.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
-              )}
+              {selectedDate.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
             </div>
 
             <button
@@ -137,25 +128,12 @@ export function DateSelector({
             >
               <ChevronRight className="h-3 w-3" />
             </button>
-
-            {/* Always visible Today button when not in current week */}
-            {!isTodayInCurrentWeek() && (
-              <>
-                <div className="w-px h-4 bg-gray-200 mx-2"></div>
-                <button
-                  onClick={navigateToToday}
-                  className="text-xs text-green-600 hover:text-green-700 font-medium px-2 py-1 rounded hover:bg-green-50 transition-colors"
-                >
-                  Today
-                </button>
-              </>
-            )}
           </div>
 
           {/* Expandable calendar - only on hover */}
           <div
             className={`
-            flex items-center gap-1 ml-2 transition-all duration-300 ease-out overflow-hidden
+            flex items-center gap-1 ml-2 transition-all duration-500 ease-in-out overflow-hidden
             ${isHovered ? "max-w-xs opacity-100" : "max-w-0 opacity-0"}
           `}
           >
@@ -169,7 +147,7 @@ export function DateSelector({
                   key={index}
                   onClick={() => handleDateSelection(date)}
                   className={`
-                    flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-all duration-150 min-w-[32px] text-xs
+                    flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-all duration-200 ease-in-out min-w-[32px] text-xs
                     ${
                       selectedDateMatch && todayDate
                         ? "bg-green-600 text-white shadow-sm"
@@ -199,6 +177,22 @@ export function DateSelector({
                 </button>
               );
             })}
+          </div>
+
+          {/* Today button at the end */}
+          <div
+            className={`
+            flex items-center transition-all duration-500 ease-in-out overflow-hidden
+            ${isHovered ? "max-w-xs opacity-100" : "max-w-0 opacity-0"}
+          `}
+          >
+            <div className="w-px h-4 bg-gray-200 mx-2"></div>
+            <button
+              onClick={navigateToToday}
+              className="text-xs text-green-600 hover:text-green-700 font-medium px-2 py-1 rounded hover:bg-green-50 transition-colors whitespace-nowrap"
+            >
+              Today
+            </button>
           </div>
         </div>
       </div>

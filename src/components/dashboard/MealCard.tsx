@@ -5,6 +5,7 @@ import { Bookmark, Check, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { MagicCard } from "@/components/magicui/magic-card";
+import { useRouter } from "next/navigation";
 
 export interface Meal {
   id: string;
@@ -13,6 +14,7 @@ export interface Meal {
   image: string;
   completed?: boolean;
   ingredients?: string[];
+  spoonacularId?: number; // Add spoonacular ID for linking to recipe page
 }
 
 interface MealCardProps {
@@ -30,9 +32,21 @@ export function MealCard({
   onSave,
   showIngredients = false,
 }: MealCardProps) {
+  const router = useRouter();
+
+  const handleMealClick = () => {
+    // If meal has spoonacular ID, navigate to recipe page
+    if (meal.spoonacularId) {
+      router.push(`/recipe/${meal.spoonacularId}`);
+    }
+  };
+
   return (
     <MagicCard className="bg-gray-50 p-4 rounded-xl">
-      <div className="flex items-center gap-4">
+      <div
+        className={`flex items-center gap-4 ${meal.spoonacularId ? "cursor-pointer" : ""}`}
+        onClick={handleMealClick}
+      >
         <div className="relative w-16 h-16 rounded-lg overflow-hidden">
           <Image
             src={meal.image}
@@ -45,7 +59,10 @@ export function MealCard({
           <h4 className="font-semibold">{meal.name}</h4>
           <p className="text-sm text-gray-500">{meal.type}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Button
             variant="ghost"
             size="sm"
