@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { MealDetailModal } from "@/components/dashboard/MealDetailModal";
 import { MealSwapModal } from "@/components/dashboard/MealSwapModal";
 import type React from "react";
+import { motion } from "framer-motion";
 import { useState } from "react";
 
 const sampleMeals = {
@@ -151,52 +152,73 @@ const sampleMeals = {
       image: "/protein-bar.png",
       description: "Homemade protein bar with oats and dates",
     },
+    {
+      id: 20,
+      name: "Trail Mix",
+      calories: 160,
+      image: "/trail-mix.png",
+      description: "Mixed nuts, dried fruits, and seeds",
+    },
+    {
+      id: 21,
+      name: "Banana with Almond Butter",
+      calories: 190,
+      image: "/banana-almond-butter.png",
+      description: "Fresh banana with creamy almond butter",
+    },
+    {
+      id: 22,
+      name: "Hummus with Veggies",
+      calories: 140,
+      image: "/hummus-veggies.png",
+      description: "Fresh vegetables with homemade hummus",
+    },
   ],
   dinner: [
     {
-      id: 20,
+      id: 23,
       name: "Spaghetti Bolognese",
       calories: 600,
       image: "/spaghetti-bolognese.png",
       description: "Classic pasta with rich meat sauce",
     },
     {
-      id: 21,
+      id: 24,
       name: "Fish Tacos",
       calories: 550,
       image: "/fish-tacos.jpg",
       description: "Grilled fish with fresh salsa in corn tortillas",
     },
     {
-      id: 22,
+      id: 25,
       name: "Leftover Pizza",
       calories: 800,
       image: "/leftover-pizza.jpg",
       description: "Homemade pizza with fresh toppings",
     },
     {
-      id: 23,
+      id: 26,
       name: "Homemade Pizza",
       calories: 800,
       image: "/homemade-pizza.png",
       description: "Wood-fired pizza with seasonal vegetables",
     },
     {
-      id: 24,
+      id: 27,
       name: "Roast Chicken",
       calories: 700,
       image: "/perfectly-roasted-chicken.png",
       description: "Herb-crusted roasted chicken with vegetables",
     },
     {
-      id: 25,
+      id: 28,
       name: "Salmon Teriyaki",
       calories: 520,
       image: "/salmon-teriyaki.jpg",
       description: "Glazed salmon with steamed rice and broccoli",
     },
     {
-      id: 26,
+      id: 29,
       name: "Vegetable Curry",
       calories: 450,
       image: "/vegetable-curry.png",
@@ -221,18 +243,15 @@ const dailyStats = {
   goal: 2000,
 };
 
-const getDayMeals = (dayIndex: number) => ({
-  breakfast: sampleMeals.breakfast[dayIndex % sampleMeals.breakfast.length],
-  lunch: sampleMeals.lunch[dayIndex % sampleMeals.lunch.length],
-  snack: sampleMeals.snack[dayIndex % sampleMeals.snack.length],
-  dinner: sampleMeals.dinner[dayIndex % sampleMeals.dinner.length],
-});
-
 export default function MealPlansPage() {
   const [viewMode, setViewMode] = useState<"weekly" | "daily">("weekly");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [draggedItem, setDraggedItem] = useState<{
     meal: MealPlanItem;
+    mealType: string;
+    dayIndex: number;
+  } | null>(null);
+  const [activeDropZone, setActiveDropZone] = useState<{
     mealType: string;
     dayIndex: number;
   } | null>(null);
@@ -248,10 +267,15 @@ export default function MealPlansPage() {
   const [weeklyMeals, setWeeklyMeals] = useState<
     Record<number, Record<string, MealPlanItem>>
   >(() => {
-    // Initialize weekly meals for 7 days
+    // Initialize weekly meals for 7 days with proper structure
     const meals: Record<number, Record<string, MealPlanItem>> = {};
     for (let i = 0; i < 7; i++) {
-      meals[i] = getDayMeals(i);
+      meals[i] = {
+        breakfast: sampleMeals.breakfast[i % sampleMeals.breakfast.length],
+        lunch: sampleMeals.lunch[i % sampleMeals.lunch.length],
+        snack: sampleMeals.snack[i % sampleMeals.snack.length],
+        dinner: sampleMeals.dinner[i % sampleMeals.dinner.length],
+      };
     }
     return meals;
   });
@@ -313,19 +337,40 @@ export default function MealPlansPage() {
   };
 
   const handleRecipeSelect = (recipe: MealPlanItem) => {
-    const newWeeklyMeals = { ...weeklyMeals };
-    newWeeklyMeals[swapDayIndex][swapMealType.toLowerCase()] = recipe;
-    setWeeklyMeals(newWeeklyMeals);
+    setWeeklyMeals((prevWeeklyMeals) => {
+      // Deep copy to avoid mutations
+      const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
+
+      // Convert meal type to lowercase to match the object keys
+      const mealTypeKey = swapMealType.toLowerCase();
+
+      // Ensure the day object exists
+      if (!newWeeklyMeals[swapDayIndex]) {
+        newWeeklyMeals[swapDayIndex] = {};
+      }
+
+      console.log("Recipe select:", {
+        dayIndex: swapDayIndex,
+        mealType: mealTypeKey,
+        recipe: recipe.name,
+      });
+
+      newWeeklyMeals[swapDayIndex][mealTypeKey] = recipe;
+      return newWeeklyMeals;
+    });
     setSwapModalOpen(false);
   };
 
   const handleRecipeClick = (
     recipe: MealPlanItem,
     mealType: string,
-    _dayIndex?: number
+    dayIndex?: number
   ) => {
     setSelectedRecipe(recipe);
     setSelectedMealType(mealType);
+    if (dayIndex !== undefined) {
+      setSwapDayIndex(dayIndex);
+    }
     setRecipeDetailOpen(true);
   };
 
@@ -335,22 +380,84 @@ export default function MealPlansPage() {
     mealType: string,
     dayIndex: number
   ) => {
+    console.log("Drag start:", { meal: meal.name, mealType, dayIndex });
     setDraggedItem({ meal, mealType, dayIndex });
+    e.dataTransfer.setData("mealId", meal.id.toString());
+    e.dataTransfer.setData("mealType", mealType);
+    e.dataTransfer.setData("dayIndex", dayIndex.toString());
     e.dataTransfer.effectAllowed = "move";
-    // Add visual feedback
-    const target = e.target as HTMLElement;
-    target.style.transform = "rotate(5deg)";
+
+    // Create a more transparent drag image
+    const dragElement = e.currentTarget as HTMLElement;
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const rect = dragElement.getBoundingClientRect();
+
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+
+    if (ctx) {
+      ctx.globalAlpha = 0.7;
+      // Add drag styling
+      dragElement.style.filter = "brightness(1.1)";
+    }
+
+    // Show all drop indicators with improved visibility
+    setTimeout(() => {
+      const elements = document.querySelectorAll(
+        '[data-drop-indicator="true"]'
+      );
+      elements.forEach((el) => {
+        (el as HTMLElement).style.transition = "all 0.2s ease-out";
+        (el as HTMLElement).style.backgroundColor = "#22c55e";
+        (el as HTMLElement).style.height = "3px";
+      });
+    }, 100);
   };
 
-  const handleDragEnd = (e: React.DragEvent) => {
-    const target = e.target as HTMLElement;
-    target.style.transform = "";
+  const handleDragEnd = () => {
+    console.log("Drag end");
+    // Clean up drag styling
+    const draggedElements = document.querySelectorAll('[style*="filter"]');
+    draggedElements.forEach((el) => {
+      (el as HTMLElement).style.filter = "";
+    });
+
     setDraggedItem(null);
+    setActiveDropZone(null);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (
+    e: React.DragEvent,
+    mealType: string,
+    dayIndex: number
+  ) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = "move";
+
+    // Only highlight if this is a different slot than the dragged item
+    if (
+      draggedItem &&
+      (draggedItem.mealType !== mealType || draggedItem.dayIndex !== dayIndex)
+    ) {
+      setActiveDropZone({ mealType, dayIndex });
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    // Only clear if we're actually leaving the drop zone
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const isInside =
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom;
+
+    if (!isInside) {
+      setActiveDropZone(null);
+    }
   };
 
   const handleDrop = (
@@ -359,32 +466,85 @@ export default function MealPlansPage() {
     targetDayIndex: number
   ) => {
     e.preventDefault();
+    e.stopPropagation();
 
-    if (!draggedItem) return;
+    console.log("Drop event triggered:", {
+      targetMealType,
+      targetDayIndex,
+      draggedItem,
+    });
+
+    if (!draggedItem) {
+      console.log("No dragged item found");
+      return;
+    }
 
     // Don't allow dropping on the same slot
     if (
       draggedItem.dayIndex === targetDayIndex &&
       draggedItem.mealType === targetMealType
     ) {
+      console.log("Dropping on same slot, ignoring");
       setDraggedItem(null);
+      setActiveDropZone(null);
       return;
     }
 
-    // Swap meals between slots
-    const newWeeklyMeals = { ...weeklyMeals };
-    const sourceMeal =
-      newWeeklyMeals[draggedItem.dayIndex][draggedItem.mealType.toLowerCase()];
-    const targetMeal =
-      newWeeklyMeals[targetDayIndex][targetMealType.toLowerCase()];
+    // Capture draggedItem values before clearing state
+    const sourceDayIndex = draggedItem.dayIndex;
+    const sourceMealType = draggedItem.mealType;
+    const sourceMeal = draggedItem.meal;
 
-    newWeeklyMeals[draggedItem.dayIndex][draggedItem.mealType.toLowerCase()] =
-      targetMeal;
-    newWeeklyMeals[targetDayIndex][targetMealType.toLowerCase()] = sourceMeal;
+    console.log("Swap details:", {
+      source: {
+        dayIndex: sourceDayIndex,
+        mealType: sourceMealType,
+        meal: sourceMeal.name,
+      },
+      target: { dayIndex: targetDayIndex, mealType: targetMealType },
+    });
 
-    setWeeklyMeals(newWeeklyMeals);
+    // Clear drag state immediately to stop visual feedback
     setDraggedItem(null);
+    setActiveDropZone(null);
+
+    // Perform the swap immediately with proper deep copying
+    setWeeklyMeals((prevWeeklyMeals) => {
+      console.log("Before swap state:", prevWeeklyMeals);
+
+      // Deep copy the entire state to prevent mutations
+      const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
+
+      // Convert meal types to lowercase to match object keys
+      const sourceMealKey = sourceMealType.toLowerCase();
+      const targetMealKey = targetMealType.toLowerCase();
+
+      // Ensure both day objects exist
+      if (!newWeeklyMeals[sourceDayIndex]) {
+        newWeeklyMeals[sourceDayIndex] = {};
+      }
+      if (!newWeeklyMeals[targetDayIndex]) {
+        newWeeklyMeals[targetDayIndex] = {};
+      }
+
+      // Get the meals to swap
+      const targetMeal = newWeeklyMeals[targetDayIndex][targetMealKey];
+
+      console.log("Swapping meals:", {
+        sourceMeal: sourceMeal.name,
+        targetMeal: targetMeal?.name || "empty",
+      });
+
+      // Perform the swap
+      newWeeklyMeals[sourceDayIndex][sourceMealKey] = targetMeal;
+      newWeeklyMeals[targetDayIndex][targetMealKey] = sourceMeal;
+
+      console.log("After swap state:", newWeeklyMeals);
+      return newWeeklyMeals;
+    });
   };
+
+  // Add a state to track if items are swapping
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -491,7 +651,12 @@ export default function MealPlansPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+          <motion.div
+            className="bg-white rounded-lg overflow-hidden shadow-sm"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             {/* Day headers */}
             <div
               className="grid gap-0 bg-gray-50 border-b"
@@ -511,7 +676,12 @@ export default function MealPlansPage() {
             </div>
 
             {/* Breakfast Section */}
-            <div className="bg-orange-50 border-b">
+            <motion.div
+              className="bg-orange-50 border-b"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
               <div
                 className="grid gap-0"
                 style={{
@@ -523,11 +693,43 @@ export default function MealPlansPage() {
                 </div>
                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
                   (day, index) => {
-                    const dayMeals = weeklyMeals[index] || getDayMeals(index);
+                    const dayMeals = weeklyMeals[index];
+                    const isDropZone =
+                      activeDropZone?.mealType === "Breakfast" &&
+                      activeDropZone?.dayIndex === index;
+
                     return (
-                      <div key={`breakfast-${day}`} className="p-3">
+                      <motion.div
+                        key={`breakfast-${index}`}
+                        className={`p-3 transition-all duration-300 rounded-lg relative ${
+                          isDropZone
+                            ? "bg-gradient-to-r from-orange-100 to-orange-200 ring-4 ring-orange-300 ring-opacity-60 shadow-lg"
+                            : "hover:bg-orange-50/30"
+                        }`}
+                        onDragOver={(e) =>
+                          handleDragOver(e, "Breakfast", index)
+                        }
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, "Breakfast", index)}
+                        layout
+                        animate={
+                          isDropZone
+                            ? {
+                                scale: 1.05,
+                                boxShadow: "0 8px 25px rgba(255, 165, 0, 0.3)",
+                                transition: {
+                                  duration: 0.2,
+                                  ease: "easeOut",
+                                },
+                              }
+                            : {
+                                scale: 1,
+                                boxShadow: "none",
+                              }
+                        }
+                      >
                         <MealPlanCard
-                          meal={dayMeals.breakfast}
+                          meal={dayMeals?.breakfast}
                           mealType="Breakfast"
                           dayIndex={index}
                           isDraggable={true}
@@ -535,22 +737,25 @@ export default function MealPlansPage() {
                           onCardClick={handleRecipeClick}
                           onDragStart={handleDragStart}
                           onDragEnd={handleDragEnd}
-                          onDragOver={handleDragOver}
-                          onDrop={handleDrop}
                           isDragging={
                             draggedItem?.dayIndex === index &&
                             draggedItem?.mealType === "Breakfast"
                           }
                         />
-                      </div>
+                      </motion.div>
                     );
                   }
                 )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Lunch Section */}
-            <div className="bg-blue-50 border-b">
+            <motion.div
+              className="bg-blue-50 border-b"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
               <div
                 className="grid gap-0"
                 style={{
@@ -562,11 +767,41 @@ export default function MealPlansPage() {
                 </div>
                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
                   (day, index) => {
-                    const dayMeals = weeklyMeals[index] || getDayMeals(index);
+                    const dayMeals = weeklyMeals[index];
+                    const isDropZone =
+                      activeDropZone?.mealType === "Lunch" &&
+                      activeDropZone?.dayIndex === index;
+
                     return (
-                      <div key={`lunch-${day}`} className="p-3">
+                      <motion.div
+                        key={`lunch-${index}`}
+                        className={`p-3 transition-all duration-300 rounded-lg relative ${
+                          isDropZone
+                            ? "bg-gradient-to-r from-blue-100 to-blue-200 ring-4 ring-blue-300 ring-opacity-60 shadow-lg"
+                            : "hover:bg-blue-50/30"
+                        }`}
+                        onDragOver={(e) => handleDragOver(e, "Lunch", index)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, "Lunch", index)}
+                        layout
+                        animate={
+                          isDropZone
+                            ? {
+                                scale: 1.05,
+                                boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
+                                transition: {
+                                  duration: 0.2,
+                                  ease: "easeOut",
+                                },
+                              }
+                            : {
+                                scale: 1,
+                                boxShadow: "none",
+                              }
+                        }
+                      >
                         <MealPlanCard
-                          meal={dayMeals.lunch}
+                          meal={dayMeals?.lunch}
                           mealType="Lunch"
                           dayIndex={index}
                           isDraggable={true}
@@ -574,22 +809,25 @@ export default function MealPlansPage() {
                           onCardClick={handleRecipeClick}
                           onDragStart={handleDragStart}
                           onDragEnd={handleDragEnd}
-                          onDragOver={handleDragOver}
-                          onDrop={handleDrop}
                           isDragging={
                             draggedItem?.dayIndex === index &&
                             draggedItem?.mealType === "Lunch"
                           }
                         />
-                      </div>
+                      </motion.div>
                     );
                   }
                 )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Snack Section */}
-            <div className="bg-purple-50 border-b">
+            <motion.div
+              className="bg-purple-50 border-b"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+            >
               <div
                 className="grid gap-0"
                 style={{
@@ -601,34 +839,73 @@ export default function MealPlansPage() {
                 </div>
                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
                   (day, index) => {
-                    const dayMeals = weeklyMeals[index] || getDayMeals(index);
+                    const dayMeals = weeklyMeals[index];
+                    const isDropZone =
+                      activeDropZone?.mealType === "Snack" &&
+                      activeDropZone?.dayIndex === index;
+
                     return (
-                      <div key={`snack-${day}`} className="p-3">
-                        <MealPlanCard
-                          meal={dayMeals.snack}
-                          mealType="Snack"
-                          dayIndex={index}
-                          isDraggable={true}
-                          showMealTypeLabel={false}
-                          onCardClick={handleRecipeClick}
-                          onDragStart={handleDragStart}
-                          onDragEnd={handleDragEnd}
-                          onDragOver={handleDragOver}
-                          onDrop={handleDrop}
-                          isDragging={
-                            draggedItem?.dayIndex === index &&
-                            draggedItem?.mealType === "Snack"
-                          }
-                        />
-                      </div>
+                      <motion.div
+                        key={`snack-${index}`}
+                        className={`p-3 transition-all duration-300 rounded-lg relative ${
+                          isDropZone
+                            ? "bg-gradient-to-r from-purple-100 to-purple-200 ring-4 ring-purple-300 ring-opacity-60 shadow-lg"
+                            : "hover:bg-purple-50/30"
+                        }`}
+                        onDragOver={(e) => handleDragOver(e, "Snack", index)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, "Snack", index)}
+                        layout
+                        animate={
+                          isDropZone
+                            ? {
+                                scale: 1.05,
+                                boxShadow: "0 8px 25px rgba(147, 51, 234, 0.3)",
+                                transition: {
+                                  duration: 0.2,
+                                  ease: "easeOut",
+                                },
+                              }
+                            : {
+                                scale: 1,
+                                boxShadow: "none",
+                              }
+                        }
+                      >
+                        {dayMeals?.snack ? (
+                          <MealPlanCard
+                            meal={dayMeals.snack}
+                            mealType="Snack"
+                            dayIndex={index}
+                            isDraggable={true}
+                            showMealTypeLabel={false}
+                            onCardClick={handleRecipeClick}
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                            isDragging={
+                              draggedItem?.dayIndex === index &&
+                              draggedItem?.mealType === "Snack"
+                            }
+                          />
+                        ) : (
+                          <div className="bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 h-24 flex items-center justify-center text-gray-500 text-sm">
+                            Drop snack here
+                          </div>
+                        )}
+                      </motion.div>
                     );
                   }
                 )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Dinner Section */}
-            <div className="bg-red-50">
+            <motion.div
+              className="bg-red-50"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+            >
               <div
                 className="grid gap-0"
                 style={{
@@ -640,11 +917,41 @@ export default function MealPlansPage() {
                 </div>
                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
                   (day, index) => {
-                    const dayMeals = weeklyMeals[index] || getDayMeals(index);
+                    const dayMeals = weeklyMeals[index];
+                    const isDropZone =
+                      activeDropZone?.mealType === "Dinner" &&
+                      activeDropZone?.dayIndex === index;
+
                     return (
-                      <div key={`dinner-${day}`} className="p-3">
+                      <motion.div
+                        key={`dinner-${index}`}
+                        className={`p-3 transition-all duration-300 rounded-lg relative ${
+                          isDropZone
+                            ? "bg-gradient-to-r from-red-100 to-red-200 ring-4 ring-red-300 ring-opacity-60 shadow-lg"
+                            : "hover:bg-red-50/30"
+                        }`}
+                        onDragOver={(e) => handleDragOver(e, "Dinner", index)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, "Dinner", index)}
+                        layout
+                        animate={
+                          isDropZone
+                            ? {
+                                scale: 1.05,
+                                boxShadow: "0 8px 25px rgba(239, 68, 68, 0.3)",
+                                transition: {
+                                  duration: 0.2,
+                                  ease: "easeOut",
+                                },
+                              }
+                            : {
+                                scale: 1,
+                                boxShadow: "none",
+                              }
+                        }
+                      >
                         <MealPlanCard
-                          meal={dayMeals.dinner}
+                          meal={dayMeals?.dinner}
                           mealType="Dinner"
                           dayIndex={index}
                           isDraggable={true}
@@ -652,20 +959,18 @@ export default function MealPlansPage() {
                           onCardClick={handleRecipeClick}
                           onDragStart={handleDragStart}
                           onDragEnd={handleDragEnd}
-                          onDragOver={handleDragOver}
-                          onDrop={handleDrop}
                           isDragging={
                             draggedItem?.dayIndex === index &&
                             draggedItem?.mealType === "Dinner"
                           }
                         />
-                      </div>
+                      </motion.div>
                     );
                   }
                 )}
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </>
       ) : (
         <>
