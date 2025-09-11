@@ -7,6 +7,7 @@ import type {
 } from "./types";
 
 import { MealPlanCard } from "@/components/dashboard/MealPlanCard";
+import { Plus } from "lucide-react";
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -158,9 +159,18 @@ export function MealTypeRow({
                   onClick={() =>
                     onEmptySlotClick && onEmptySlotClick(mealType, index)
                   }
-                  className="w-full h-24 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-500 text-sm"
+                  className="group w-full h-full bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-500 text-sm"
                 >
-                  <span>Drop {mealType.toLowerCase()} here</span>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-50 text-green-700">
+                      <Plus className="w-4 h-4" />
+                    </div>
+                    <span>Drop {mealType.toLowerCase()} here</span>
+                  </div>
+
+                  <span className="pointer-events-none absolute -top-8 left-1/2 transform -translate-x-1/2 rounded-md bg-gray-900 text-white text-xs px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100">
+                    Add {mealType.toLowerCase()}
+                  </span>
                 </button>
               )}
             </motion.div>

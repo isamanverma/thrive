@@ -114,8 +114,12 @@ export default function MealPlansPage() {
         const dayIdx = swapDayIndex;
         const mealKey = selectedMealType.toLowerCase();
 
+        // Ensure day object exists so daily view shows an explicit empty slot
+        if (!newWeeklyMeals[dayIdx]) {
+          newWeeklyMeals[dayIdx] = {} as Partial<Record<string, MealPlanItem>>;
+        }
+
         if (
-          newWeeklyMeals[dayIdx] &&
           Object.prototype.hasOwnProperty.call(newWeeklyMeals[dayIdx], mealKey)
         ) {
           delete newWeeklyMeals[dayIdx][mealKey];
@@ -293,6 +297,9 @@ export default function MealPlansPage() {
           <DailyMealGrid
             sampleMeals={sampleMeals}
             onRecipeClick={handleRecipeClick}
+            weeklyMeals={weeklyMeals}
+            onEmptySlotClick={handleEmptySlotClick}
+            currentDayIndex={currentDayIndex}
           />
         </>
       )}
