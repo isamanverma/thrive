@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpDown, Heart } from "lucide-react";
+import { ArrowUpDown, Heart, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,7 @@ interface MealDetailModalProps {
   mealType: string;
   dayIndex?: number;
   onSwapClick: (mealType: string, dayIndex?: number) => void;
+  onDelete: () => void;
 }
 
 const getMealTypeStyles = (mealType: string) => {
@@ -39,6 +40,7 @@ export function MealDetailModal({
   mealType,
   dayIndex,
   onSwapClick,
+  onDelete,
 }: MealDetailModalProps) {
   if (!meal) return null;
 
@@ -54,16 +56,21 @@ export function MealDetailModal({
           relative to the available modal height. */}
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden overflow-x-hidden">
         <DialogHeader className="space-y-3">
-          <div className="flex items-center gap-3">
-            <span
-              className={`text-sm px-3 py-1 rounded-md font-medium border ${getMealTypeStyles(mealType)}`}
-            >
-              {mealType}
-            </span>
+          <div className="flex items-center gap-3 w-full">
+            <div className="flex items-center">
+              <span
+                className={`text-sm px-3 py-1 rounded-md font-medium border ${getMealTypeStyles(mealType)}`}
+              >
+                {mealType}
+              </span>
+            </div>
+
+            <DialogTitle className="text-left text-xl font-bold ml-3 flex-1">
+              {meal.name}
+            </DialogTitle>
+
+            {/* Removed header delete button - it's placed near calories below to avoid collision with close control */}
           </div>
-          <DialogTitle className="text-left text-xl font-bold">
-            {meal.name}
-          </DialogTitle>
         </DialogHeader>
 
         {/* Inner scroll container: only this element scrolls when content
@@ -93,6 +100,16 @@ export function MealDetailModal({
                   </span>
                   <span className="text-sm text-gray-500">kcal</span>
                 </div>
+              </div>
+
+              <div className="flex items-center">
+                <button
+                  aria-label="Delete meal"
+                  onClick={() => onDelete()}
+                  className="inline-flex items-center justify-center p-2 rounded-md bg-red-50 border border-red-200 text-red-700 hover:bg-red-100"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>

@@ -62,7 +62,7 @@ export function MealPlanCard({
   return (
     <motion.div
       layout
-      layoutId={`meal-${meal.id}`}
+      layoutId={`meal-${meal.id}-${mealType}-${dayIndex ?? "slot"}`}
       whileHover={{
         scale: 1.02,
         y: -2,

@@ -30,6 +30,7 @@ interface MealTypeRowProps {
     mealType: string,
     dayIndex?: number
   ) => void;
+  onEmptySlotClick?: (mealType: string, dayIndex: number) => void;
 }
 
 const mealTypeStyles = {
@@ -78,6 +79,7 @@ export function MealTypeRow({
   onDragLeave,
   onDrop,
   onRecipeClick,
+  onEmptySlotClick,
 }: MealTypeRowProps) {
   const styles = mealTypeStyles[mealType];
   const mealKey = mealType.toLowerCase() as keyof (typeof weeklyMeals)[0];
@@ -151,9 +153,15 @@ export function MealTypeRow({
                   }
                 />
               ) : (
-                <div className="bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 h-24 flex items-center justify-center text-gray-500 text-sm">
-                  Drop {mealType.toLowerCase()} here
-                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    onEmptySlotClick && onEmptySlotClick(mealType, index)
+                  }
+                  className="w-full h-24 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-500 text-sm"
+                >
+                  <span>Drop {mealType.toLowerCase()} here</span>
+                </button>
               )}
             </motion.div>
           );

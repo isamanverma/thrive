@@ -30,6 +30,7 @@ interface WeeklyMealGridProps {
     dayIndex?: number
   ) => void;
   currentDayIndex: number;
+  onEmptySlotClick?: (mealType: string, dayIndex: number) => void;
 }
 
 export function WeeklyMealGrid({
@@ -43,6 +44,7 @@ export function WeeklyMealGrid({
   onDrop,
   onRecipeClick,
   currentDayIndex,
+  onEmptySlotClick,
 }: WeeklyMealGridProps) {
   const mealTypes: MealTypeCapitalized[] = [
     "Breakfast",
@@ -97,6 +99,7 @@ export function WeeklyMealGrid({
           onDragLeave={onDragLeave}
           onDrop={onDrop}
           onRecipeClick={onRecipeClick}
+          onEmptySlotClick={onEmptySlotClick}
         />
       ))}
     </motion.div>

@@ -57,21 +57,36 @@ export default function MealPlansPage() {
 
   const handleSwapClick = (mealType: string, dayIndex?: number) => {
     setSwapMealType(mealType);
-    setSwapDayIndex(dayIndex || 0);
+    // Use nullish coalescing so a dayIndex of 0 is preserved
+    setSwapDayIndex(dayIndex ?? 0);
     setSwapModalOpen(true);
   };
 
   const handleRecipeSelect = (recipe: MealPlanItem) => {
+    // Guard: ensure a swap target was selected
+    if (!swapMealType) {
+      console.warn(
+        "handleRecipeSelect called but swapMealType is empty. Aborting."
+      );
+      setSwapModalOpen(false);
+      return;
+    }
+
     setWeeklyMeals((prevWeeklyMeals) => {
-      const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
-      const mealTypeKey = swapMealType.toLowerCase();
+      try {
+        const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
+        const mealTypeKey = swapMealType.toLowerCase();
 
-      if (!newWeeklyMeals[swapDayIndex]) {
-        newWeeklyMeals[swapDayIndex] = {};
+        if (!newWeeklyMeals[swapDayIndex]) {
+          newWeeklyMeals[swapDayIndex] = {};
+        }
+
+        newWeeklyMeals[swapDayIndex][mealTypeKey] = recipe;
+        return newWeeklyMeals;
+      } catch (err) {
+        console.error("Failed to set weekly meals in handleRecipeSelect", err);
+        return prevWeeklyMeals;
       }
-
-      newWeeklyMeals[swapDayIndex][mealTypeKey] = recipe;
-      return newWeeklyMeals;
     });
     setSwapModalOpen(false);
   };
@@ -87,6 +102,42 @@ export default function MealPlansPage() {
       setSwapDayIndex(dayIndex);
     }
     setRecipeDetailOpen(true);
+  };
+
+  const handleDeleteMeal = () => {
+    // remove the selectedRecipe from weeklyMeals using selectedMealType and swapDayIndex
+    if (!selectedRecipe) return;
+
+    setWeeklyMeals((prevWeeklyMeals) => {
+      try {
+        const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
+        const dayIdx = swapDayIndex;
+        const mealKey = selectedMealType.toLowerCase();
+
+        if (
+          newWeeklyMeals[dayIdx] &&
+          Object.prototype.hasOwnProperty.call(newWeeklyMeals[dayIdx], mealKey)
+        ) {
+          delete newWeeklyMeals[dayIdx][mealKey];
+        }
+
+        return newWeeklyMeals;
+      } catch (err) {
+        console.error("Failed to delete meal", err);
+        return prevWeeklyMeals;
+      }
+    });
+
+    // close modal
+    setRecipeDetailOpen(false);
+    setSelectedRecipe(null);
+  };
+
+  const handleEmptySlotClick = (mealType: string, dayIndex: number) => {
+    // Open the swap modal to let user fill the empty slot
+    setSwapMealType(mealType);
+    setSwapDayIndex(dayIndex);
+    setSwapModalOpen(true);
   };
 
   const handleDragStart = (
@@ -165,22 +216,43 @@ export default function MealPlansPage() {
     setActiveDropZone(null);
 
     setWeeklyMeals((prevWeeklyMeals) => {
-      const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
-      const sourceMealKey = sourceMealType.toLowerCase();
-      const targetMealKey = targetMealType.toLowerCase();
+      try {
+        const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
+        const sourceMealKey = sourceMealType.toLowerCase();
+        const targetMealKey = targetMealType.toLowerCase();
 
-      if (!newWeeklyMeals[sourceDayIndex]) {
-        newWeeklyMeals[sourceDayIndex] = {};
+        if (!newWeeklyMeals[sourceDayIndex]) {
+          newWeeklyMeals[sourceDayIndex] = {};
+        }
+        if (!newWeeklyMeals[targetDayIndex]) {
+          newWeeklyMeals[targetDayIndex] = {};
+        }
+
+        const targetMeal = newWeeklyMeals[targetDayIndex][targetMealKey];
+
+        if (targetMeal === undefined) {
+          // Moving into an empty slot: remove source and set target
+          if (
+            newWeeklyMeals[sourceDayIndex] &&
+            Object.prototype.hasOwnProperty.call(
+              newWeeklyMeals[sourceDayIndex],
+              sourceMealKey
+            )
+          ) {
+            delete newWeeklyMeals[sourceDayIndex][sourceMealKey];
+          }
+          newWeeklyMeals[targetDayIndex][targetMealKey] = sourceMeal;
+        } else {
+          // Swapping two existing meals
+          newWeeklyMeals[sourceDayIndex][sourceMealKey] = targetMeal;
+          newWeeklyMeals[targetDayIndex][targetMealKey] = sourceMeal;
+        }
+
+        return newWeeklyMeals;
+      } catch (err) {
+        console.error("Failed to perform drop swap/move", err);
+        return prevWeeklyMeals;
       }
-      if (!newWeeklyMeals[targetDayIndex]) {
-        newWeeklyMeals[targetDayIndex] = {};
-      }
-
-      const targetMeal = newWeeklyMeals[targetDayIndex][targetMealKey];
-      newWeeklyMeals[sourceDayIndex][sourceMealKey] = targetMeal;
-      newWeeklyMeals[targetDayIndex][targetMealKey] = sourceMeal;
-
-      return newWeeklyMeals;
     });
   };
 
@@ -212,6 +284,7 @@ export default function MealPlansPage() {
             onDrop={handleDrop}
             onRecipeClick={handleRecipeClick}
             currentDayIndex={currentDayIndex}
+            onEmptySlotClick={handleEmptySlotClick}
           />
         </>
       ) : (
@@ -231,6 +304,7 @@ export default function MealPlansPage() {
         mealType={selectedMealType}
         dayIndex={swapDayIndex}
         onSwapClick={handleSwapClick}
+        onDelete={handleDeleteMeal}
       />
 
       <MealSwapModal
