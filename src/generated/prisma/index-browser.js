@@ -135,25 +135,13 @@ exports.Prisma.UserScalarFieldEnum = {
   diet_preference: 'diet_preference'
 };
 
-exports.Prisma.RecipeScalarFieldEnum = {
+exports.Prisma.UserRecipeScalarFieldEnum = {
   id: 'id',
-  title: 'title',
-  ingredients: 'ingredients',
-  instructions: 'instructions',
-  source: 'source',
-  link: 'link',
-  namedEntities: 'namedEntities',
-  nutrition: 'nutrition',
-  cuisine: 'cuisine',
-  mealType: 'mealType',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.RecipeEmbeddingScalarFieldEnum = {
-  id: 'id',
-  embedding: 'embedding',
-  recipeId: 'recipeId'
+  userId: 'userId',
+  sourceId: 'sourceId',
+  status: 'status',
+  dateAdded: 'dateAdded',
+  cachedRecipeId: 'cachedRecipeId'
 };
 
 exports.Prisma.MealPlanScalarFieldEnum = {
@@ -165,11 +153,13 @@ exports.Prisma.MealPlanScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.MealPlanRecipeScalarFieldEnum = {
+exports.Prisma.MealPlanItemScalarFieldEnum = {
+  id: 'id',
   mealPlanId: 'mealPlanId',
-  recipeId: 'recipeId',
-  day: 'day',
-  mealSlot: 'mealSlot'
+  sourceId: 'sourceId',
+  dayOfWeek: 'dayOfWeek',
+  mealType: 'mealType',
+  cachedRecipeId: 'cachedRecipeId'
 };
 
 exports.Prisma.ProgressScalarFieldEnum = {
@@ -180,6 +170,45 @@ exports.Prisma.ProgressScalarFieldEnum = {
   caloriesConsumed: 'caloriesConsumed',
   notes: 'notes',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.RecipeScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  fallbackImageUrl: 'fallbackImageUrl',
+  sourceType: 'sourceType',
+  sourceId: 'sourceId',
+  sourceUrl: 'sourceUrl',
+  cuisine: 'cuisine',
+  mealType: 'mealType',
+  difficulty: 'difficulty',
+  prepTime: 'prepTime',
+  cookTime: 'cookTime',
+  totalTime: 'totalTime',
+  servings: 'servings',
+  instructions: 'instructions',
+  nutrition: 'nutrition',
+  tags: 'tags',
+  namedEntities: 'namedEntities',
+  userRating: 'userRating',
+  savedCount: 'savedCount',
+  isPublic: 'isPublic',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RecipeIngredientScalarFieldEnum = {
+  id: 'id',
+  recipeId: 'recipeId',
+  ingredientId: 'ingredientId',
+  name: 'name',
+  amount: 'amount',
+  unit: 'unit',
+  original: 'original',
+  image: 'image'
 };
 
 exports.Prisma.SortOrder = {
@@ -207,15 +236,27 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.RecipeSourceType = exports.$Enums.RecipeSourceType = {
+  SPOONACULAR: 'SPOONACULAR',
+  USER_UPLOAD: 'USER_UPLOAD',
+  EXTERNAL_API: 'EXTERNAL_API',
+  MANUAL_ENTRY: 'MANUAL_ENTRY'
+};
 
+exports.RecipeDifficulty = exports.$Enums.RecipeDifficulty = {
+  EASY: 'EASY',
+  MEDIUM: 'MEDIUM',
+  HARD: 'HARD'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Recipe: 'Recipe',
-  RecipeEmbedding: 'RecipeEmbedding',
+  UserRecipe: 'UserRecipe',
   MealPlan: 'MealPlan',
-  MealPlanRecipe: 'MealPlanRecipe',
-  Progress: 'Progress'
+  MealPlanItem: 'MealPlanItem',
+  Progress: 'Progress',
+  Recipe: 'Recipe',
+  RecipeIngredient: 'RecipeIngredient'
 };
 
 /**

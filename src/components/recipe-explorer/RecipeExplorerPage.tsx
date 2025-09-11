@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { Recipe, searchRecipes, addUserRecipe } from "@/lib/api";
-import { RecipeExplorerHeader } from "@/components/recipe-explorer/RecipeExplorerHeader";
+import { Recipe, addUserRecipe, searchRecipes } from "@/lib/api";
+import { useCallback, useEffect, useState } from "react";
+
 import { CategoryFilters } from "@/components/recipe-explorer/CategoryFilters";
+import { LoadMoreButton } from "@/components/recipe-explorer/LoadMoreButton";
 import { PersonalizedBanner } from "@/components/recipe-explorer/PersonalizedBanner";
 import { RecipeCard } from "@/components/recipe-explorer/RecipeCard";
+import { RecipeExplorerHeader } from "@/components/recipe-explorer/RecipeExplorerHeader";
 import { RecipeModal } from "@/components/recipe-explorer/RecipeModal";
-import { LoadMoreButton } from "@/components/recipe-explorer/LoadMoreButton";
 import { SkeletonLoader } from "@/components/recipe-explorer/SkeletonLoader";
-import { BlurFade } from "@/components/magicui/blur-fade";
 import { toast } from "sonner";
 
 // Sample featured recipes for initial display
@@ -255,17 +255,13 @@ export function RecipeExplorerPage() {
 
       {/* Search Results Summary */}
       {searchQuery.trim() && totalResults > 0 && (
-        <BlurFade delay={0.3} inView>
-          <div className="mb-4">
-            <p className="text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-lg inline-block">
-              Found{" "}
-              <span className="font-semibold text-foreground">
-                {totalResults}
-              </span>{" "}
-              recipes for &quot;{searchQuery}&quot;
-            </p>
-          </div>
-        </BlurFade>
+        <div className="mb-4">
+          <p className="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg inline-block">
+            Found{" "}
+            <span className="font-semibold text-gray-800">{totalResults}</span>{" "}
+            recipes for &quot;{searchQuery}&quot;
+          </p>
+        </div>
       )}
 
       {/* Recipe Grid */}
@@ -287,17 +283,15 @@ export function RecipeExplorerPage() {
 
       {/* Empty State */}
       {!loading && recipes.length === 0 && searchQuery.trim() && (
-        <BlurFade delay={0.1} inView>
-          <div className="text-center py-8">
-            <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-3">
-              <span className="text-2xl">🍽️</span>
-            </div>
-            <h3 className="text-base font-semibold mb-1">No recipes found</h3>
-            <p className="text-sm text-muted-foreground">
-              Try searching with different keywords or check your spelling.
-            </p>
+        <div className="text-center py-8">
+          <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+            <span className="text-2xl">🍽️</span>
           </div>
-        </BlurFade>
+          <h3 className="text-base font-semibold mb-1">No recipes found</h3>
+          <p className="text-sm text-gray-500">
+            Try searching with different keywords or check your spelling.
+          </p>
+        </div>
       )}
 
       {/* Load More Button */}

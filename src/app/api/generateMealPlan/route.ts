@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
           const mealPlanItem = await prisma.mealPlanItem.create({
             data: {
               mealPlanId: mealPlan.id,
-              spoonacularId: meal.id,
+              sourceId: meal.id.toString(),
               dayOfWeek: dayIndex + 1, // 1-7 for Monday-Sunday
               mealType: mealType,
             },
@@ -160,23 +160,27 @@ export async function POST(request: NextRequest) {
           // Cache recipe data for future use
           try {
             await prisma.recipe.upsert({
-              where: { spoonacularId: meal.id },
+              where: { id: `spoonacular-${meal.id}` },
               update: {
                 title: meal.title,
-                readyInMinutes: meal.readyInMinutes,
+                totalTime: meal.readyInMinutes,
                 servings: meal.servings,
+                sourceId: meal.id.toString(),
+                sourceType: 'SPOONACULAR',
                 updatedAt: new Date(),
               },
               create: {
-                spoonacularId: meal.id,
+                id: `spoonacular-${meal.id}`,
                 title: meal.title,
-                readyInMinutes: meal.readyInMinutes,
+                totalTime: meal.readyInMinutes,
                 servings: meal.servings,
+                sourceId: meal.id.toString(),
+                sourceType: 'SPOONACULAR',
                 ingredients: [],
                 instructions: [],
-                cuisines: [],
-                dishTypes: [],
-                diets: [],
+                tags: [],
+                isPublic: true,
+                savedCount: 0,
               },
             });
           } catch (cacheError) {
@@ -243,10 +247,10 @@ export async function GET() {
           include: {
             cachedRecipe: {
               select: {
-                spoonacularId: true,
+                sourceId: true,
                 title: true,
                 imageUrl: true,
-                readyInMinutes: true,
+                totalTime: true,
                 servings: true,
               },
             },

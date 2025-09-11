@@ -9,66 +9,59 @@ datasource db {
 }
 
 model User {
-  id              String     @id @default(uuid())
-  clerkId         String     @unique
-  email           String     @unique
+  id              String       @id @default(uuid())
+  clerkId         String       @unique
+  email           String       @unique
   name            String?
   age             Int?
   weight          Float?
   goals           String?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
   activityLevel   String?
   height          Float?
   diet_preference String?
   mealPlans       MealPlan[]
   progress        Progress[]
+  userRecipes     UserRecipe[]
+  recipes         Recipe[] // Recipes created by this user
 }
 
-model Recipe {
-  id              String            @id @default(uuid())
-  title           String
-  ingredients     String[]
-  instructions    String[]
-  source          String?
-  link            String?
-  namedEntities   String[]
-  nutrition       Json?
-  cuisine         String?
-  mealType        String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  mealPlanRecipes MealPlanRecipe[]
-  embeddings      RecipeEmbedding[]
-}
+model UserRecipe {
+  id             String   @id @default(uuid())
+  userId         String
+  sourceId       String? // External recipe ID (e.g., spoonacularId)
+  status         String // "liked", "saved", "cooked"
+  dateAdded      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cachedRecipe   Recipe?  @relation(fields: [cachedRecipeId], references: [id])
+  cachedRecipeId String?
 
-model RecipeEmbedding {
-  id        String  @id @default(uuid())
-  embedding Float[]
-  recipeId  String  @map("recipe_id")
-  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  @@unique([userId, sourceId, status])
 }
 
 model MealPlan {
-  id          String           @id @default(uuid())
-  userId      String
-  startDate   DateTime
-  endDate     DateTime
-  constraints Json?
-  createdAt   DateTime         @default(now())
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  recipes     MealPlanRecipe[]
+  id            String         @id @default(uuid())
+  userId        String
+  startDate     DateTime
+  endDate       DateTime
+  constraints   Json?
+  createdAt     DateTime       @default(now())
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mealPlanItems MealPlanItem[]
 }
 
-model MealPlanRecipe {
-  mealPlanId String
-  recipeId   String
-  day        Int
-  mealSlot   String
-  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
-  recipe     Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+model MealPlanItem {
+  id             String   @id @default(uuid())
+  mealPlanId     String
+  sourceId       String? // External recipe ID (e.g., spoonacularId)
+  dayOfWeek      Int // 1-7 (Monday to Sunday)
+  mealType       String // "breakfast", "lunch", "dinner"
+  mealPlan       MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  cachedRecipe   Recipe?  @relation(fields: [cachedRecipeId], references: [id])
+  cachedRecipeId String?
 
-  @@id([mealPlanId, recipeId, day, mealSlot])
+  @@unique([mealPlanId, dayOfWeek, mealType])
 }
 
 model Progress {
@@ -80,4 +73,74 @@ model Progress {
   notes            String?
   createdAt        DateTime @default(now())
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Recipe {
+  id               String             @id @default(uuid())
+  title            String
+  description      String? // Optional summary or description
+  imageUrl         String? // Primary image URL for caching
+  fallbackImageUrl String? // Fallback image if primary fails
+  sourceType       RecipeSourceType // Enum for source (e.g., spoonacular, user_upload)
+  sourceId         String? // External ID (e.g., spoonacularId for backward compatibility)
+  sourceUrl        String? // Original source URL
+  cuisine          String?
+  mealType         String? // e.g., breakfast, lunch, dinner
+  difficulty       RecipeDifficulty? // Enum for difficulty level
+  prepTime         Int? // Preparation time in minutes
+  cookTime         Int? // Cooking time in minutes
+  totalTime        Int? // Total time (calculated or provided)
+  servings         Int?
+  ingredients      RecipeIngredient[] // Relation to detailed ingredient records
+  instructions     String[] // Array of instruction steps
+  nutrition        Json? // JSON object for detailed nutrition data
+  tags             String[] // Array of tags (e.g., ["vegetarian", "gluten-free"])
+  namedEntities    String[] // For ML/NER processing
+  userRating       Float? // Average user rating (0-5)
+  savedCount       Int                @default(0) // Number of times saved (for popularity)
+  isPublic         Boolean            @default(true) // Whether recipe is publicly visible
+  createdById      String? // ID of user who created/uploaded the recipe
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  // Relations
+  createdBy     User?          @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  userRecipes   UserRecipe[] // Tracks user interactions (liked/saved/cooked)
+  mealPlanItems MealPlanItem[] // For meal planning integration
+
+  // Indexes for performance
+  @@index([title])
+  @@index([cuisine])
+  @@index([mealType])
+  @@index([createdAt])
+  @@index([savedCount])
+  @@map("recipes")
+}
+
+enum RecipeSourceType {
+  SPOONACULAR
+  USER_UPLOAD
+  EXTERNAL_API
+  MANUAL_ENTRY
+}
+
+model RecipeIngredient {
+  id           String  @id @default(uuid())
+  recipeId     String
+  ingredientId Int
+  name         String
+  amount       Float
+  unit         String
+  original     String
+  image        String? // Spoonacular image filename
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+}
+
+enum RecipeDifficulty {
+  EASY
+  MEDIUM
+  HARD
 }

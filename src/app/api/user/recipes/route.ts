@@ -4,7 +4,7 @@ import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
 interface UserRecipeRequest {
-  spoonacularId: number;
+  sourceId: string;
   status: 'liked' | 'saved' | 'cooked';
 }
 
@@ -27,11 +27,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body: UserRecipeRequest = await request.json();
-    const { spoonacularId, status } = body;
+    const { sourceId, status } = body;
 
-    console.log('Received request:', { userId, spoonacularId, status });
+    console.log('Received request:', { userId, sourceId, status });
 
-    if (!spoonacularId || !status) {
+    if (!sourceId || !status) {
       return NextResponse.json(
         { error: 'Recipe ID and status are required' },
         { status: 400 }
@@ -67,9 +67,9 @@ export async function POST(request: NextRequest) {
     // Check if user recipe already exists
     const existingUserRecipe = await prisma.userRecipe.findUnique({
       where: {
-        userId_spoonacularId_status: {
+        userId_sourceId_status: {
           userId: user.id,
-          spoonacularId: spoonacularId,
+          sourceId: sourceId,
           status: status,
         },
       },
@@ -87,14 +87,14 @@ export async function POST(request: NextRequest) {
     // Create user recipe entry
     console.log('Creating user recipe with data:', {
       userId: user.id,
-      spoonacularId: spoonacularId,
+      sourceId: sourceId,
       status: status,
     });
 
     const userRecipe = await prisma.userRecipe.create({
       data: {
         userId: user.id,
-        spoonacularId: spoonacularId,
+        sourceId: sourceId,
         status: status,
       },
     });
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       id: userRecipe.id,
-      spoonacularId: userRecipe.spoonacularId,
+      sourceId: userRecipe.sourceId,
       status: userRecipe.status,
       dateAdded: userRecipe.dateAdded,
     });
@@ -162,15 +162,15 @@ export async function GET(request: NextRequest) {
       include: {
         cachedRecipe: {
           select: {
-            spoonacularId: true,
+            sourceId: true,
             title: true,
-            summary: true,
+            description: true,
             imageUrl: true,
-            readyInMinutes: true,
+            totalTime: true,
             servings: true,
-            cuisines: true,
-            dishTypes: true,
-            diets: true,
+            cuisine: true,
+            mealType: true,
+            tags: true,
           },
         },
       },
@@ -211,10 +211,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const spoonacularId = searchParams.get('spoonacularId');
+    const sourceId = searchParams.get('sourceId');
     const status = searchParams.get('status');
 
-    if (!spoonacularId || !status) {
+    if (!sourceId || !status) {
       return NextResponse.json(
         { error: 'Recipe ID and status are required' },
         { status: 400 }
@@ -235,7 +235,7 @@ export async function DELETE(request: NextRequest) {
     const deletedRecipe = await prisma.userRecipe.deleteMany({
       where: {
         userId: user.id,
-        spoonacularId: parseInt(spoonacularId),
+        sourceId: sourceId,
         status: status,
       },
     });

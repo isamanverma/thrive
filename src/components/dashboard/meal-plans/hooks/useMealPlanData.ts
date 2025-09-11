@@ -268,6 +268,11 @@ export function useMealPlanData() {
     };
   };
 
+  // Calculate current day index (0 = Sunday, 1 = Monday, etc.)
+  const getCurrentDayIndex = () => {
+    return currentDate.getDay();
+  };
+
   const navigateDate = (direction: "prev" | "next") => {
     const newDate = new Date(currentDate);
     if (viewMode === "weekly") {
@@ -282,6 +287,7 @@ export function useMealPlanData() {
     // State
     viewMode,
     currentDate,
+    currentDayIndex: getCurrentDayIndex(),
     weeklyMeals,
     draggedItem,
     activeDropZone,

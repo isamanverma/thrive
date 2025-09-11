@@ -67,6 +67,34 @@ interface SpoonacularRecipeDetail {
   };
 }
 
+// Helper function to transform Spoonacular ingredients to detailed records
+function transformIngredients(extendedIngredients: SpoonacularRecipeDetail['extendedIngredients']) {
+  return extendedIngredients.map(ingredient => ({
+    ingredientId: ingredient.id,
+    name: ingredient.name,
+    amount: ingredient.amount,
+    unit: ingredient.unit,
+    original: ingredient.original,
+    image: ingredient.image, // Store the image filename
+  }));
+}
+
+// Helper function to transform Spoonacular instructions to string array  
+function transformInstructions(analyzedInstructions: SpoonacularRecipeDetail['analyzedInstructions']): string[] {
+  if (!analyzedInstructions || analyzedInstructions.length === 0) {
+    return [];
+  }
+  
+  const allSteps: string[] = [];
+  analyzedInstructions.forEach(instruction => {
+    instruction.steps.forEach(step => {
+      allSteps.push(step.step);
+    });
+  });
+  
+  return allSteps;
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -87,23 +115,36 @@ export async function GET(
     }
 
     // First check if we have this recipe cached in our database
-    const cachedRecipe = await prisma.recipe.findUnique({
-      where: { spoonacularId: Number(recipeId) },
+    const cachedRecipe = await prisma.recipe.findFirst({
+      where: { 
+        sourceId: recipeId,
+        sourceType: 'SPOONACULAR'
+      },
+      include: {
+        ingredients: true,
+      },
     });
 
     if (cachedRecipe) {
       return NextResponse.json({
-        id: cachedRecipe.spoonacularId,
+        id: Number(cachedRecipe.sourceId),
         title: cachedRecipe.title,
-        summary: cachedRecipe.summary,
+        summary: cachedRecipe.description,
         image: cachedRecipe.imageUrl,
         fallbackImage: cachedRecipe.fallbackImageUrl,
-        readyInMinutes: cachedRecipe.readyInMinutes,
+        readyInMinutes: cachedRecipe.totalTime,
         servings: cachedRecipe.servings,
-        cuisines: cachedRecipe.cuisines,
-        dishTypes: cachedRecipe.dishTypes,
-        diets: cachedRecipe.diets,
-        extendedIngredients: cachedRecipe.ingredients || [],
+        cuisines: [cachedRecipe.cuisine].filter(Boolean), 
+        dishTypes: [cachedRecipe.mealType].filter(Boolean),
+        diets: cachedRecipe.tags || [],
+        extendedIngredients: cachedRecipe.ingredients.map(ing => ({
+          id: ing.ingredientId,
+          name: ing.name,
+          amount: ing.amount,
+          unit: ing.unit,
+          original: ing.original,
+          image: ing.image,
+        })) || [],
         analyzedInstructions: cachedRecipe.instructions || [],
         nutrition: cachedRecipe.nutrition,
         isCached: true,
@@ -161,34 +202,49 @@ export async function GET(
     // Cache the recipe in our database for future requests
     try {
       await prisma.recipe.upsert({
-        where: { spoonacularId: spoonacularData.id },
+        where: { 
+          id: `spoonacular-${spoonacularData.id}` 
+        },
         update: {
           title: spoonacularData.title,
-          summary: spoonacularData.summary,
+          description: spoonacularData.summary,
           imageUrl: spoonacularData.image,
-          readyInMinutes: spoonacularData.readyInMinutes,
+          totalTime: spoonacularData.readyInMinutes,
           servings: spoonacularData.servings,
-          cuisines: spoonacularData.cuisines || [],
-          dishTypes: spoonacularData.dishTypes || [],
-          diets: spoonacularData.diets || [],
-          ingredients: spoonacularData.extendedIngredients || [],
-          instructions: spoonacularData.analyzedInstructions || [],
+          cuisine: spoonacularData.cuisines?.[0] || null,
+          mealType: spoonacularData.dishTypes?.[0] || null,
+          tags: spoonacularData.diets || [],
+          ingredients: {
+            deleteMany: {},
+            create: transformIngredients(spoonacularData.extendedIngredients || []),
+          },
+          instructions: transformInstructions(spoonacularData.analyzedInstructions || []),
           nutrition: spoonacularData.nutrition || undefined,
+          sourceType: 'SPOONACULAR',
+          sourceId: spoonacularData.id.toString(),
+          sourceUrl: `https://spoonacular.com/recipes/${spoonacularData.id}`,
           updatedAt: new Date(),
         },
         create: {
-          spoonacularId: spoonacularData.id,
+          id: `spoonacular-${spoonacularData.id}`,
           title: spoonacularData.title,
-          summary: spoonacularData.summary,
+          description: spoonacularData.summary,
           imageUrl: spoonacularData.image,
-          readyInMinutes: spoonacularData.readyInMinutes,
+          totalTime: spoonacularData.readyInMinutes,
           servings: spoonacularData.servings,
-          cuisines: spoonacularData.cuisines || [],
-          dishTypes: spoonacularData.dishTypes || [],
-          diets: spoonacularData.diets || [],
-          ingredients: spoonacularData.extendedIngredients || [],
-          instructions: spoonacularData.analyzedInstructions || [],
+          cuisine: spoonacularData.cuisines?.[0] || null,
+          mealType: spoonacularData.dishTypes?.[0] || null,
+          tags: spoonacularData.diets || [],
+          ingredients: {
+            create: transformIngredients(spoonacularData.extendedIngredients || []),
+          },
+          instructions: transformInstructions(spoonacularData.analyzedInstructions || []),
           nutrition: spoonacularData.nutrition || undefined,
+          sourceType: 'SPOONACULAR',
+          sourceId: spoonacularData.id.toString(),
+          sourceUrl: `https://spoonacular.com/recipes/${spoonacularData.id}`,
+          isPublic: true,
+          savedCount: 0,
         },
       });
     } catch (dbError) {

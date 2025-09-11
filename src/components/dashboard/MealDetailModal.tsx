@@ -4,6 +4,7 @@ import { ArrowUpDown, Heart } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -48,7 +49,10 @@ export function MealDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      {/* Keep the DialogContent itself overflow-hidden to avoid double scrollbars
+          and move the scrollable area to an inner wrapper that can be sized
+          relative to the available modal height. */}
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden overflow-x-hidden">
         <DialogHeader className="space-y-3">
           <div className="flex items-center gap-3">
             <span
@@ -62,7 +66,10 @@ export function MealDetailModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6 mt-2">
+        {/* Inner scroll container: only this element scrolls when content
+      exceeds the modal max height. The max height is slightly smaller
+      than the modal to account for padding/header. */}
+        <div className="space-y-6 mt-2 overflow-y-auto overflow-x-hidden max-h-[82vh] min-w-0">
           {/* Image */}
           <div className="relative w-full h-64 rounded-lg overflow-hidden">
             <Image
@@ -98,8 +105,12 @@ export function MealDetailModal({
             <p className="text-gray-700 leading-relaxed">{meal.description}</p>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+          {/* Action buttons are placed in the DialogFooter so they stay
+        visible and don't get cropped by the scrollable content. */}
+        </div>
+
+        <DialogFooter className="mt-4">
+          <div className="flex w-full flex-col sm:flex-row gap-3">
             <Button
               variant="outline"
               className="flex-1 bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300"
@@ -117,7 +128,7 @@ export function MealDetailModal({
             </Button>
             <Button className="flex-1">View Full Recipe</Button>
           </div>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

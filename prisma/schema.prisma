@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -75,7 +76,7 @@ model Progress {
 }
 
 model Recipe {
-  id               String            @id @default(uuid())
+  id               String             @id @default(uuid())
   title            String
   description      String? // Optional summary or description
   imageUrl         String? // Primary image URL for caching
@@ -90,17 +91,17 @@ model Recipe {
   cookTime         Int? // Cooking time in minutes
   totalTime        Int? // Total time (calculated or provided)
   servings         Int?
-  ingredients      String[] // Array of ingredient strings (or JSON for detailed structure)
+  ingredients      RecipeIngredient[] // Relation to detailed ingredient records
   instructions     String[] // Array of instruction steps
   nutrition        Json? // JSON object for detailed nutrition data
   tags             String[] // Array of tags (e.g., ["vegetarian", "gluten-free"])
   namedEntities    String[] // For ML/NER processing
   userRating       Float? // Average user rating (0-5)
-  savedCount       Int               @default(0) // Number of times saved (for popularity)
-  isPublic         Boolean           @default(true) // Whether recipe is publicly visible
+  savedCount       Int                @default(0) // Number of times saved (for popularity)
+  isPublic         Boolean            @default(true) // Whether recipe is publicly visible
   createdById      String? // ID of user who created/uploaded the recipe
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   // Relations
   createdBy     User?          @relation(fields: [createdById], references: [id], onDelete: Cascade)
@@ -121,6 +122,21 @@ enum RecipeSourceType {
   USER_UPLOAD
   EXTERNAL_API
   MANUAL_ENTRY
+}
+
+model RecipeIngredient {
+  id           String  @id @default(uuid())
+  recipeId     String
+  ingredientId Int
+  name         String
+  amount       Float
+  unit         String
+  original     String
+  image        String? // Spoonacular image filename
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
 }
 
 enum RecipeDifficulty {

@@ -19,30 +19,67 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
- * Model Recipe
+ * Model UserRecipe
  * 
  */
-export type Recipe = $Result.DefaultSelection<Prisma.$RecipePayload>
-/**
- * Model RecipeEmbedding
- * 
- */
-export type RecipeEmbedding = $Result.DefaultSelection<Prisma.$RecipeEmbeddingPayload>
+export type UserRecipe = $Result.DefaultSelection<Prisma.$UserRecipePayload>
 /**
  * Model MealPlan
  * 
  */
 export type MealPlan = $Result.DefaultSelection<Prisma.$MealPlanPayload>
 /**
- * Model MealPlanRecipe
+ * Model MealPlanItem
  * 
  */
-export type MealPlanRecipe = $Result.DefaultSelection<Prisma.$MealPlanRecipePayload>
+export type MealPlanItem = $Result.DefaultSelection<Prisma.$MealPlanItemPayload>
 /**
  * Model Progress
  * 
  */
 export type Progress = $Result.DefaultSelection<Prisma.$ProgressPayload>
+/**
+ * Model Recipe
+ * 
+ */
+export type Recipe = $Result.DefaultSelection<Prisma.$RecipePayload>
+/**
+ * Model RecipeIngredient
+ * 
+ */
+export type RecipeIngredient = $Result.DefaultSelection<Prisma.$RecipeIngredientPayload>
+
+/**
+ * Enums
+ */
+export namespace $Enums {
+  export const RecipeSourceType: {
+  SPOONACULAR: 'SPOONACULAR',
+  USER_UPLOAD: 'USER_UPLOAD',
+  EXTERNAL_API: 'EXTERNAL_API',
+  MANUAL_ENTRY: 'MANUAL_ENTRY'
+};
+
+export type RecipeSourceType = (typeof RecipeSourceType)[keyof typeof RecipeSourceType]
+
+
+export const RecipeDifficulty: {
+  EASY: 'EASY',
+  MEDIUM: 'MEDIUM',
+  HARD: 'HARD'
+};
+
+export type RecipeDifficulty = (typeof RecipeDifficulty)[keyof typeof RecipeDifficulty]
+
+}
+
+export type RecipeSourceType = $Enums.RecipeSourceType
+
+export const RecipeSourceType: typeof $Enums.RecipeSourceType
+
+export type RecipeDifficulty = $Enums.RecipeDifficulty
+
+export const RecipeDifficulty: typeof $Enums.RecipeDifficulty
 
 /**
  * ##  Prisma Client ʲˢ
@@ -173,24 +210,14 @@ export class PrismaClient<
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.recipe`: Exposes CRUD operations for the **Recipe** model.
+   * `prisma.userRecipe`: Exposes CRUD operations for the **UserRecipe** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Recipes
-    * const recipes = await prisma.recipe.findMany()
+    * // Fetch zero or more UserRecipes
+    * const userRecipes = await prisma.userRecipe.findMany()
     * ```
     */
-  get recipe(): Prisma.RecipeDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.recipeEmbedding`: Exposes CRUD operations for the **RecipeEmbedding** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more RecipeEmbeddings
-    * const recipeEmbeddings = await prisma.recipeEmbedding.findMany()
-    * ```
-    */
-  get recipeEmbedding(): Prisma.RecipeEmbeddingDelegate<ExtArgs, ClientOptions>;
+  get userRecipe(): Prisma.UserRecipeDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.mealPlan`: Exposes CRUD operations for the **MealPlan** model.
@@ -203,14 +230,14 @@ export class PrismaClient<
   get mealPlan(): Prisma.MealPlanDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.mealPlanRecipe`: Exposes CRUD operations for the **MealPlanRecipe** model.
+   * `prisma.mealPlanItem`: Exposes CRUD operations for the **MealPlanItem** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more MealPlanRecipes
-    * const mealPlanRecipes = await prisma.mealPlanRecipe.findMany()
+    * // Fetch zero or more MealPlanItems
+    * const mealPlanItems = await prisma.mealPlanItem.findMany()
     * ```
     */
-  get mealPlanRecipe(): Prisma.MealPlanRecipeDelegate<ExtArgs, ClientOptions>;
+  get mealPlanItem(): Prisma.MealPlanItemDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.progress`: Exposes CRUD operations for the **Progress** model.
@@ -221,6 +248,26 @@ export class PrismaClient<
     * ```
     */
   get progress(): Prisma.ProgressDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.recipe`: Exposes CRUD operations for the **Recipe** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Recipes
+    * const recipes = await prisma.recipe.findMany()
+    * ```
+    */
+  get recipe(): Prisma.RecipeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.recipeIngredient`: Exposes CRUD operations for the **RecipeIngredient** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RecipeIngredients
+    * const recipeIngredients = await prisma.recipeIngredient.findMany()
+    * ```
+    */
+  get recipeIngredient(): Prisma.RecipeIngredientDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -662,11 +709,12 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    Recipe: 'Recipe',
-    RecipeEmbedding: 'RecipeEmbedding',
+    UserRecipe: 'UserRecipe',
     MealPlan: 'MealPlan',
-    MealPlanRecipe: 'MealPlanRecipe',
-    Progress: 'Progress'
+    MealPlanItem: 'MealPlanItem',
+    Progress: 'Progress',
+    Recipe: 'Recipe',
+    RecipeIngredient: 'RecipeIngredient'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -685,7 +733,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "recipe" | "recipeEmbedding" | "mealPlan" | "mealPlanRecipe" | "progress"
+      modelProps: "user" | "userRecipe" | "mealPlan" | "mealPlanItem" | "progress" | "recipe" | "recipeIngredient"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -763,151 +811,77 @@ export namespace Prisma {
           }
         }
       }
-      Recipe: {
-        payload: Prisma.$RecipePayload<ExtArgs>
-        fields: Prisma.RecipeFieldRefs
+      UserRecipe: {
+        payload: Prisma.$UserRecipePayload<ExtArgs>
+        fields: Prisma.UserRecipeFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.RecipeFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload> | null
+            args: Prisma.UserRecipeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.RecipeFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+            args: Prisma.UserRecipeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>
           }
           findFirst: {
-            args: Prisma.RecipeFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload> | null
+            args: Prisma.UserRecipeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.RecipeFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+            args: Prisma.UserRecipeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>
           }
           findMany: {
-            args: Prisma.RecipeFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>[]
+            args: Prisma.UserRecipeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>[]
           }
           create: {
-            args: Prisma.RecipeCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+            args: Prisma.UserRecipeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>
           }
           createMany: {
-            args: Prisma.RecipeCreateManyArgs<ExtArgs>
+            args: Prisma.UserRecipeCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.RecipeCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>[]
+            args: Prisma.UserRecipeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>[]
           }
           delete: {
-            args: Prisma.RecipeDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+            args: Prisma.UserRecipeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>
           }
           update: {
-            args: Prisma.RecipeUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+            args: Prisma.UserRecipeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>
           }
           deleteMany: {
-            args: Prisma.RecipeDeleteManyArgs<ExtArgs>
+            args: Prisma.UserRecipeDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.RecipeUpdateManyArgs<ExtArgs>
+            args: Prisma.UserRecipeUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.RecipeUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>[]
+            args: Prisma.UserRecipeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>[]
           }
           upsert: {
-            args: Prisma.RecipeUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+            args: Prisma.UserRecipeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserRecipePayload>
           }
           aggregate: {
-            args: Prisma.RecipeAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateRecipe>
+            args: Prisma.UserRecipeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserRecipe>
           }
           groupBy: {
-            args: Prisma.RecipeGroupByArgs<ExtArgs>
-            result: $Utils.Optional<RecipeGroupByOutputType>[]
+            args: Prisma.UserRecipeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserRecipeGroupByOutputType>[]
           }
           count: {
-            args: Prisma.RecipeCountArgs<ExtArgs>
-            result: $Utils.Optional<RecipeCountAggregateOutputType> | number
-          }
-        }
-      }
-      RecipeEmbedding: {
-        payload: Prisma.$RecipeEmbeddingPayload<ExtArgs>
-        fields: Prisma.RecipeEmbeddingFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.RecipeEmbeddingFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.RecipeEmbeddingFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>
-          }
-          findFirst: {
-            args: Prisma.RecipeEmbeddingFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.RecipeEmbeddingFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>
-          }
-          findMany: {
-            args: Prisma.RecipeEmbeddingFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>[]
-          }
-          create: {
-            args: Prisma.RecipeEmbeddingCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>
-          }
-          createMany: {
-            args: Prisma.RecipeEmbeddingCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.RecipeEmbeddingCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>[]
-          }
-          delete: {
-            args: Prisma.RecipeEmbeddingDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>
-          }
-          update: {
-            args: Prisma.RecipeEmbeddingUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>
-          }
-          deleteMany: {
-            args: Prisma.RecipeEmbeddingDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.RecipeEmbeddingUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.RecipeEmbeddingUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>[]
-          }
-          upsert: {
-            args: Prisma.RecipeEmbeddingUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RecipeEmbeddingPayload>
-          }
-          aggregate: {
-            args: Prisma.RecipeEmbeddingAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateRecipeEmbedding>
-          }
-          groupBy: {
-            args: Prisma.RecipeEmbeddingGroupByArgs<ExtArgs>
-            result: $Utils.Optional<RecipeEmbeddingGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.RecipeEmbeddingCountArgs<ExtArgs>
-            result: $Utils.Optional<RecipeEmbeddingCountAggregateOutputType> | number
+            args: Prisma.UserRecipeCountArgs<ExtArgs>
+            result: $Utils.Optional<UserRecipeCountAggregateOutputType> | number
           }
         }
       }
@@ -985,77 +959,77 @@ export namespace Prisma {
           }
         }
       }
-      MealPlanRecipe: {
-        payload: Prisma.$MealPlanRecipePayload<ExtArgs>
-        fields: Prisma.MealPlanRecipeFieldRefs
+      MealPlanItem: {
+        payload: Prisma.$MealPlanItemPayload<ExtArgs>
+        fields: Prisma.MealPlanItemFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.MealPlanRecipeFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload> | null
+            args: Prisma.MealPlanItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.MealPlanRecipeFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>
+            args: Prisma.MealPlanItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>
           }
           findFirst: {
-            args: Prisma.MealPlanRecipeFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload> | null
+            args: Prisma.MealPlanItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.MealPlanRecipeFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>
+            args: Prisma.MealPlanItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>
           }
           findMany: {
-            args: Prisma.MealPlanRecipeFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>[]
+            args: Prisma.MealPlanItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>[]
           }
           create: {
-            args: Prisma.MealPlanRecipeCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>
+            args: Prisma.MealPlanItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>
           }
           createMany: {
-            args: Prisma.MealPlanRecipeCreateManyArgs<ExtArgs>
+            args: Prisma.MealPlanItemCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.MealPlanRecipeCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>[]
+            args: Prisma.MealPlanItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>[]
           }
           delete: {
-            args: Prisma.MealPlanRecipeDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>
+            args: Prisma.MealPlanItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>
           }
           update: {
-            args: Prisma.MealPlanRecipeUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>
+            args: Prisma.MealPlanItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>
           }
           deleteMany: {
-            args: Prisma.MealPlanRecipeDeleteManyArgs<ExtArgs>
+            args: Prisma.MealPlanItemDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.MealPlanRecipeUpdateManyArgs<ExtArgs>
+            args: Prisma.MealPlanItemUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.MealPlanRecipeUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>[]
+            args: Prisma.MealPlanItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>[]
           }
           upsert: {
-            args: Prisma.MealPlanRecipeUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanRecipePayload>
+            args: Prisma.MealPlanItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MealPlanItemPayload>
           }
           aggregate: {
-            args: Prisma.MealPlanRecipeAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateMealPlanRecipe>
+            args: Prisma.MealPlanItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMealPlanItem>
           }
           groupBy: {
-            args: Prisma.MealPlanRecipeGroupByArgs<ExtArgs>
-            result: $Utils.Optional<MealPlanRecipeGroupByOutputType>[]
+            args: Prisma.MealPlanItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MealPlanItemGroupByOutputType>[]
           }
           count: {
-            args: Prisma.MealPlanRecipeCountArgs<ExtArgs>
-            result: $Utils.Optional<MealPlanRecipeCountAggregateOutputType> | number
+            args: Prisma.MealPlanItemCountArgs<ExtArgs>
+            result: $Utils.Optional<MealPlanItemCountAggregateOutputType> | number
           }
         }
       }
@@ -1130,6 +1104,154 @@ export namespace Prisma {
           count: {
             args: Prisma.ProgressCountArgs<ExtArgs>
             result: $Utils.Optional<ProgressCountAggregateOutputType> | number
+          }
+        }
+      }
+      Recipe: {
+        payload: Prisma.$RecipePayload<ExtArgs>
+        fields: Prisma.RecipeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RecipeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RecipeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+          }
+          findFirst: {
+            args: Prisma.RecipeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RecipeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+          }
+          findMany: {
+            args: Prisma.RecipeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>[]
+          }
+          create: {
+            args: Prisma.RecipeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+          }
+          createMany: {
+            args: Prisma.RecipeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RecipeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>[]
+          }
+          delete: {
+            args: Prisma.RecipeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+          }
+          update: {
+            args: Prisma.RecipeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+          }
+          deleteMany: {
+            args: Prisma.RecipeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RecipeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RecipeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>[]
+          }
+          upsert: {
+            args: Prisma.RecipeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipePayload>
+          }
+          aggregate: {
+            args: Prisma.RecipeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRecipe>
+          }
+          groupBy: {
+            args: Prisma.RecipeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RecipeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RecipeCountArgs<ExtArgs>
+            result: $Utils.Optional<RecipeCountAggregateOutputType> | number
+          }
+        }
+      }
+      RecipeIngredient: {
+        payload: Prisma.$RecipeIngredientPayload<ExtArgs>
+        fields: Prisma.RecipeIngredientFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RecipeIngredientFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RecipeIngredientFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>
+          }
+          findFirst: {
+            args: Prisma.RecipeIngredientFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RecipeIngredientFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>
+          }
+          findMany: {
+            args: Prisma.RecipeIngredientFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>[]
+          }
+          create: {
+            args: Prisma.RecipeIngredientCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>
+          }
+          createMany: {
+            args: Prisma.RecipeIngredientCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RecipeIngredientCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>[]
+          }
+          delete: {
+            args: Prisma.RecipeIngredientDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>
+          }
+          update: {
+            args: Prisma.RecipeIngredientUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>
+          }
+          deleteMany: {
+            args: Prisma.RecipeIngredientDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RecipeIngredientUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RecipeIngredientUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>[]
+          }
+          upsert: {
+            args: Prisma.RecipeIngredientUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecipeIngredientPayload>
+          }
+          aggregate: {
+            args: Prisma.RecipeIngredientAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRecipeIngredient>
+          }
+          groupBy: {
+            args: Prisma.RecipeIngredientGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RecipeIngredientGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RecipeIngredientCountArgs<ExtArgs>
+            result: $Utils.Optional<RecipeIngredientCountAggregateOutputType> | number
           }
         }
       }
@@ -1226,11 +1348,12 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
-    recipe?: RecipeOmit
-    recipeEmbedding?: RecipeEmbeddingOmit
+    userRecipe?: UserRecipeOmit
     mealPlan?: MealPlanOmit
-    mealPlanRecipe?: MealPlanRecipeOmit
+    mealPlanItem?: MealPlanItemOmit
     progress?: ProgressOmit
+    recipe?: RecipeOmit
+    recipeIngredient?: RecipeIngredientOmit
   }
 
   /* Types for Logging */
@@ -1313,11 +1436,15 @@ export namespace Prisma {
   export type UserCountOutputType = {
     mealPlans: number
     progress: number
+    userRecipes: number
+    recipes: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mealPlans?: boolean | UserCountOutputTypeCountMealPlansArgs
     progress?: boolean | UserCountOutputTypeCountProgressArgs
+    userRecipes?: boolean | UserCountOutputTypeCountUserRecipesArgs
+    recipes?: boolean | UserCountOutputTypeCountRecipesArgs
   }
 
   // Custom InputTypes
@@ -1345,44 +1472,18 @@ export namespace Prisma {
     where?: ProgressWhereInput
   }
 
-
   /**
-   * Count Type RecipeCountOutputType
+   * UserCountOutputType without action
    */
-
-  export type RecipeCountOutputType = {
-    mealPlanRecipes: number
-    embeddings: number
-  }
-
-  export type RecipeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    mealPlanRecipes?: boolean | RecipeCountOutputTypeCountMealPlanRecipesArgs
-    embeddings?: boolean | RecipeCountOutputTypeCountEmbeddingsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * RecipeCountOutputType without action
-   */
-  export type RecipeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeCountOutputType
-     */
-    select?: RecipeCountOutputTypeSelect<ExtArgs> | null
+  export type UserCountOutputTypeCountUserRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserRecipeWhereInput
   }
 
   /**
-   * RecipeCountOutputType without action
+   * UserCountOutputType without action
    */
-  export type RecipeCountOutputTypeCountMealPlanRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MealPlanRecipeWhereInput
-  }
-
-  /**
-   * RecipeCountOutputType without action
-   */
-  export type RecipeCountOutputTypeCountEmbeddingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RecipeEmbeddingWhereInput
+  export type UserCountOutputTypeCountRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecipeWhereInput
   }
 
 
@@ -1391,11 +1492,11 @@ export namespace Prisma {
    */
 
   export type MealPlanCountOutputType = {
-    recipes: number
+    mealPlanItems: number
   }
 
   export type MealPlanCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    recipes?: boolean | MealPlanCountOutputTypeCountRecipesArgs
+    mealPlanItems?: boolean | MealPlanCountOutputTypeCountMealPlanItemsArgs
   }
 
   // Custom InputTypes
@@ -1412,8 +1513,57 @@ export namespace Prisma {
   /**
    * MealPlanCountOutputType without action
    */
-  export type MealPlanCountOutputTypeCountRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MealPlanRecipeWhereInput
+  export type MealPlanCountOutputTypeCountMealPlanItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MealPlanItemWhereInput
+  }
+
+
+  /**
+   * Count Type RecipeCountOutputType
+   */
+
+  export type RecipeCountOutputType = {
+    ingredients: number
+    userRecipes: number
+    mealPlanItems: number
+  }
+
+  export type RecipeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ingredients?: boolean | RecipeCountOutputTypeCountIngredientsArgs
+    userRecipes?: boolean | RecipeCountOutputTypeCountUserRecipesArgs
+    mealPlanItems?: boolean | RecipeCountOutputTypeCountMealPlanItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * RecipeCountOutputType without action
+   */
+  export type RecipeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeCountOutputType
+     */
+    select?: RecipeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * RecipeCountOutputType without action
+   */
+  export type RecipeCountOutputTypeCountIngredientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecipeIngredientWhereInput
+  }
+
+  /**
+   * RecipeCountOutputType without action
+   */
+  export type RecipeCountOutputTypeCountUserRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserRecipeWhereInput
+  }
+
+  /**
+   * RecipeCountOutputType without action
+   */
+  export type RecipeCountOutputTypeCountMealPlanItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MealPlanItemWhereInput
   }
 
 
@@ -1685,6 +1835,8 @@ export namespace Prisma {
     diet_preference?: boolean
     mealPlans?: boolean | User$mealPlansArgs<ExtArgs>
     progress?: boolean | User$progressArgs<ExtArgs>
+    userRecipes?: boolean | User$userRecipesArgs<ExtArgs>
+    recipes?: boolean | User$recipesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1737,6 +1889,8 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mealPlans?: boolean | User$mealPlansArgs<ExtArgs>
     progress?: boolean | User$progressArgs<ExtArgs>
+    userRecipes?: boolean | User$userRecipesArgs<ExtArgs>
+    recipes?: boolean | User$recipesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1747,6 +1901,8 @@ export namespace Prisma {
     objects: {
       mealPlans: Prisma.$MealPlanPayload<ExtArgs>[]
       progress: Prisma.$ProgressPayload<ExtArgs>[]
+      userRecipes: Prisma.$UserRecipePayload<ExtArgs>[]
+      recipes: Prisma.$RecipePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2157,6 +2313,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     mealPlans<T extends User$mealPlansArgs<ExtArgs> = {}>(args?: Subset<T, User$mealPlansArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     progress<T extends User$progressArgs<ExtArgs> = {}>(args?: Subset<T, User$progressArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    userRecipes<T extends User$userRecipesArgs<ExtArgs> = {}>(args?: Subset<T, User$userRecipesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    recipes<T extends User$recipesArgs<ExtArgs> = {}>(args?: Subset<T, User$recipesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2634,6 +2792,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.userRecipes
+   */
+  export type User$userRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserRecipe
+     */
+    select?: UserRecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserRecipe
+     */
+    omit?: UserRecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserRecipeInclude<ExtArgs> | null
+    where?: UserRecipeWhereInput
+    orderBy?: UserRecipeOrderByWithRelationInput | UserRecipeOrderByWithRelationInput[]
+    cursor?: UserRecipeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserRecipeScalarFieldEnum | UserRecipeScalarFieldEnum[]
+  }
+
+  /**
+   * User.recipes
+   */
+  export type User$recipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    where?: RecipeWhereInput
+    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    cursor?: RecipeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RecipeScalarFieldEnum | RecipeScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2653,417 +2859,369 @@ export namespace Prisma {
 
 
   /**
-   * Model Recipe
+   * Model UserRecipe
    */
 
-  export type AggregateRecipe = {
-    _count: RecipeCountAggregateOutputType | null
-    _min: RecipeMinAggregateOutputType | null
-    _max: RecipeMaxAggregateOutputType | null
+  export type AggregateUserRecipe = {
+    _count: UserRecipeCountAggregateOutputType | null
+    _min: UserRecipeMinAggregateOutputType | null
+    _max: UserRecipeMaxAggregateOutputType | null
   }
 
-  export type RecipeMinAggregateOutputType = {
+  export type UserRecipeMinAggregateOutputType = {
     id: string | null
-    title: string | null
-    source: string | null
-    link: string | null
-    cuisine: string | null
-    mealType: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
+    userId: string | null
+    sourceId: string | null
+    status: string | null
+    dateAdded: Date | null
+    cachedRecipeId: string | null
   }
 
-  export type RecipeMaxAggregateOutputType = {
+  export type UserRecipeMaxAggregateOutputType = {
     id: string | null
-    title: string | null
-    source: string | null
-    link: string | null
-    cuisine: string | null
-    mealType: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
+    userId: string | null
+    sourceId: string | null
+    status: string | null
+    dateAdded: Date | null
+    cachedRecipeId: string | null
   }
 
-  export type RecipeCountAggregateOutputType = {
+  export type UserRecipeCountAggregateOutputType = {
     id: number
-    title: number
-    ingredients: number
-    instructions: number
-    source: number
-    link: number
-    namedEntities: number
-    nutrition: number
-    cuisine: number
-    mealType: number
-    createdAt: number
-    updatedAt: number
+    userId: number
+    sourceId: number
+    status: number
+    dateAdded: number
+    cachedRecipeId: number
     _all: number
   }
 
 
-  export type RecipeMinAggregateInputType = {
+  export type UserRecipeMinAggregateInputType = {
     id?: true
-    title?: true
-    source?: true
-    link?: true
-    cuisine?: true
-    mealType?: true
-    createdAt?: true
-    updatedAt?: true
+    userId?: true
+    sourceId?: true
+    status?: true
+    dateAdded?: true
+    cachedRecipeId?: true
   }
 
-  export type RecipeMaxAggregateInputType = {
+  export type UserRecipeMaxAggregateInputType = {
     id?: true
-    title?: true
-    source?: true
-    link?: true
-    cuisine?: true
-    mealType?: true
-    createdAt?: true
-    updatedAt?: true
+    userId?: true
+    sourceId?: true
+    status?: true
+    dateAdded?: true
+    cachedRecipeId?: true
   }
 
-  export type RecipeCountAggregateInputType = {
+  export type UserRecipeCountAggregateInputType = {
     id?: true
-    title?: true
-    ingredients?: true
-    instructions?: true
-    source?: true
-    link?: true
-    namedEntities?: true
-    nutrition?: true
-    cuisine?: true
-    mealType?: true
-    createdAt?: true
-    updatedAt?: true
+    userId?: true
+    sourceId?: true
+    status?: true
+    dateAdded?: true
+    cachedRecipeId?: true
     _all?: true
   }
 
-  export type RecipeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Recipe to aggregate.
+     * Filter which UserRecipe to aggregate.
      */
-    where?: RecipeWhereInput
+    where?: UserRecipeWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Recipes to fetch.
+     * Determine the order of UserRecipes to fetch.
      */
-    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    orderBy?: UserRecipeOrderByWithRelationInput | UserRecipeOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: RecipeWhereUniqueInput
+    cursor?: UserRecipeWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Recipes from the position of the cursor.
+     * Take `±n` UserRecipes from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Recipes.
+     * Skip the first `n` UserRecipes.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Recipes
+     * Count returned UserRecipes
     **/
-    _count?: true | RecipeCountAggregateInputType
+    _count?: true | UserRecipeCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: RecipeMinAggregateInputType
+    _min?: UserRecipeMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: RecipeMaxAggregateInputType
+    _max?: UserRecipeMaxAggregateInputType
   }
 
-  export type GetRecipeAggregateType<T extends RecipeAggregateArgs> = {
-        [P in keyof T & keyof AggregateRecipe]: P extends '_count' | 'count'
+  export type GetUserRecipeAggregateType<T extends UserRecipeAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserRecipe]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateRecipe[P]>
-      : GetScalarType<T[P], AggregateRecipe[P]>
+        : GetScalarType<T[P], AggregateUserRecipe[P]>
+      : GetScalarType<T[P], AggregateUserRecipe[P]>
   }
 
 
 
 
-  export type RecipeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RecipeWhereInput
-    orderBy?: RecipeOrderByWithAggregationInput | RecipeOrderByWithAggregationInput[]
-    by: RecipeScalarFieldEnum[] | RecipeScalarFieldEnum
-    having?: RecipeScalarWhereWithAggregatesInput
+  export type UserRecipeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserRecipeWhereInput
+    orderBy?: UserRecipeOrderByWithAggregationInput | UserRecipeOrderByWithAggregationInput[]
+    by: UserRecipeScalarFieldEnum[] | UserRecipeScalarFieldEnum
+    having?: UserRecipeScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: RecipeCountAggregateInputType | true
-    _min?: RecipeMinAggregateInputType
-    _max?: RecipeMaxAggregateInputType
+    _count?: UserRecipeCountAggregateInputType | true
+    _min?: UserRecipeMinAggregateInputType
+    _max?: UserRecipeMaxAggregateInputType
   }
 
-  export type RecipeGroupByOutputType = {
+  export type UserRecipeGroupByOutputType = {
     id: string
-    title: string
-    ingredients: string[]
-    instructions: string[]
-    source: string | null
-    link: string | null
-    namedEntities: string[]
-    nutrition: JsonValue | null
-    cuisine: string | null
-    mealType: string | null
-    createdAt: Date
-    updatedAt: Date
-    _count: RecipeCountAggregateOutputType | null
-    _min: RecipeMinAggregateOutputType | null
-    _max: RecipeMaxAggregateOutputType | null
+    userId: string
+    sourceId: string | null
+    status: string
+    dateAdded: Date
+    cachedRecipeId: string | null
+    _count: UserRecipeCountAggregateOutputType | null
+    _min: UserRecipeMinAggregateOutputType | null
+    _max: UserRecipeMaxAggregateOutputType | null
   }
 
-  type GetRecipeGroupByPayload<T extends RecipeGroupByArgs> = Prisma.PrismaPromise<
+  type GetUserRecipeGroupByPayload<T extends UserRecipeGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<RecipeGroupByOutputType, T['by']> &
+      PickEnumerable<UserRecipeGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof RecipeGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof UserRecipeGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], RecipeGroupByOutputType[P]>
-            : GetScalarType<T[P], RecipeGroupByOutputType[P]>
+              : GetScalarType<T[P], UserRecipeGroupByOutputType[P]>
+            : GetScalarType<T[P], UserRecipeGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type RecipeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type UserRecipeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
-    ingredients?: boolean
-    instructions?: boolean
-    source?: boolean
-    link?: boolean
-    namedEntities?: boolean
-    nutrition?: boolean
-    cuisine?: boolean
-    mealType?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    mealPlanRecipes?: boolean | Recipe$mealPlanRecipesArgs<ExtArgs>
-    embeddings?: boolean | Recipe$embeddingsArgs<ExtArgs>
-    _count?: boolean | RecipeCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["recipe"]>
+    userId?: boolean
+    sourceId?: boolean
+    status?: boolean
+    dateAdded?: boolean
+    cachedRecipeId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | UserRecipe$cachedRecipeArgs<ExtArgs>
+  }, ExtArgs["result"]["userRecipe"]>
 
-  export type RecipeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type UserRecipeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
-    ingredients?: boolean
-    instructions?: boolean
-    source?: boolean
-    link?: boolean
-    namedEntities?: boolean
-    nutrition?: boolean
-    cuisine?: boolean
-    mealType?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }, ExtArgs["result"]["recipe"]>
+    userId?: boolean
+    sourceId?: boolean
+    status?: boolean
+    dateAdded?: boolean
+    cachedRecipeId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | UserRecipe$cachedRecipeArgs<ExtArgs>
+  }, ExtArgs["result"]["userRecipe"]>
 
-  export type RecipeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type UserRecipeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
-    ingredients?: boolean
-    instructions?: boolean
-    source?: boolean
-    link?: boolean
-    namedEntities?: boolean
-    nutrition?: boolean
-    cuisine?: boolean
-    mealType?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }, ExtArgs["result"]["recipe"]>
+    userId?: boolean
+    sourceId?: boolean
+    status?: boolean
+    dateAdded?: boolean
+    cachedRecipeId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | UserRecipe$cachedRecipeArgs<ExtArgs>
+  }, ExtArgs["result"]["userRecipe"]>
 
-  export type RecipeSelectScalar = {
+  export type UserRecipeSelectScalar = {
     id?: boolean
-    title?: boolean
-    ingredients?: boolean
-    instructions?: boolean
-    source?: boolean
-    link?: boolean
-    namedEntities?: boolean
-    nutrition?: boolean
-    cuisine?: boolean
-    mealType?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    userId?: boolean
+    sourceId?: boolean
+    status?: boolean
+    dateAdded?: boolean
+    cachedRecipeId?: boolean
   }
 
-  export type RecipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "ingredients" | "instructions" | "source" | "link" | "namedEntities" | "nutrition" | "cuisine" | "mealType" | "createdAt" | "updatedAt", ExtArgs["result"]["recipe"]>
-  export type RecipeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    mealPlanRecipes?: boolean | Recipe$mealPlanRecipesArgs<ExtArgs>
-    embeddings?: boolean | Recipe$embeddingsArgs<ExtArgs>
-    _count?: boolean | RecipeCountOutputTypeDefaultArgs<ExtArgs>
+  export type UserRecipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "sourceId" | "status" | "dateAdded" | "cachedRecipeId", ExtArgs["result"]["userRecipe"]>
+  export type UserRecipeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | UserRecipe$cachedRecipeArgs<ExtArgs>
   }
-  export type RecipeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type RecipeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserRecipeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | UserRecipe$cachedRecipeArgs<ExtArgs>
+  }
+  export type UserRecipeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | UserRecipe$cachedRecipeArgs<ExtArgs>
+  }
 
-  export type $RecipePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Recipe"
+  export type $UserRecipePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserRecipe"
     objects: {
-      mealPlanRecipes: Prisma.$MealPlanRecipePayload<ExtArgs>[]
-      embeddings: Prisma.$RecipeEmbeddingPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>
+      cachedRecipe: Prisma.$RecipePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      title: string
-      ingredients: string[]
-      instructions: string[]
-      source: string | null
-      link: string | null
-      namedEntities: string[]
-      nutrition: Prisma.JsonValue | null
-      cuisine: string | null
-      mealType: string | null
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["recipe"]>
+      userId: string
+      sourceId: string | null
+      status: string
+      dateAdded: Date
+      cachedRecipeId: string | null
+    }, ExtArgs["result"]["userRecipe"]>
     composites: {}
   }
 
-  type RecipeGetPayload<S extends boolean | null | undefined | RecipeDefaultArgs> = $Result.GetResult<Prisma.$RecipePayload, S>
+  type UserRecipeGetPayload<S extends boolean | null | undefined | UserRecipeDefaultArgs> = $Result.GetResult<Prisma.$UserRecipePayload, S>
 
-  type RecipeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<RecipeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: RecipeCountAggregateInputType | true
+  type UserRecipeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserRecipeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserRecipeCountAggregateInputType | true
     }
 
-  export interface RecipeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Recipe'], meta: { name: 'Recipe' } }
+  export interface UserRecipeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserRecipe'], meta: { name: 'UserRecipe' } }
     /**
-     * Find zero or one Recipe that matches the filter.
-     * @param {RecipeFindUniqueArgs} args - Arguments to find a Recipe
+     * Find zero or one UserRecipe that matches the filter.
+     * @param {UserRecipeFindUniqueArgs} args - Arguments to find a UserRecipe
      * @example
-     * // Get one Recipe
-     * const recipe = await prisma.recipe.findUnique({
+     * // Get one UserRecipe
+     * const userRecipe = await prisma.userRecipe.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends RecipeFindUniqueArgs>(args: SelectSubset<T, RecipeFindUniqueArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends UserRecipeFindUniqueArgs>(args: SelectSubset<T, UserRecipeFindUniqueArgs<ExtArgs>>): Prisma__UserRecipeClient<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one Recipe that matches the filter or throw an error with `error.code='P2025'`
+     * Find one UserRecipe that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {RecipeFindUniqueOrThrowArgs} args - Arguments to find a Recipe
+     * @param {UserRecipeFindUniqueOrThrowArgs} args - Arguments to find a UserRecipe
      * @example
-     * // Get one Recipe
-     * const recipe = await prisma.recipe.findUniqueOrThrow({
+     * // Get one UserRecipe
+     * const userRecipe = await prisma.userRecipe.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends RecipeFindUniqueOrThrowArgs>(args: SelectSubset<T, RecipeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends UserRecipeFindUniqueOrThrowArgs>(args: SelectSubset<T, UserRecipeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserRecipeClient<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Recipe that matches the filter.
+     * Find the first UserRecipe that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeFindFirstArgs} args - Arguments to find a Recipe
+     * @param {UserRecipeFindFirstArgs} args - Arguments to find a UserRecipe
      * @example
-     * // Get one Recipe
-     * const recipe = await prisma.recipe.findFirst({
+     * // Get one UserRecipe
+     * const userRecipe = await prisma.userRecipe.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends RecipeFindFirstArgs>(args?: SelectSubset<T, RecipeFindFirstArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends UserRecipeFindFirstArgs>(args?: SelectSubset<T, UserRecipeFindFirstArgs<ExtArgs>>): Prisma__UserRecipeClient<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Recipe that matches the filter or
+     * Find the first UserRecipe that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeFindFirstOrThrowArgs} args - Arguments to find a Recipe
+     * @param {UserRecipeFindFirstOrThrowArgs} args - Arguments to find a UserRecipe
      * @example
-     * // Get one Recipe
-     * const recipe = await prisma.recipe.findFirstOrThrow({
+     * // Get one UserRecipe
+     * const userRecipe = await prisma.userRecipe.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends RecipeFindFirstOrThrowArgs>(args?: SelectSubset<T, RecipeFindFirstOrThrowArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends UserRecipeFindFirstOrThrowArgs>(args?: SelectSubset<T, UserRecipeFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserRecipeClient<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more Recipes that matches the filter.
+     * Find zero or more UserRecipes that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {UserRecipeFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Recipes
-     * const recipes = await prisma.recipe.findMany()
+     * // Get all UserRecipes
+     * const userRecipes = await prisma.userRecipe.findMany()
      * 
-     * // Get first 10 Recipes
-     * const recipes = await prisma.recipe.findMany({ take: 10 })
+     * // Get first 10 UserRecipes
+     * const userRecipes = await prisma.userRecipe.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const recipeWithIdOnly = await prisma.recipe.findMany({ select: { id: true } })
+     * const userRecipeWithIdOnly = await prisma.userRecipe.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends RecipeFindManyArgs>(args?: SelectSubset<T, RecipeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends UserRecipeFindManyArgs>(args?: SelectSubset<T, UserRecipeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Recipe.
-     * @param {RecipeCreateArgs} args - Arguments to create a Recipe.
+     * Create a UserRecipe.
+     * @param {UserRecipeCreateArgs} args - Arguments to create a UserRecipe.
      * @example
-     * // Create one Recipe
-     * const Recipe = await prisma.recipe.create({
+     * // Create one UserRecipe
+     * const UserRecipe = await prisma.userRecipe.create({
      *   data: {
-     *     // ... data to create a Recipe
+     *     // ... data to create a UserRecipe
      *   }
      * })
      * 
      */
-    create<T extends RecipeCreateArgs>(args: SelectSubset<T, RecipeCreateArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends UserRecipeCreateArgs>(args: SelectSubset<T, UserRecipeCreateArgs<ExtArgs>>): Prisma__UserRecipeClient<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many Recipes.
-     * @param {RecipeCreateManyArgs} args - Arguments to create many Recipes.
+     * Create many UserRecipes.
+     * @param {UserRecipeCreateManyArgs} args - Arguments to create many UserRecipes.
      * @example
-     * // Create many Recipes
-     * const recipe = await prisma.recipe.createMany({
+     * // Create many UserRecipes
+     * const userRecipe = await prisma.userRecipe.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends RecipeCreateManyArgs>(args?: SelectSubset<T, RecipeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends UserRecipeCreateManyArgs>(args?: SelectSubset<T, UserRecipeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Recipes and returns the data saved in the database.
-     * @param {RecipeCreateManyAndReturnArgs} args - Arguments to create many Recipes.
+     * Create many UserRecipes and returns the data saved in the database.
+     * @param {UserRecipeCreateManyAndReturnArgs} args - Arguments to create many UserRecipes.
      * @example
-     * // Create many Recipes
-     * const recipe = await prisma.recipe.createManyAndReturn({
+     * // Create many UserRecipes
+     * const userRecipe = await prisma.userRecipe.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Recipes and only return the `id`
-     * const recipeWithIdOnly = await prisma.recipe.createManyAndReturn({
+     * // Create many UserRecipes and only return the `id`
+     * const userRecipeWithIdOnly = await prisma.userRecipe.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -3073,28 +3231,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends RecipeCreateManyAndReturnArgs>(args?: SelectSubset<T, RecipeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends UserRecipeCreateManyAndReturnArgs>(args?: SelectSubset<T, UserRecipeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a Recipe.
-     * @param {RecipeDeleteArgs} args - Arguments to delete one Recipe.
+     * Delete a UserRecipe.
+     * @param {UserRecipeDeleteArgs} args - Arguments to delete one UserRecipe.
      * @example
-     * // Delete one Recipe
-     * const Recipe = await prisma.recipe.delete({
+     * // Delete one UserRecipe
+     * const UserRecipe = await prisma.userRecipe.delete({
      *   where: {
-     *     // ... filter to delete one Recipe
+     *     // ... filter to delete one UserRecipe
      *   }
      * })
      * 
      */
-    delete<T extends RecipeDeleteArgs>(args: SelectSubset<T, RecipeDeleteArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends UserRecipeDeleteArgs>(args: SelectSubset<T, UserRecipeDeleteArgs<ExtArgs>>): Prisma__UserRecipeClient<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one Recipe.
-     * @param {RecipeUpdateArgs} args - Arguments to update one Recipe.
+     * Update one UserRecipe.
+     * @param {UserRecipeUpdateArgs} args - Arguments to update one UserRecipe.
      * @example
-     * // Update one Recipe
-     * const recipe = await prisma.recipe.update({
+     * // Update one UserRecipe
+     * const userRecipe = await prisma.userRecipe.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3104,30 +3262,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends RecipeUpdateArgs>(args: SelectSubset<T, RecipeUpdateArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends UserRecipeUpdateArgs>(args: SelectSubset<T, UserRecipeUpdateArgs<ExtArgs>>): Prisma__UserRecipeClient<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more Recipes.
-     * @param {RecipeDeleteManyArgs} args - Arguments to filter Recipes to delete.
+     * Delete zero or more UserRecipes.
+     * @param {UserRecipeDeleteManyArgs} args - Arguments to filter UserRecipes to delete.
      * @example
-     * // Delete a few Recipes
-     * const { count } = await prisma.recipe.deleteMany({
+     * // Delete a few UserRecipes
+     * const { count } = await prisma.userRecipe.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends RecipeDeleteManyArgs>(args?: SelectSubset<T, RecipeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends UserRecipeDeleteManyArgs>(args?: SelectSubset<T, UserRecipeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Recipes.
+     * Update zero or more UserRecipes.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {UserRecipeUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Recipes
-     * const recipe = await prisma.recipe.updateMany({
+     * // Update many UserRecipes
+     * const userRecipe = await prisma.userRecipe.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3137,14 +3295,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends RecipeUpdateManyArgs>(args: SelectSubset<T, RecipeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends UserRecipeUpdateManyArgs>(args: SelectSubset<T, UserRecipeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Recipes and returns the data updated in the database.
-     * @param {RecipeUpdateManyAndReturnArgs} args - Arguments to update many Recipes.
+     * Update zero or more UserRecipes and returns the data updated in the database.
+     * @param {UserRecipeUpdateManyAndReturnArgs} args - Arguments to update many UserRecipes.
      * @example
-     * // Update many Recipes
-     * const recipe = await prisma.recipe.updateManyAndReturn({
+     * // Update many UserRecipes
+     * const userRecipe = await prisma.userRecipe.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3153,8 +3311,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more Recipes and only return the `id`
-     * const recipeWithIdOnly = await prisma.recipe.updateManyAndReturn({
+     * // Update zero or more UserRecipes and only return the `id`
+     * const userRecipeWithIdOnly = await prisma.userRecipe.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -3167,56 +3325,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends RecipeUpdateManyAndReturnArgs>(args: SelectSubset<T, RecipeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends UserRecipeUpdateManyAndReturnArgs>(args: SelectSubset<T, UserRecipeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one Recipe.
-     * @param {RecipeUpsertArgs} args - Arguments to update or create a Recipe.
+     * Create or update one UserRecipe.
+     * @param {UserRecipeUpsertArgs} args - Arguments to update or create a UserRecipe.
      * @example
-     * // Update or create a Recipe
-     * const recipe = await prisma.recipe.upsert({
+     * // Update or create a UserRecipe
+     * const userRecipe = await prisma.userRecipe.upsert({
      *   create: {
-     *     // ... data to create a Recipe
+     *     // ... data to create a UserRecipe
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Recipe we want to update
+     *     // ... the filter for the UserRecipe we want to update
      *   }
      * })
      */
-    upsert<T extends RecipeUpsertArgs>(args: SelectSubset<T, RecipeUpsertArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends UserRecipeUpsertArgs>(args: SelectSubset<T, UserRecipeUpsertArgs<ExtArgs>>): Prisma__UserRecipeClient<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of Recipes.
+     * Count the number of UserRecipes.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeCountArgs} args - Arguments to filter Recipes to count.
+     * @param {UserRecipeCountArgs} args - Arguments to filter UserRecipes to count.
      * @example
-     * // Count the number of Recipes
-     * const count = await prisma.recipe.count({
+     * // Count the number of UserRecipes
+     * const count = await prisma.userRecipe.count({
      *   where: {
-     *     // ... the filter for the Recipes we want to count
+     *     // ... the filter for the UserRecipes we want to count
      *   }
      * })
     **/
-    count<T extends RecipeCountArgs>(
-      args?: Subset<T, RecipeCountArgs>,
+    count<T extends UserRecipeCountArgs>(
+      args?: Subset<T, UserRecipeCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], RecipeCountAggregateOutputType>
+          : GetScalarType<T['select'], UserRecipeCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Recipe.
+     * Allows you to perform aggregations operations on a UserRecipe.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {UserRecipeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -3236,13 +3394,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends RecipeAggregateArgs>(args: Subset<T, RecipeAggregateArgs>): Prisma.PrismaPromise<GetRecipeAggregateType<T>>
+    aggregate<T extends UserRecipeAggregateArgs>(args: Subset<T, UserRecipeAggregateArgs>): Prisma.PrismaPromise<GetUserRecipeAggregateType<T>>
 
     /**
-     * Group by Recipe.
+     * Group by UserRecipe.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeGroupByArgs} args - Group by arguments.
+     * @param {UserRecipeGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -3257,14 +3415,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends RecipeGroupByArgs,
+      T extends UserRecipeGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: RecipeGroupByArgs['orderBy'] }
-        : { orderBy?: RecipeGroupByArgs['orderBy'] },
+        ? { orderBy: UserRecipeGroupByArgs['orderBy'] }
+        : { orderBy?: UserRecipeGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -3313,23 +3471,23 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, RecipeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRecipeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, UserRecipeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserRecipeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Recipe model
+   * Fields of the UserRecipe model
    */
-  readonly fields: RecipeFieldRefs;
+  readonly fields: UserRecipeFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Recipe.
+   * The delegate class that acts as a "Promise-like" for UserRecipe.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__RecipeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__UserRecipeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    mealPlanRecipes<T extends Recipe$mealPlanRecipesArgs<ExtArgs> = {}>(args?: Subset<T, Recipe$mealPlanRecipesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    embeddings<T extends Recipe$embeddingsArgs<ExtArgs> = {}>(args?: Subset<T, Recipe$embeddingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    cachedRecipe<T extends UserRecipe$cachedRecipeArgs<ExtArgs> = {}>(args?: Subset<T, UserRecipe$cachedRecipeArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3356,1534 +3514,445 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Recipe model
+   * Fields of the UserRecipe model
    */
-  interface RecipeFieldRefs {
-    readonly id: FieldRef<"Recipe", 'String'>
-    readonly title: FieldRef<"Recipe", 'String'>
-    readonly ingredients: FieldRef<"Recipe", 'String[]'>
-    readonly instructions: FieldRef<"Recipe", 'String[]'>
-    readonly source: FieldRef<"Recipe", 'String'>
-    readonly link: FieldRef<"Recipe", 'String'>
-    readonly namedEntities: FieldRef<"Recipe", 'String[]'>
-    readonly nutrition: FieldRef<"Recipe", 'Json'>
-    readonly cuisine: FieldRef<"Recipe", 'String'>
-    readonly mealType: FieldRef<"Recipe", 'String'>
-    readonly createdAt: FieldRef<"Recipe", 'DateTime'>
-    readonly updatedAt: FieldRef<"Recipe", 'DateTime'>
+  interface UserRecipeFieldRefs {
+    readonly id: FieldRef<"UserRecipe", 'String'>
+    readonly userId: FieldRef<"UserRecipe", 'String'>
+    readonly sourceId: FieldRef<"UserRecipe", 'String'>
+    readonly status: FieldRef<"UserRecipe", 'String'>
+    readonly dateAdded: FieldRef<"UserRecipe", 'DateTime'>
+    readonly cachedRecipeId: FieldRef<"UserRecipe", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * Recipe findUnique
+   * UserRecipe findUnique
    */
-  export type RecipeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Recipe
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Recipe
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * Filter, which Recipe to fetch.
+     * Filter, which UserRecipe to fetch.
      */
-    where: RecipeWhereUniqueInput
+    where: UserRecipeWhereUniqueInput
   }
 
   /**
-   * Recipe findUniqueOrThrow
+   * UserRecipe findUniqueOrThrow
    */
-  export type RecipeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Recipe
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Recipe
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * Filter, which Recipe to fetch.
+     * Filter, which UserRecipe to fetch.
      */
-    where: RecipeWhereUniqueInput
+    where: UserRecipeWhereUniqueInput
   }
 
   /**
-   * Recipe findFirst
+   * UserRecipe findFirst
    */
-  export type RecipeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Recipe
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Recipe
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * Filter, which Recipe to fetch.
+     * Filter, which UserRecipe to fetch.
      */
-    where?: RecipeWhereInput
+    where?: UserRecipeWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Recipes to fetch.
+     * Determine the order of UserRecipes to fetch.
      */
-    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    orderBy?: UserRecipeOrderByWithRelationInput | UserRecipeOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Recipes.
+     * Sets the position for searching for UserRecipes.
      */
-    cursor?: RecipeWhereUniqueInput
+    cursor?: UserRecipeWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Recipes from the position of the cursor.
+     * Take `±n` UserRecipes from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Recipes.
+     * Skip the first `n` UserRecipes.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Recipes.
+     * Filter by unique combinations of UserRecipes.
      */
-    distinct?: RecipeScalarFieldEnum | RecipeScalarFieldEnum[]
+    distinct?: UserRecipeScalarFieldEnum | UserRecipeScalarFieldEnum[]
   }
 
   /**
-   * Recipe findFirstOrThrow
+   * UserRecipe findFirstOrThrow
    */
-  export type RecipeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Recipe
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Recipe
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * Filter, which Recipe to fetch.
+     * Filter, which UserRecipe to fetch.
      */
-    where?: RecipeWhereInput
+    where?: UserRecipeWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Recipes to fetch.
+     * Determine the order of UserRecipes to fetch.
      */
-    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    orderBy?: UserRecipeOrderByWithRelationInput | UserRecipeOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Recipes.
+     * Sets the position for searching for UserRecipes.
      */
-    cursor?: RecipeWhereUniqueInput
+    cursor?: UserRecipeWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Recipes from the position of the cursor.
+     * Take `±n` UserRecipes from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Recipes.
+     * Skip the first `n` UserRecipes.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Recipes.
+     * Filter by unique combinations of UserRecipes.
      */
-    distinct?: RecipeScalarFieldEnum | RecipeScalarFieldEnum[]
+    distinct?: UserRecipeScalarFieldEnum | UserRecipeScalarFieldEnum[]
   }
 
   /**
-   * Recipe findMany
+   * UserRecipe findMany
    */
-  export type RecipeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Recipe
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Recipe
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * Filter, which Recipes to fetch.
+     * Filter, which UserRecipes to fetch.
      */
-    where?: RecipeWhereInput
+    where?: UserRecipeWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Recipes to fetch.
+     * Determine the order of UserRecipes to fetch.
      */
-    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    orderBy?: UserRecipeOrderByWithRelationInput | UserRecipeOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Recipes.
+     * Sets the position for listing UserRecipes.
      */
-    cursor?: RecipeWhereUniqueInput
+    cursor?: UserRecipeWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Recipes from the position of the cursor.
+     * Take `±n` UserRecipes from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Recipes.
+     * Skip the first `n` UserRecipes.
      */
     skip?: number
-    distinct?: RecipeScalarFieldEnum | RecipeScalarFieldEnum[]
+    distinct?: UserRecipeScalarFieldEnum | UserRecipeScalarFieldEnum[]
   }
 
   /**
-   * Recipe create
+   * UserRecipe create
    */
-  export type RecipeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Recipe
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Recipe
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * The data needed to create a Recipe.
+     * The data needed to create a UserRecipe.
      */
-    data: XOR<RecipeCreateInput, RecipeUncheckedCreateInput>
+    data: XOR<UserRecipeCreateInput, UserRecipeUncheckedCreateInput>
   }
 
   /**
-   * Recipe createMany
+   * UserRecipe createMany
    */
-  export type RecipeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Recipes.
+     * The data used to create many UserRecipes.
      */
-    data: RecipeCreateManyInput | RecipeCreateManyInput[]
+    data: UserRecipeCreateManyInput | UserRecipeCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * Recipe createManyAndReturn
+   * UserRecipe createManyAndReturn
    */
-  export type RecipeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Recipe
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeSelectCreateManyAndReturn<ExtArgs> | null
+    select?: UserRecipeSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Recipe
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
-     * The data used to create many Recipes.
+     * The data used to create many UserRecipes.
      */
-    data: RecipeCreateManyInput | RecipeCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Recipe update
-   */
-  export type RecipeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Recipe
-     */
-    select?: RecipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Recipe
-     */
-    omit?: RecipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Recipe.
-     */
-    data: XOR<RecipeUpdateInput, RecipeUncheckedUpdateInput>
-    /**
-     * Choose, which Recipe to update.
-     */
-    where: RecipeWhereUniqueInput
-  }
-
-  /**
-   * Recipe updateMany
-   */
-  export type RecipeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Recipes.
-     */
-    data: XOR<RecipeUpdateManyMutationInput, RecipeUncheckedUpdateManyInput>
-    /**
-     * Filter which Recipes to update
-     */
-    where?: RecipeWhereInput
-    /**
-     * Limit how many Recipes to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Recipe updateManyAndReturn
-   */
-  export type RecipeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Recipe
-     */
-    select?: RecipeSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Recipe
-     */
-    omit?: RecipeOmit<ExtArgs> | null
-    /**
-     * The data used to update Recipes.
-     */
-    data: XOR<RecipeUpdateManyMutationInput, RecipeUncheckedUpdateManyInput>
-    /**
-     * Filter which Recipes to update
-     */
-    where?: RecipeWhereInput
-    /**
-     * Limit how many Recipes to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Recipe upsert
-   */
-  export type RecipeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Recipe
-     */
-    select?: RecipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Recipe
-     */
-    omit?: RecipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Recipe to update in case it exists.
-     */
-    where: RecipeWhereUniqueInput
-    /**
-     * In case the Recipe found by the `where` argument doesn't exist, create a new Recipe with this data.
-     */
-    create: XOR<RecipeCreateInput, RecipeUncheckedCreateInput>
-    /**
-     * In case the Recipe was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<RecipeUpdateInput, RecipeUncheckedUpdateInput>
-  }
-
-  /**
-   * Recipe delete
-   */
-  export type RecipeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Recipe
-     */
-    select?: RecipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Recipe
-     */
-    omit?: RecipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeInclude<ExtArgs> | null
-    /**
-     * Filter which Recipe to delete.
-     */
-    where: RecipeWhereUniqueInput
-  }
-
-  /**
-   * Recipe deleteMany
-   */
-  export type RecipeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Recipes to delete
-     */
-    where?: RecipeWhereInput
-    /**
-     * Limit how many Recipes to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Recipe.mealPlanRecipes
-   */
-  export type Recipe$mealPlanRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanRecipe
-     */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanRecipe
-     */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
-    where?: MealPlanRecipeWhereInput
-    orderBy?: MealPlanRecipeOrderByWithRelationInput | MealPlanRecipeOrderByWithRelationInput[]
-    cursor?: MealPlanRecipeWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: MealPlanRecipeScalarFieldEnum | MealPlanRecipeScalarFieldEnum[]
-  }
-
-  /**
-   * Recipe.embeddings
-   */
-  export type Recipe$embeddingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeEmbedding
-     */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecipeEmbedding
-     */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
-    where?: RecipeEmbeddingWhereInput
-    orderBy?: RecipeEmbeddingOrderByWithRelationInput | RecipeEmbeddingOrderByWithRelationInput[]
-    cursor?: RecipeEmbeddingWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: RecipeEmbeddingScalarFieldEnum | RecipeEmbeddingScalarFieldEnum[]
-  }
-
-  /**
-   * Recipe without action
-   */
-  export type RecipeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Recipe
-     */
-    select?: RecipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Recipe
-     */
-    omit?: RecipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model RecipeEmbedding
-   */
-
-  export type AggregateRecipeEmbedding = {
-    _count: RecipeEmbeddingCountAggregateOutputType | null
-    _avg: RecipeEmbeddingAvgAggregateOutputType | null
-    _sum: RecipeEmbeddingSumAggregateOutputType | null
-    _min: RecipeEmbeddingMinAggregateOutputType | null
-    _max: RecipeEmbeddingMaxAggregateOutputType | null
-  }
-
-  export type RecipeEmbeddingAvgAggregateOutputType = {
-    embedding: number | null
-  }
-
-  export type RecipeEmbeddingSumAggregateOutputType = {
-    embedding: number[]
-  }
-
-  export type RecipeEmbeddingMinAggregateOutputType = {
-    id: string | null
-    recipeId: string | null
-  }
-
-  export type RecipeEmbeddingMaxAggregateOutputType = {
-    id: string | null
-    recipeId: string | null
-  }
-
-  export type RecipeEmbeddingCountAggregateOutputType = {
-    id: number
-    embedding: number
-    recipeId: number
-    _all: number
-  }
-
-
-  export type RecipeEmbeddingAvgAggregateInputType = {
-    embedding?: true
-  }
-
-  export type RecipeEmbeddingSumAggregateInputType = {
-    embedding?: true
-  }
-
-  export type RecipeEmbeddingMinAggregateInputType = {
-    id?: true
-    recipeId?: true
-  }
-
-  export type RecipeEmbeddingMaxAggregateInputType = {
-    id?: true
-    recipeId?: true
-  }
-
-  export type RecipeEmbeddingCountAggregateInputType = {
-    id?: true
-    embedding?: true
-    recipeId?: true
-    _all?: true
-  }
-
-  export type RecipeEmbeddingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which RecipeEmbedding to aggregate.
-     */
-    where?: RecipeEmbeddingWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of RecipeEmbeddings to fetch.
-     */
-    orderBy?: RecipeEmbeddingOrderByWithRelationInput | RecipeEmbeddingOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: RecipeEmbeddingWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` RecipeEmbeddings from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` RecipeEmbeddings.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned RecipeEmbeddings
-    **/
-    _count?: true | RecipeEmbeddingCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: RecipeEmbeddingAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: RecipeEmbeddingSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: RecipeEmbeddingMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: RecipeEmbeddingMaxAggregateInputType
-  }
-
-  export type GetRecipeEmbeddingAggregateType<T extends RecipeEmbeddingAggregateArgs> = {
-        [P in keyof T & keyof AggregateRecipeEmbedding]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateRecipeEmbedding[P]>
-      : GetScalarType<T[P], AggregateRecipeEmbedding[P]>
-  }
-
-
-
-
-  export type RecipeEmbeddingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RecipeEmbeddingWhereInput
-    orderBy?: RecipeEmbeddingOrderByWithAggregationInput | RecipeEmbeddingOrderByWithAggregationInput[]
-    by: RecipeEmbeddingScalarFieldEnum[] | RecipeEmbeddingScalarFieldEnum
-    having?: RecipeEmbeddingScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: RecipeEmbeddingCountAggregateInputType | true
-    _avg?: RecipeEmbeddingAvgAggregateInputType
-    _sum?: RecipeEmbeddingSumAggregateInputType
-    _min?: RecipeEmbeddingMinAggregateInputType
-    _max?: RecipeEmbeddingMaxAggregateInputType
-  }
-
-  export type RecipeEmbeddingGroupByOutputType = {
-    id: string
-    embedding: number[]
-    recipeId: string
-    _count: RecipeEmbeddingCountAggregateOutputType | null
-    _avg: RecipeEmbeddingAvgAggregateOutputType | null
-    _sum: RecipeEmbeddingSumAggregateOutputType | null
-    _min: RecipeEmbeddingMinAggregateOutputType | null
-    _max: RecipeEmbeddingMaxAggregateOutputType | null
-  }
-
-  type GetRecipeEmbeddingGroupByPayload<T extends RecipeEmbeddingGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<RecipeEmbeddingGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof RecipeEmbeddingGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], RecipeEmbeddingGroupByOutputType[P]>
-            : GetScalarType<T[P], RecipeEmbeddingGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type RecipeEmbeddingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    embedding?: boolean
-    recipeId?: boolean
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["recipeEmbedding"]>
-
-  export type RecipeEmbeddingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    embedding?: boolean
-    recipeId?: boolean
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["recipeEmbedding"]>
-
-  export type RecipeEmbeddingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    embedding?: boolean
-    recipeId?: boolean
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["recipeEmbedding"]>
-
-  export type RecipeEmbeddingSelectScalar = {
-    id?: boolean
-    embedding?: boolean
-    recipeId?: boolean
-  }
-
-  export type RecipeEmbeddingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "embedding" | "recipeId", ExtArgs["result"]["recipeEmbedding"]>
-  export type RecipeEmbeddingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }
-  export type RecipeEmbeddingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }
-  export type RecipeEmbeddingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }
-
-  export type $RecipeEmbeddingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "RecipeEmbedding"
-    objects: {
-      recipe: Prisma.$RecipePayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      embedding: number[]
-      recipeId: string
-    }, ExtArgs["result"]["recipeEmbedding"]>
-    composites: {}
-  }
-
-  type RecipeEmbeddingGetPayload<S extends boolean | null | undefined | RecipeEmbeddingDefaultArgs> = $Result.GetResult<Prisma.$RecipeEmbeddingPayload, S>
-
-  type RecipeEmbeddingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<RecipeEmbeddingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: RecipeEmbeddingCountAggregateInputType | true
-    }
-
-  export interface RecipeEmbeddingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RecipeEmbedding'], meta: { name: 'RecipeEmbedding' } }
-    /**
-     * Find zero or one RecipeEmbedding that matches the filter.
-     * @param {RecipeEmbeddingFindUniqueArgs} args - Arguments to find a RecipeEmbedding
-     * @example
-     * // Get one RecipeEmbedding
-     * const recipeEmbedding = await prisma.recipeEmbedding.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends RecipeEmbeddingFindUniqueArgs>(args: SelectSubset<T, RecipeEmbeddingFindUniqueArgs<ExtArgs>>): Prisma__RecipeEmbeddingClient<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one RecipeEmbedding that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {RecipeEmbeddingFindUniqueOrThrowArgs} args - Arguments to find a RecipeEmbedding
-     * @example
-     * // Get one RecipeEmbedding
-     * const recipeEmbedding = await prisma.recipeEmbedding.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends RecipeEmbeddingFindUniqueOrThrowArgs>(args: SelectSubset<T, RecipeEmbeddingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RecipeEmbeddingClient<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first RecipeEmbedding that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeEmbeddingFindFirstArgs} args - Arguments to find a RecipeEmbedding
-     * @example
-     * // Get one RecipeEmbedding
-     * const recipeEmbedding = await prisma.recipeEmbedding.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends RecipeEmbeddingFindFirstArgs>(args?: SelectSubset<T, RecipeEmbeddingFindFirstArgs<ExtArgs>>): Prisma__RecipeEmbeddingClient<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first RecipeEmbedding that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeEmbeddingFindFirstOrThrowArgs} args - Arguments to find a RecipeEmbedding
-     * @example
-     * // Get one RecipeEmbedding
-     * const recipeEmbedding = await prisma.recipeEmbedding.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends RecipeEmbeddingFindFirstOrThrowArgs>(args?: SelectSubset<T, RecipeEmbeddingFindFirstOrThrowArgs<ExtArgs>>): Prisma__RecipeEmbeddingClient<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more RecipeEmbeddings that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeEmbeddingFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all RecipeEmbeddings
-     * const recipeEmbeddings = await prisma.recipeEmbedding.findMany()
-     * 
-     * // Get first 10 RecipeEmbeddings
-     * const recipeEmbeddings = await prisma.recipeEmbedding.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const recipeEmbeddingWithIdOnly = await prisma.recipeEmbedding.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends RecipeEmbeddingFindManyArgs>(args?: SelectSubset<T, RecipeEmbeddingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a RecipeEmbedding.
-     * @param {RecipeEmbeddingCreateArgs} args - Arguments to create a RecipeEmbedding.
-     * @example
-     * // Create one RecipeEmbedding
-     * const RecipeEmbedding = await prisma.recipeEmbedding.create({
-     *   data: {
-     *     // ... data to create a RecipeEmbedding
-     *   }
-     * })
-     * 
-     */
-    create<T extends RecipeEmbeddingCreateArgs>(args: SelectSubset<T, RecipeEmbeddingCreateArgs<ExtArgs>>): Prisma__RecipeEmbeddingClient<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many RecipeEmbeddings.
-     * @param {RecipeEmbeddingCreateManyArgs} args - Arguments to create many RecipeEmbeddings.
-     * @example
-     * // Create many RecipeEmbeddings
-     * const recipeEmbedding = await prisma.recipeEmbedding.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends RecipeEmbeddingCreateManyArgs>(args?: SelectSubset<T, RecipeEmbeddingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many RecipeEmbeddings and returns the data saved in the database.
-     * @param {RecipeEmbeddingCreateManyAndReturnArgs} args - Arguments to create many RecipeEmbeddings.
-     * @example
-     * // Create many RecipeEmbeddings
-     * const recipeEmbedding = await prisma.recipeEmbedding.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many RecipeEmbeddings and only return the `id`
-     * const recipeEmbeddingWithIdOnly = await prisma.recipeEmbedding.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends RecipeEmbeddingCreateManyAndReturnArgs>(args?: SelectSubset<T, RecipeEmbeddingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a RecipeEmbedding.
-     * @param {RecipeEmbeddingDeleteArgs} args - Arguments to delete one RecipeEmbedding.
-     * @example
-     * // Delete one RecipeEmbedding
-     * const RecipeEmbedding = await prisma.recipeEmbedding.delete({
-     *   where: {
-     *     // ... filter to delete one RecipeEmbedding
-     *   }
-     * })
-     * 
-     */
-    delete<T extends RecipeEmbeddingDeleteArgs>(args: SelectSubset<T, RecipeEmbeddingDeleteArgs<ExtArgs>>): Prisma__RecipeEmbeddingClient<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one RecipeEmbedding.
-     * @param {RecipeEmbeddingUpdateArgs} args - Arguments to update one RecipeEmbedding.
-     * @example
-     * // Update one RecipeEmbedding
-     * const recipeEmbedding = await prisma.recipeEmbedding.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends RecipeEmbeddingUpdateArgs>(args: SelectSubset<T, RecipeEmbeddingUpdateArgs<ExtArgs>>): Prisma__RecipeEmbeddingClient<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more RecipeEmbeddings.
-     * @param {RecipeEmbeddingDeleteManyArgs} args - Arguments to filter RecipeEmbeddings to delete.
-     * @example
-     * // Delete a few RecipeEmbeddings
-     * const { count } = await prisma.recipeEmbedding.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends RecipeEmbeddingDeleteManyArgs>(args?: SelectSubset<T, RecipeEmbeddingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more RecipeEmbeddings.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeEmbeddingUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many RecipeEmbeddings
-     * const recipeEmbedding = await prisma.recipeEmbedding.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends RecipeEmbeddingUpdateManyArgs>(args: SelectSubset<T, RecipeEmbeddingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more RecipeEmbeddings and returns the data updated in the database.
-     * @param {RecipeEmbeddingUpdateManyAndReturnArgs} args - Arguments to update many RecipeEmbeddings.
-     * @example
-     * // Update many RecipeEmbeddings
-     * const recipeEmbedding = await prisma.recipeEmbedding.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more RecipeEmbeddings and only return the `id`
-     * const recipeEmbeddingWithIdOnly = await prisma.recipeEmbedding.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends RecipeEmbeddingUpdateManyAndReturnArgs>(args: SelectSubset<T, RecipeEmbeddingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one RecipeEmbedding.
-     * @param {RecipeEmbeddingUpsertArgs} args - Arguments to update or create a RecipeEmbedding.
-     * @example
-     * // Update or create a RecipeEmbedding
-     * const recipeEmbedding = await prisma.recipeEmbedding.upsert({
-     *   create: {
-     *     // ... data to create a RecipeEmbedding
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the RecipeEmbedding we want to update
-     *   }
-     * })
-     */
-    upsert<T extends RecipeEmbeddingUpsertArgs>(args: SelectSubset<T, RecipeEmbeddingUpsertArgs<ExtArgs>>): Prisma__RecipeEmbeddingClient<$Result.GetResult<Prisma.$RecipeEmbeddingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of RecipeEmbeddings.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeEmbeddingCountArgs} args - Arguments to filter RecipeEmbeddings to count.
-     * @example
-     * // Count the number of RecipeEmbeddings
-     * const count = await prisma.recipeEmbedding.count({
-     *   where: {
-     *     // ... the filter for the RecipeEmbeddings we want to count
-     *   }
-     * })
-    **/
-    count<T extends RecipeEmbeddingCountArgs>(
-      args?: Subset<T, RecipeEmbeddingCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], RecipeEmbeddingCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a RecipeEmbedding.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeEmbeddingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends RecipeEmbeddingAggregateArgs>(args: Subset<T, RecipeEmbeddingAggregateArgs>): Prisma.PrismaPromise<GetRecipeEmbeddingAggregateType<T>>
-
-    /**
-     * Group by RecipeEmbedding.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RecipeEmbeddingGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends RecipeEmbeddingGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: RecipeEmbeddingGroupByArgs['orderBy'] }
-        : { orderBy?: RecipeEmbeddingGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, RecipeEmbeddingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRecipeEmbeddingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the RecipeEmbedding model
-   */
-  readonly fields: RecipeEmbeddingFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for RecipeEmbedding.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__RecipeEmbeddingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    recipe<T extends RecipeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RecipeDefaultArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the RecipeEmbedding model
-   */
-  interface RecipeEmbeddingFieldRefs {
-    readonly id: FieldRef<"RecipeEmbedding", 'String'>
-    readonly embedding: FieldRef<"RecipeEmbedding", 'Float[]'>
-    readonly recipeId: FieldRef<"RecipeEmbedding", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * RecipeEmbedding findUnique
-   */
-  export type RecipeEmbeddingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeEmbedding
-     */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecipeEmbedding
-     */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
-    /**
-     * Filter, which RecipeEmbedding to fetch.
-     */
-    where: RecipeEmbeddingWhereUniqueInput
-  }
-
-  /**
-   * RecipeEmbedding findUniqueOrThrow
-   */
-  export type RecipeEmbeddingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeEmbedding
-     */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecipeEmbedding
-     */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
-    /**
-     * Filter, which RecipeEmbedding to fetch.
-     */
-    where: RecipeEmbeddingWhereUniqueInput
-  }
-
-  /**
-   * RecipeEmbedding findFirst
-   */
-  export type RecipeEmbeddingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeEmbedding
-     */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecipeEmbedding
-     */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
-    /**
-     * Filter, which RecipeEmbedding to fetch.
-     */
-    where?: RecipeEmbeddingWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of RecipeEmbeddings to fetch.
-     */
-    orderBy?: RecipeEmbeddingOrderByWithRelationInput | RecipeEmbeddingOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for RecipeEmbeddings.
-     */
-    cursor?: RecipeEmbeddingWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` RecipeEmbeddings from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` RecipeEmbeddings.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of RecipeEmbeddings.
-     */
-    distinct?: RecipeEmbeddingScalarFieldEnum | RecipeEmbeddingScalarFieldEnum[]
-  }
-
-  /**
-   * RecipeEmbedding findFirstOrThrow
-   */
-  export type RecipeEmbeddingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeEmbedding
-     */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecipeEmbedding
-     */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
-    /**
-     * Filter, which RecipeEmbedding to fetch.
-     */
-    where?: RecipeEmbeddingWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of RecipeEmbeddings to fetch.
-     */
-    orderBy?: RecipeEmbeddingOrderByWithRelationInput | RecipeEmbeddingOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for RecipeEmbeddings.
-     */
-    cursor?: RecipeEmbeddingWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` RecipeEmbeddings from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` RecipeEmbeddings.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of RecipeEmbeddings.
-     */
-    distinct?: RecipeEmbeddingScalarFieldEnum | RecipeEmbeddingScalarFieldEnum[]
-  }
-
-  /**
-   * RecipeEmbedding findMany
-   */
-  export type RecipeEmbeddingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeEmbedding
-     */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecipeEmbedding
-     */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
-    /**
-     * Filter, which RecipeEmbeddings to fetch.
-     */
-    where?: RecipeEmbeddingWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of RecipeEmbeddings to fetch.
-     */
-    orderBy?: RecipeEmbeddingOrderByWithRelationInput | RecipeEmbeddingOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing RecipeEmbeddings.
-     */
-    cursor?: RecipeEmbeddingWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` RecipeEmbeddings from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` RecipeEmbeddings.
-     */
-    skip?: number
-    distinct?: RecipeEmbeddingScalarFieldEnum | RecipeEmbeddingScalarFieldEnum[]
-  }
-
-  /**
-   * RecipeEmbedding create
-   */
-  export type RecipeEmbeddingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeEmbedding
-     */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecipeEmbedding
-     */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
-    /**
-     * The data needed to create a RecipeEmbedding.
-     */
-    data: XOR<RecipeEmbeddingCreateInput, RecipeEmbeddingUncheckedCreateInput>
-  }
-
-  /**
-   * RecipeEmbedding createMany
-   */
-  export type RecipeEmbeddingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many RecipeEmbeddings.
-     */
-    data: RecipeEmbeddingCreateManyInput | RecipeEmbeddingCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * RecipeEmbedding createManyAndReturn
-   */
-  export type RecipeEmbeddingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecipeEmbedding
-     */
-    select?: RecipeEmbeddingSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecipeEmbedding
-     */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
-    /**
-     * The data used to create many RecipeEmbeddings.
-     */
-    data: RecipeEmbeddingCreateManyInput | RecipeEmbeddingCreateManyInput[]
+    data: UserRecipeCreateManyInput | UserRecipeCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeEmbeddingIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: UserRecipeIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * RecipeEmbedding update
+   * UserRecipe update
    */
-  export type RecipeEmbeddingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the RecipeEmbedding
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the RecipeEmbedding
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * The data needed to update a RecipeEmbedding.
+     * The data needed to update a UserRecipe.
      */
-    data: XOR<RecipeEmbeddingUpdateInput, RecipeEmbeddingUncheckedUpdateInput>
+    data: XOR<UserRecipeUpdateInput, UserRecipeUncheckedUpdateInput>
     /**
-     * Choose, which RecipeEmbedding to update.
+     * Choose, which UserRecipe to update.
      */
-    where: RecipeEmbeddingWhereUniqueInput
+    where: UserRecipeWhereUniqueInput
   }
 
   /**
-   * RecipeEmbedding updateMany
+   * UserRecipe updateMany
    */
-  export type RecipeEmbeddingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update RecipeEmbeddings.
+     * The data used to update UserRecipes.
      */
-    data: XOR<RecipeEmbeddingUpdateManyMutationInput, RecipeEmbeddingUncheckedUpdateManyInput>
+    data: XOR<UserRecipeUpdateManyMutationInput, UserRecipeUncheckedUpdateManyInput>
     /**
-     * Filter which RecipeEmbeddings to update
+     * Filter which UserRecipes to update
      */
-    where?: RecipeEmbeddingWhereInput
+    where?: UserRecipeWhereInput
     /**
-     * Limit how many RecipeEmbeddings to update.
+     * Limit how many UserRecipes to update.
      */
     limit?: number
   }
 
   /**
-   * RecipeEmbedding updateManyAndReturn
+   * UserRecipe updateManyAndReturn
    */
-  export type RecipeEmbeddingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the RecipeEmbedding
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeEmbeddingSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: UserRecipeSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the RecipeEmbedding
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
-     * The data used to update RecipeEmbeddings.
+     * The data used to update UserRecipes.
      */
-    data: XOR<RecipeEmbeddingUpdateManyMutationInput, RecipeEmbeddingUncheckedUpdateManyInput>
+    data: XOR<UserRecipeUpdateManyMutationInput, UserRecipeUncheckedUpdateManyInput>
     /**
-     * Filter which RecipeEmbeddings to update
+     * Filter which UserRecipes to update
      */
-    where?: RecipeEmbeddingWhereInput
+    where?: UserRecipeWhereInput
     /**
-     * Limit how many RecipeEmbeddings to update.
+     * Limit how many UserRecipes to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeEmbeddingIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: UserRecipeIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * RecipeEmbedding upsert
+   * UserRecipe upsert
    */
-  export type RecipeEmbeddingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the RecipeEmbedding
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the RecipeEmbedding
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * The filter to search for the RecipeEmbedding to update in case it exists.
+     * The filter to search for the UserRecipe to update in case it exists.
      */
-    where: RecipeEmbeddingWhereUniqueInput
+    where: UserRecipeWhereUniqueInput
     /**
-     * In case the RecipeEmbedding found by the `where` argument doesn't exist, create a new RecipeEmbedding with this data.
+     * In case the UserRecipe found by the `where` argument doesn't exist, create a new UserRecipe with this data.
      */
-    create: XOR<RecipeEmbeddingCreateInput, RecipeEmbeddingUncheckedCreateInput>
+    create: XOR<UserRecipeCreateInput, UserRecipeUncheckedCreateInput>
     /**
-     * In case the RecipeEmbedding was found with the provided `where` argument, update it with this data.
+     * In case the UserRecipe was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<RecipeEmbeddingUpdateInput, RecipeEmbeddingUncheckedUpdateInput>
+    update: XOR<UserRecipeUpdateInput, UserRecipeUncheckedUpdateInput>
   }
 
   /**
-   * RecipeEmbedding delete
+   * UserRecipe delete
    */
-  export type RecipeEmbeddingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the RecipeEmbedding
+     * Select specific fields to fetch from the UserRecipe
      */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
+    select?: UserRecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the RecipeEmbedding
+     * Omit specific fields from the UserRecipe
      */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
+    omit?: UserRecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
+    include?: UserRecipeInclude<ExtArgs> | null
     /**
-     * Filter which RecipeEmbedding to delete.
+     * Filter which UserRecipe to delete.
      */
-    where: RecipeEmbeddingWhereUniqueInput
+    where: UserRecipeWhereUniqueInput
   }
 
   /**
-   * RecipeEmbedding deleteMany
+   * UserRecipe deleteMany
    */
-  export type RecipeEmbeddingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which RecipeEmbeddings to delete
+     * Filter which UserRecipes to delete
      */
-    where?: RecipeEmbeddingWhereInput
+    where?: UserRecipeWhereInput
     /**
-     * Limit how many RecipeEmbeddings to delete.
+     * Limit how many UserRecipes to delete.
      */
     limit?: number
   }
 
   /**
-   * RecipeEmbedding without action
+   * UserRecipe.cachedRecipe
    */
-  export type RecipeEmbeddingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserRecipe$cachedRecipeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the RecipeEmbedding
+     * Select specific fields to fetch from the Recipe
      */
-    select?: RecipeEmbeddingSelect<ExtArgs> | null
+    select?: RecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the RecipeEmbedding
+     * Omit specific fields from the Recipe
      */
-    omit?: RecipeEmbeddingOmit<ExtArgs> | null
+    omit?: RecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: RecipeEmbeddingInclude<ExtArgs> | null
+    include?: RecipeInclude<ExtArgs> | null
+    where?: RecipeWhereInput
+  }
+
+  /**
+   * UserRecipe without action
+   */
+  export type UserRecipeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserRecipe
+     */
+    select?: UserRecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserRecipe
+     */
+    omit?: UserRecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserRecipeInclude<ExtArgs> | null
   }
 
 
@@ -5056,7 +4125,7 @@ export namespace Prisma {
     constraints?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    recipes?: boolean | MealPlan$recipesArgs<ExtArgs>
+    mealPlanItems?: boolean | MealPlan$mealPlanItemsArgs<ExtArgs>
     _count?: boolean | MealPlanCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["mealPlan"]>
 
@@ -5092,7 +4161,7 @@ export namespace Prisma {
   export type MealPlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "startDate" | "endDate" | "constraints" | "createdAt", ExtArgs["result"]["mealPlan"]>
   export type MealPlanInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    recipes?: boolean | MealPlan$recipesArgs<ExtArgs>
+    mealPlanItems?: boolean | MealPlan$mealPlanItemsArgs<ExtArgs>
     _count?: boolean | MealPlanCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MealPlanIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5106,7 +4175,7 @@ export namespace Prisma {
     name: "MealPlan"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
-      recipes: Prisma.$MealPlanRecipePayload<ExtArgs>[]
+      mealPlanItems: Prisma.$MealPlanItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5510,7 +4579,7 @@ export namespace Prisma {
   export interface Prisma__MealPlanClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    recipes<T extends MealPlan$recipesArgs<ExtArgs> = {}>(args?: Subset<T, MealPlan$recipesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    mealPlanItems<T extends MealPlan$mealPlanItemsArgs<ExtArgs> = {}>(args?: Subset<T, MealPlan$mealPlanItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5942,27 +5011,27 @@ export namespace Prisma {
   }
 
   /**
-   * MealPlan.recipes
+   * MealPlan.mealPlanItems
    */
-  export type MealPlan$recipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlan$mealPlanItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
-    where?: MealPlanRecipeWhereInput
-    orderBy?: MealPlanRecipeOrderByWithRelationInput | MealPlanRecipeOrderByWithRelationInput[]
-    cursor?: MealPlanRecipeWhereUniqueInput
+    include?: MealPlanItemInclude<ExtArgs> | null
+    where?: MealPlanItemWhereInput
+    orderBy?: MealPlanItemOrderByWithRelationInput | MealPlanItemOrderByWithRelationInput[]
+    cursor?: MealPlanItemWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: MealPlanRecipeScalarFieldEnum | MealPlanRecipeScalarFieldEnum[]
+    distinct?: MealPlanItemScalarFieldEnum | MealPlanItemScalarFieldEnum[]
   }
 
   /**
@@ -5985,380 +5054,404 @@ export namespace Prisma {
 
 
   /**
-   * Model MealPlanRecipe
+   * Model MealPlanItem
    */
 
-  export type AggregateMealPlanRecipe = {
-    _count: MealPlanRecipeCountAggregateOutputType | null
-    _avg: MealPlanRecipeAvgAggregateOutputType | null
-    _sum: MealPlanRecipeSumAggregateOutputType | null
-    _min: MealPlanRecipeMinAggregateOutputType | null
-    _max: MealPlanRecipeMaxAggregateOutputType | null
+  export type AggregateMealPlanItem = {
+    _count: MealPlanItemCountAggregateOutputType | null
+    _avg: MealPlanItemAvgAggregateOutputType | null
+    _sum: MealPlanItemSumAggregateOutputType | null
+    _min: MealPlanItemMinAggregateOutputType | null
+    _max: MealPlanItemMaxAggregateOutputType | null
   }
 
-  export type MealPlanRecipeAvgAggregateOutputType = {
-    day: number | null
+  export type MealPlanItemAvgAggregateOutputType = {
+    dayOfWeek: number | null
   }
 
-  export type MealPlanRecipeSumAggregateOutputType = {
-    day: number | null
+  export type MealPlanItemSumAggregateOutputType = {
+    dayOfWeek: number | null
   }
 
-  export type MealPlanRecipeMinAggregateOutputType = {
+  export type MealPlanItemMinAggregateOutputType = {
+    id: string | null
     mealPlanId: string | null
-    recipeId: string | null
-    day: number | null
-    mealSlot: string | null
+    sourceId: string | null
+    dayOfWeek: number | null
+    mealType: string | null
+    cachedRecipeId: string | null
   }
 
-  export type MealPlanRecipeMaxAggregateOutputType = {
+  export type MealPlanItemMaxAggregateOutputType = {
+    id: string | null
     mealPlanId: string | null
-    recipeId: string | null
-    day: number | null
-    mealSlot: string | null
+    sourceId: string | null
+    dayOfWeek: number | null
+    mealType: string | null
+    cachedRecipeId: string | null
   }
 
-  export type MealPlanRecipeCountAggregateOutputType = {
+  export type MealPlanItemCountAggregateOutputType = {
+    id: number
     mealPlanId: number
-    recipeId: number
-    day: number
-    mealSlot: number
+    sourceId: number
+    dayOfWeek: number
+    mealType: number
+    cachedRecipeId: number
     _all: number
   }
 
 
-  export type MealPlanRecipeAvgAggregateInputType = {
-    day?: true
+  export type MealPlanItemAvgAggregateInputType = {
+    dayOfWeek?: true
   }
 
-  export type MealPlanRecipeSumAggregateInputType = {
-    day?: true
+  export type MealPlanItemSumAggregateInputType = {
+    dayOfWeek?: true
   }
 
-  export type MealPlanRecipeMinAggregateInputType = {
+  export type MealPlanItemMinAggregateInputType = {
+    id?: true
     mealPlanId?: true
-    recipeId?: true
-    day?: true
-    mealSlot?: true
+    sourceId?: true
+    dayOfWeek?: true
+    mealType?: true
+    cachedRecipeId?: true
   }
 
-  export type MealPlanRecipeMaxAggregateInputType = {
+  export type MealPlanItemMaxAggregateInputType = {
+    id?: true
     mealPlanId?: true
-    recipeId?: true
-    day?: true
-    mealSlot?: true
+    sourceId?: true
+    dayOfWeek?: true
+    mealType?: true
+    cachedRecipeId?: true
   }
 
-  export type MealPlanRecipeCountAggregateInputType = {
+  export type MealPlanItemCountAggregateInputType = {
+    id?: true
     mealPlanId?: true
-    recipeId?: true
-    day?: true
-    mealSlot?: true
+    sourceId?: true
+    dayOfWeek?: true
+    mealType?: true
+    cachedRecipeId?: true
     _all?: true
   }
 
-  export type MealPlanRecipeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which MealPlanRecipe to aggregate.
+     * Filter which MealPlanItem to aggregate.
      */
-    where?: MealPlanRecipeWhereInput
+    where?: MealPlanItemWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of MealPlanRecipes to fetch.
+     * Determine the order of MealPlanItems to fetch.
      */
-    orderBy?: MealPlanRecipeOrderByWithRelationInput | MealPlanRecipeOrderByWithRelationInput[]
+    orderBy?: MealPlanItemOrderByWithRelationInput | MealPlanItemOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: MealPlanRecipeWhereUniqueInput
+    cursor?: MealPlanItemWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` MealPlanRecipes from the position of the cursor.
+     * Take `±n` MealPlanItems from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` MealPlanRecipes.
+     * Skip the first `n` MealPlanItems.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned MealPlanRecipes
+     * Count returned MealPlanItems
     **/
-    _count?: true | MealPlanRecipeCountAggregateInputType
+    _count?: true | MealPlanItemCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: MealPlanRecipeAvgAggregateInputType
+    _avg?: MealPlanItemAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: MealPlanRecipeSumAggregateInputType
+    _sum?: MealPlanItemSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: MealPlanRecipeMinAggregateInputType
+    _min?: MealPlanItemMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: MealPlanRecipeMaxAggregateInputType
+    _max?: MealPlanItemMaxAggregateInputType
   }
 
-  export type GetMealPlanRecipeAggregateType<T extends MealPlanRecipeAggregateArgs> = {
-        [P in keyof T & keyof AggregateMealPlanRecipe]: P extends '_count' | 'count'
+  export type GetMealPlanItemAggregateType<T extends MealPlanItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateMealPlanItem]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateMealPlanRecipe[P]>
-      : GetScalarType<T[P], AggregateMealPlanRecipe[P]>
+        : GetScalarType<T[P], AggregateMealPlanItem[P]>
+      : GetScalarType<T[P], AggregateMealPlanItem[P]>
   }
 
 
 
 
-  export type MealPlanRecipeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MealPlanRecipeWhereInput
-    orderBy?: MealPlanRecipeOrderByWithAggregationInput | MealPlanRecipeOrderByWithAggregationInput[]
-    by: MealPlanRecipeScalarFieldEnum[] | MealPlanRecipeScalarFieldEnum
-    having?: MealPlanRecipeScalarWhereWithAggregatesInput
+  export type MealPlanItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MealPlanItemWhereInput
+    orderBy?: MealPlanItemOrderByWithAggregationInput | MealPlanItemOrderByWithAggregationInput[]
+    by: MealPlanItemScalarFieldEnum[] | MealPlanItemScalarFieldEnum
+    having?: MealPlanItemScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: MealPlanRecipeCountAggregateInputType | true
-    _avg?: MealPlanRecipeAvgAggregateInputType
-    _sum?: MealPlanRecipeSumAggregateInputType
-    _min?: MealPlanRecipeMinAggregateInputType
-    _max?: MealPlanRecipeMaxAggregateInputType
+    _count?: MealPlanItemCountAggregateInputType | true
+    _avg?: MealPlanItemAvgAggregateInputType
+    _sum?: MealPlanItemSumAggregateInputType
+    _min?: MealPlanItemMinAggregateInputType
+    _max?: MealPlanItemMaxAggregateInputType
   }
 
-  export type MealPlanRecipeGroupByOutputType = {
+  export type MealPlanItemGroupByOutputType = {
+    id: string
     mealPlanId: string
-    recipeId: string
-    day: number
-    mealSlot: string
-    _count: MealPlanRecipeCountAggregateOutputType | null
-    _avg: MealPlanRecipeAvgAggregateOutputType | null
-    _sum: MealPlanRecipeSumAggregateOutputType | null
-    _min: MealPlanRecipeMinAggregateOutputType | null
-    _max: MealPlanRecipeMaxAggregateOutputType | null
+    sourceId: string | null
+    dayOfWeek: number
+    mealType: string
+    cachedRecipeId: string | null
+    _count: MealPlanItemCountAggregateOutputType | null
+    _avg: MealPlanItemAvgAggregateOutputType | null
+    _sum: MealPlanItemSumAggregateOutputType | null
+    _min: MealPlanItemMinAggregateOutputType | null
+    _max: MealPlanItemMaxAggregateOutputType | null
   }
 
-  type GetMealPlanRecipeGroupByPayload<T extends MealPlanRecipeGroupByArgs> = Prisma.PrismaPromise<
+  type GetMealPlanItemGroupByPayload<T extends MealPlanItemGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<MealPlanRecipeGroupByOutputType, T['by']> &
+      PickEnumerable<MealPlanItemGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof MealPlanRecipeGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof MealPlanItemGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], MealPlanRecipeGroupByOutputType[P]>
-            : GetScalarType<T[P], MealPlanRecipeGroupByOutputType[P]>
+              : GetScalarType<T[P], MealPlanItemGroupByOutputType[P]>
+            : GetScalarType<T[P], MealPlanItemGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type MealPlanRecipeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type MealPlanItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     mealPlanId?: boolean
-    recipeId?: boolean
-    day?: boolean
-    mealSlot?: boolean
+    sourceId?: boolean
+    dayOfWeek?: boolean
+    mealType?: boolean
+    cachedRecipeId?: boolean
     mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["mealPlanRecipe"]>
+    cachedRecipe?: boolean | MealPlanItem$cachedRecipeArgs<ExtArgs>
+  }, ExtArgs["result"]["mealPlanItem"]>
 
-  export type MealPlanRecipeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type MealPlanItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     mealPlanId?: boolean
-    recipeId?: boolean
-    day?: boolean
-    mealSlot?: boolean
+    sourceId?: boolean
+    dayOfWeek?: boolean
+    mealType?: boolean
+    cachedRecipeId?: boolean
     mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["mealPlanRecipe"]>
+    cachedRecipe?: boolean | MealPlanItem$cachedRecipeArgs<ExtArgs>
+  }, ExtArgs["result"]["mealPlanItem"]>
 
-  export type MealPlanRecipeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type MealPlanItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     mealPlanId?: boolean
-    recipeId?: boolean
-    day?: boolean
-    mealSlot?: boolean
+    sourceId?: boolean
+    dayOfWeek?: boolean
+    mealType?: boolean
+    cachedRecipeId?: boolean
     mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["mealPlanRecipe"]>
+    cachedRecipe?: boolean | MealPlanItem$cachedRecipeArgs<ExtArgs>
+  }, ExtArgs["result"]["mealPlanItem"]>
 
-  export type MealPlanRecipeSelectScalar = {
+  export type MealPlanItemSelectScalar = {
+    id?: boolean
     mealPlanId?: boolean
-    recipeId?: boolean
-    day?: boolean
-    mealSlot?: boolean
+    sourceId?: boolean
+    dayOfWeek?: boolean
+    mealType?: boolean
+    cachedRecipeId?: boolean
   }
 
-  export type MealPlanRecipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"mealPlanId" | "recipeId" | "day" | "mealSlot", ExtArgs["result"]["mealPlanRecipe"]>
-  export type MealPlanRecipeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mealPlanId" | "sourceId" | "dayOfWeek" | "mealType" | "cachedRecipeId", ExtArgs["result"]["mealPlanItem"]>
+  export type MealPlanItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | MealPlanItem$cachedRecipeArgs<ExtArgs>
   }
-  export type MealPlanRecipeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | MealPlanItem$cachedRecipeArgs<ExtArgs>
   }
-  export type MealPlanRecipeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+    cachedRecipe?: boolean | MealPlanItem$cachedRecipeArgs<ExtArgs>
   }
 
-  export type $MealPlanRecipePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "MealPlanRecipe"
+  export type $MealPlanItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MealPlanItem"
     objects: {
       mealPlan: Prisma.$MealPlanPayload<ExtArgs>
-      recipe: Prisma.$RecipePayload<ExtArgs>
+      cachedRecipe: Prisma.$RecipePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
+      id: string
       mealPlanId: string
-      recipeId: string
-      day: number
-      mealSlot: string
-    }, ExtArgs["result"]["mealPlanRecipe"]>
+      sourceId: string | null
+      dayOfWeek: number
+      mealType: string
+      cachedRecipeId: string | null
+    }, ExtArgs["result"]["mealPlanItem"]>
     composites: {}
   }
 
-  type MealPlanRecipeGetPayload<S extends boolean | null | undefined | MealPlanRecipeDefaultArgs> = $Result.GetResult<Prisma.$MealPlanRecipePayload, S>
+  type MealPlanItemGetPayload<S extends boolean | null | undefined | MealPlanItemDefaultArgs> = $Result.GetResult<Prisma.$MealPlanItemPayload, S>
 
-  type MealPlanRecipeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<MealPlanRecipeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: MealPlanRecipeCountAggregateInputType | true
+  type MealPlanItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MealPlanItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MealPlanItemCountAggregateInputType | true
     }
 
-  export interface MealPlanRecipeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MealPlanRecipe'], meta: { name: 'MealPlanRecipe' } }
+  export interface MealPlanItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MealPlanItem'], meta: { name: 'MealPlanItem' } }
     /**
-     * Find zero or one MealPlanRecipe that matches the filter.
-     * @param {MealPlanRecipeFindUniqueArgs} args - Arguments to find a MealPlanRecipe
+     * Find zero or one MealPlanItem that matches the filter.
+     * @param {MealPlanItemFindUniqueArgs} args - Arguments to find a MealPlanItem
      * @example
-     * // Get one MealPlanRecipe
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.findUnique({
+     * // Get one MealPlanItem
+     * const mealPlanItem = await prisma.mealPlanItem.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends MealPlanRecipeFindUniqueArgs>(args: SelectSubset<T, MealPlanRecipeFindUniqueArgs<ExtArgs>>): Prisma__MealPlanRecipeClient<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends MealPlanItemFindUniqueArgs>(args: SelectSubset<T, MealPlanItemFindUniqueArgs<ExtArgs>>): Prisma__MealPlanItemClient<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one MealPlanRecipe that matches the filter or throw an error with `error.code='P2025'`
+     * Find one MealPlanItem that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {MealPlanRecipeFindUniqueOrThrowArgs} args - Arguments to find a MealPlanRecipe
+     * @param {MealPlanItemFindUniqueOrThrowArgs} args - Arguments to find a MealPlanItem
      * @example
-     * // Get one MealPlanRecipe
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.findUniqueOrThrow({
+     * // Get one MealPlanItem
+     * const mealPlanItem = await prisma.mealPlanItem.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends MealPlanRecipeFindUniqueOrThrowArgs>(args: SelectSubset<T, MealPlanRecipeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MealPlanRecipeClient<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends MealPlanItemFindUniqueOrThrowArgs>(args: SelectSubset<T, MealPlanItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MealPlanItemClient<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first MealPlanRecipe that matches the filter.
+     * Find the first MealPlanItem that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanRecipeFindFirstArgs} args - Arguments to find a MealPlanRecipe
+     * @param {MealPlanItemFindFirstArgs} args - Arguments to find a MealPlanItem
      * @example
-     * // Get one MealPlanRecipe
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.findFirst({
+     * // Get one MealPlanItem
+     * const mealPlanItem = await prisma.mealPlanItem.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends MealPlanRecipeFindFirstArgs>(args?: SelectSubset<T, MealPlanRecipeFindFirstArgs<ExtArgs>>): Prisma__MealPlanRecipeClient<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends MealPlanItemFindFirstArgs>(args?: SelectSubset<T, MealPlanItemFindFirstArgs<ExtArgs>>): Prisma__MealPlanItemClient<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first MealPlanRecipe that matches the filter or
+     * Find the first MealPlanItem that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanRecipeFindFirstOrThrowArgs} args - Arguments to find a MealPlanRecipe
+     * @param {MealPlanItemFindFirstOrThrowArgs} args - Arguments to find a MealPlanItem
      * @example
-     * // Get one MealPlanRecipe
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.findFirstOrThrow({
+     * // Get one MealPlanItem
+     * const mealPlanItem = await prisma.mealPlanItem.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends MealPlanRecipeFindFirstOrThrowArgs>(args?: SelectSubset<T, MealPlanRecipeFindFirstOrThrowArgs<ExtArgs>>): Prisma__MealPlanRecipeClient<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends MealPlanItemFindFirstOrThrowArgs>(args?: SelectSubset<T, MealPlanItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__MealPlanItemClient<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more MealPlanRecipes that matches the filter.
+     * Find zero or more MealPlanItems that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanRecipeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {MealPlanItemFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all MealPlanRecipes
-     * const mealPlanRecipes = await prisma.mealPlanRecipe.findMany()
+     * // Get all MealPlanItems
+     * const mealPlanItems = await prisma.mealPlanItem.findMany()
      * 
-     * // Get first 10 MealPlanRecipes
-     * const mealPlanRecipes = await prisma.mealPlanRecipe.findMany({ take: 10 })
+     * // Get first 10 MealPlanItems
+     * const mealPlanItems = await prisma.mealPlanItem.findMany({ take: 10 })
      * 
-     * // Only select the `mealPlanId`
-     * const mealPlanRecipeWithMealPlanIdOnly = await prisma.mealPlanRecipe.findMany({ select: { mealPlanId: true } })
+     * // Only select the `id`
+     * const mealPlanItemWithIdOnly = await prisma.mealPlanItem.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends MealPlanRecipeFindManyArgs>(args?: SelectSubset<T, MealPlanRecipeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends MealPlanItemFindManyArgs>(args?: SelectSubset<T, MealPlanItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a MealPlanRecipe.
-     * @param {MealPlanRecipeCreateArgs} args - Arguments to create a MealPlanRecipe.
+     * Create a MealPlanItem.
+     * @param {MealPlanItemCreateArgs} args - Arguments to create a MealPlanItem.
      * @example
-     * // Create one MealPlanRecipe
-     * const MealPlanRecipe = await prisma.mealPlanRecipe.create({
+     * // Create one MealPlanItem
+     * const MealPlanItem = await prisma.mealPlanItem.create({
      *   data: {
-     *     // ... data to create a MealPlanRecipe
+     *     // ... data to create a MealPlanItem
      *   }
      * })
      * 
      */
-    create<T extends MealPlanRecipeCreateArgs>(args: SelectSubset<T, MealPlanRecipeCreateArgs<ExtArgs>>): Prisma__MealPlanRecipeClient<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends MealPlanItemCreateArgs>(args: SelectSubset<T, MealPlanItemCreateArgs<ExtArgs>>): Prisma__MealPlanItemClient<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many MealPlanRecipes.
-     * @param {MealPlanRecipeCreateManyArgs} args - Arguments to create many MealPlanRecipes.
+     * Create many MealPlanItems.
+     * @param {MealPlanItemCreateManyArgs} args - Arguments to create many MealPlanItems.
      * @example
-     * // Create many MealPlanRecipes
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.createMany({
+     * // Create many MealPlanItems
+     * const mealPlanItem = await prisma.mealPlanItem.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends MealPlanRecipeCreateManyArgs>(args?: SelectSubset<T, MealPlanRecipeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends MealPlanItemCreateManyArgs>(args?: SelectSubset<T, MealPlanItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many MealPlanRecipes and returns the data saved in the database.
-     * @param {MealPlanRecipeCreateManyAndReturnArgs} args - Arguments to create many MealPlanRecipes.
+     * Create many MealPlanItems and returns the data saved in the database.
+     * @param {MealPlanItemCreateManyAndReturnArgs} args - Arguments to create many MealPlanItems.
      * @example
-     * // Create many MealPlanRecipes
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.createManyAndReturn({
+     * // Create many MealPlanItems
+     * const mealPlanItem = await prisma.mealPlanItem.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many MealPlanRecipes and only return the `mealPlanId`
-     * const mealPlanRecipeWithMealPlanIdOnly = await prisma.mealPlanRecipe.createManyAndReturn({
-     *   select: { mealPlanId: true },
+     * // Create many MealPlanItems and only return the `id`
+     * const mealPlanItemWithIdOnly = await prisma.mealPlanItem.createManyAndReturn({
+     *   select: { id: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -6367,28 +5460,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends MealPlanRecipeCreateManyAndReturnArgs>(args?: SelectSubset<T, MealPlanRecipeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends MealPlanItemCreateManyAndReturnArgs>(args?: SelectSubset<T, MealPlanItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a MealPlanRecipe.
-     * @param {MealPlanRecipeDeleteArgs} args - Arguments to delete one MealPlanRecipe.
+     * Delete a MealPlanItem.
+     * @param {MealPlanItemDeleteArgs} args - Arguments to delete one MealPlanItem.
      * @example
-     * // Delete one MealPlanRecipe
-     * const MealPlanRecipe = await prisma.mealPlanRecipe.delete({
+     * // Delete one MealPlanItem
+     * const MealPlanItem = await prisma.mealPlanItem.delete({
      *   where: {
-     *     // ... filter to delete one MealPlanRecipe
+     *     // ... filter to delete one MealPlanItem
      *   }
      * })
      * 
      */
-    delete<T extends MealPlanRecipeDeleteArgs>(args: SelectSubset<T, MealPlanRecipeDeleteArgs<ExtArgs>>): Prisma__MealPlanRecipeClient<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends MealPlanItemDeleteArgs>(args: SelectSubset<T, MealPlanItemDeleteArgs<ExtArgs>>): Prisma__MealPlanItemClient<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one MealPlanRecipe.
-     * @param {MealPlanRecipeUpdateArgs} args - Arguments to update one MealPlanRecipe.
+     * Update one MealPlanItem.
+     * @param {MealPlanItemUpdateArgs} args - Arguments to update one MealPlanItem.
      * @example
-     * // Update one MealPlanRecipe
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.update({
+     * // Update one MealPlanItem
+     * const mealPlanItem = await prisma.mealPlanItem.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -6398,30 +5491,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends MealPlanRecipeUpdateArgs>(args: SelectSubset<T, MealPlanRecipeUpdateArgs<ExtArgs>>): Prisma__MealPlanRecipeClient<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends MealPlanItemUpdateArgs>(args: SelectSubset<T, MealPlanItemUpdateArgs<ExtArgs>>): Prisma__MealPlanItemClient<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more MealPlanRecipes.
-     * @param {MealPlanRecipeDeleteManyArgs} args - Arguments to filter MealPlanRecipes to delete.
+     * Delete zero or more MealPlanItems.
+     * @param {MealPlanItemDeleteManyArgs} args - Arguments to filter MealPlanItems to delete.
      * @example
-     * // Delete a few MealPlanRecipes
-     * const { count } = await prisma.mealPlanRecipe.deleteMany({
+     * // Delete a few MealPlanItems
+     * const { count } = await prisma.mealPlanItem.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends MealPlanRecipeDeleteManyArgs>(args?: SelectSubset<T, MealPlanRecipeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends MealPlanItemDeleteManyArgs>(args?: SelectSubset<T, MealPlanItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more MealPlanRecipes.
+     * Update zero or more MealPlanItems.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanRecipeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {MealPlanItemUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many MealPlanRecipes
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.updateMany({
+     * // Update many MealPlanItems
+     * const mealPlanItem = await prisma.mealPlanItem.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -6431,14 +5524,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends MealPlanRecipeUpdateManyArgs>(args: SelectSubset<T, MealPlanRecipeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends MealPlanItemUpdateManyArgs>(args: SelectSubset<T, MealPlanItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more MealPlanRecipes and returns the data updated in the database.
-     * @param {MealPlanRecipeUpdateManyAndReturnArgs} args - Arguments to update many MealPlanRecipes.
+     * Update zero or more MealPlanItems and returns the data updated in the database.
+     * @param {MealPlanItemUpdateManyAndReturnArgs} args - Arguments to update many MealPlanItems.
      * @example
-     * // Update many MealPlanRecipes
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.updateManyAndReturn({
+     * // Update many MealPlanItems
+     * const mealPlanItem = await prisma.mealPlanItem.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -6447,9 +5540,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more MealPlanRecipes and only return the `mealPlanId`
-     * const mealPlanRecipeWithMealPlanIdOnly = await prisma.mealPlanRecipe.updateManyAndReturn({
-     *   select: { mealPlanId: true },
+     * // Update zero or more MealPlanItems and only return the `id`
+     * const mealPlanItemWithIdOnly = await prisma.mealPlanItem.updateManyAndReturn({
+     *   select: { id: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -6461,56 +5554,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends MealPlanRecipeUpdateManyAndReturnArgs>(args: SelectSubset<T, MealPlanRecipeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends MealPlanItemUpdateManyAndReturnArgs>(args: SelectSubset<T, MealPlanItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one MealPlanRecipe.
-     * @param {MealPlanRecipeUpsertArgs} args - Arguments to update or create a MealPlanRecipe.
+     * Create or update one MealPlanItem.
+     * @param {MealPlanItemUpsertArgs} args - Arguments to update or create a MealPlanItem.
      * @example
-     * // Update or create a MealPlanRecipe
-     * const mealPlanRecipe = await prisma.mealPlanRecipe.upsert({
+     * // Update or create a MealPlanItem
+     * const mealPlanItem = await prisma.mealPlanItem.upsert({
      *   create: {
-     *     // ... data to create a MealPlanRecipe
+     *     // ... data to create a MealPlanItem
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the MealPlanRecipe we want to update
+     *     // ... the filter for the MealPlanItem we want to update
      *   }
      * })
      */
-    upsert<T extends MealPlanRecipeUpsertArgs>(args: SelectSubset<T, MealPlanRecipeUpsertArgs<ExtArgs>>): Prisma__MealPlanRecipeClient<$Result.GetResult<Prisma.$MealPlanRecipePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends MealPlanItemUpsertArgs>(args: SelectSubset<T, MealPlanItemUpsertArgs<ExtArgs>>): Prisma__MealPlanItemClient<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of MealPlanRecipes.
+     * Count the number of MealPlanItems.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanRecipeCountArgs} args - Arguments to filter MealPlanRecipes to count.
+     * @param {MealPlanItemCountArgs} args - Arguments to filter MealPlanItems to count.
      * @example
-     * // Count the number of MealPlanRecipes
-     * const count = await prisma.mealPlanRecipe.count({
+     * // Count the number of MealPlanItems
+     * const count = await prisma.mealPlanItem.count({
      *   where: {
-     *     // ... the filter for the MealPlanRecipes we want to count
+     *     // ... the filter for the MealPlanItems we want to count
      *   }
      * })
     **/
-    count<T extends MealPlanRecipeCountArgs>(
-      args?: Subset<T, MealPlanRecipeCountArgs>,
+    count<T extends MealPlanItemCountArgs>(
+      args?: Subset<T, MealPlanItemCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], MealPlanRecipeCountAggregateOutputType>
+          : GetScalarType<T['select'], MealPlanItemCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a MealPlanRecipe.
+     * Allows you to perform aggregations operations on a MealPlanItem.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanRecipeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {MealPlanItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -6530,13 +5623,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends MealPlanRecipeAggregateArgs>(args: Subset<T, MealPlanRecipeAggregateArgs>): Prisma.PrismaPromise<GetMealPlanRecipeAggregateType<T>>
+    aggregate<T extends MealPlanItemAggregateArgs>(args: Subset<T, MealPlanItemAggregateArgs>): Prisma.PrismaPromise<GetMealPlanItemAggregateType<T>>
 
     /**
-     * Group by MealPlanRecipe.
+     * Group by MealPlanItem.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanRecipeGroupByArgs} args - Group by arguments.
+     * @param {MealPlanItemGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -6551,14 +5644,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends MealPlanRecipeGroupByArgs,
+      T extends MealPlanItemGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: MealPlanRecipeGroupByArgs['orderBy'] }
-        : { orderBy?: MealPlanRecipeGroupByArgs['orderBy'] },
+        ? { orderBy: MealPlanItemGroupByArgs['orderBy'] }
+        : { orderBy?: MealPlanItemGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -6607,23 +5700,23 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, MealPlanRecipeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMealPlanRecipeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, MealPlanItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMealPlanItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the MealPlanRecipe model
+   * Fields of the MealPlanItem model
    */
-  readonly fields: MealPlanRecipeFieldRefs;
+  readonly fields: MealPlanItemFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for MealPlanRecipe.
+   * The delegate class that acts as a "Promise-like" for MealPlanItem.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__MealPlanRecipeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__MealPlanItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     mealPlan<T extends MealPlanDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MealPlanDefaultArgs<ExtArgs>>): Prisma__MealPlanClient<$Result.GetResult<Prisma.$MealPlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    recipe<T extends RecipeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RecipeDefaultArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    cachedRecipe<T extends MealPlanItem$cachedRecipeArgs<ExtArgs> = {}>(args?: Subset<T, MealPlanItem$cachedRecipeArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6650,424 +5743,445 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the MealPlanRecipe model
+   * Fields of the MealPlanItem model
    */
-  interface MealPlanRecipeFieldRefs {
-    readonly mealPlanId: FieldRef<"MealPlanRecipe", 'String'>
-    readonly recipeId: FieldRef<"MealPlanRecipe", 'String'>
-    readonly day: FieldRef<"MealPlanRecipe", 'Int'>
-    readonly mealSlot: FieldRef<"MealPlanRecipe", 'String'>
+  interface MealPlanItemFieldRefs {
+    readonly id: FieldRef<"MealPlanItem", 'String'>
+    readonly mealPlanId: FieldRef<"MealPlanItem", 'String'>
+    readonly sourceId: FieldRef<"MealPlanItem", 'String'>
+    readonly dayOfWeek: FieldRef<"MealPlanItem", 'Int'>
+    readonly mealType: FieldRef<"MealPlanItem", 'String'>
+    readonly cachedRecipeId: FieldRef<"MealPlanItem", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * MealPlanRecipe findUnique
+   * MealPlanItem findUnique
    */
-  export type MealPlanRecipeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * Filter, which MealPlanRecipe to fetch.
+     * Filter, which MealPlanItem to fetch.
      */
-    where: MealPlanRecipeWhereUniqueInput
+    where: MealPlanItemWhereUniqueInput
   }
 
   /**
-   * MealPlanRecipe findUniqueOrThrow
+   * MealPlanItem findUniqueOrThrow
    */
-  export type MealPlanRecipeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * Filter, which MealPlanRecipe to fetch.
+     * Filter, which MealPlanItem to fetch.
      */
-    where: MealPlanRecipeWhereUniqueInput
+    where: MealPlanItemWhereUniqueInput
   }
 
   /**
-   * MealPlanRecipe findFirst
+   * MealPlanItem findFirst
    */
-  export type MealPlanRecipeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * Filter, which MealPlanRecipe to fetch.
+     * Filter, which MealPlanItem to fetch.
      */
-    where?: MealPlanRecipeWhereInput
+    where?: MealPlanItemWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of MealPlanRecipes to fetch.
+     * Determine the order of MealPlanItems to fetch.
      */
-    orderBy?: MealPlanRecipeOrderByWithRelationInput | MealPlanRecipeOrderByWithRelationInput[]
+    orderBy?: MealPlanItemOrderByWithRelationInput | MealPlanItemOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for MealPlanRecipes.
+     * Sets the position for searching for MealPlanItems.
      */
-    cursor?: MealPlanRecipeWhereUniqueInput
+    cursor?: MealPlanItemWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` MealPlanRecipes from the position of the cursor.
+     * Take `±n` MealPlanItems from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` MealPlanRecipes.
+     * Skip the first `n` MealPlanItems.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of MealPlanRecipes.
+     * Filter by unique combinations of MealPlanItems.
      */
-    distinct?: MealPlanRecipeScalarFieldEnum | MealPlanRecipeScalarFieldEnum[]
+    distinct?: MealPlanItemScalarFieldEnum | MealPlanItemScalarFieldEnum[]
   }
 
   /**
-   * MealPlanRecipe findFirstOrThrow
+   * MealPlanItem findFirstOrThrow
    */
-  export type MealPlanRecipeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * Filter, which MealPlanRecipe to fetch.
+     * Filter, which MealPlanItem to fetch.
      */
-    where?: MealPlanRecipeWhereInput
+    where?: MealPlanItemWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of MealPlanRecipes to fetch.
+     * Determine the order of MealPlanItems to fetch.
      */
-    orderBy?: MealPlanRecipeOrderByWithRelationInput | MealPlanRecipeOrderByWithRelationInput[]
+    orderBy?: MealPlanItemOrderByWithRelationInput | MealPlanItemOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for MealPlanRecipes.
+     * Sets the position for searching for MealPlanItems.
      */
-    cursor?: MealPlanRecipeWhereUniqueInput
+    cursor?: MealPlanItemWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` MealPlanRecipes from the position of the cursor.
+     * Take `±n` MealPlanItems from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` MealPlanRecipes.
+     * Skip the first `n` MealPlanItems.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of MealPlanRecipes.
+     * Filter by unique combinations of MealPlanItems.
      */
-    distinct?: MealPlanRecipeScalarFieldEnum | MealPlanRecipeScalarFieldEnum[]
+    distinct?: MealPlanItemScalarFieldEnum | MealPlanItemScalarFieldEnum[]
   }
 
   /**
-   * MealPlanRecipe findMany
+   * MealPlanItem findMany
    */
-  export type MealPlanRecipeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * Filter, which MealPlanRecipes to fetch.
+     * Filter, which MealPlanItems to fetch.
      */
-    where?: MealPlanRecipeWhereInput
+    where?: MealPlanItemWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of MealPlanRecipes to fetch.
+     * Determine the order of MealPlanItems to fetch.
      */
-    orderBy?: MealPlanRecipeOrderByWithRelationInput | MealPlanRecipeOrderByWithRelationInput[]
+    orderBy?: MealPlanItemOrderByWithRelationInput | MealPlanItemOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing MealPlanRecipes.
+     * Sets the position for listing MealPlanItems.
      */
-    cursor?: MealPlanRecipeWhereUniqueInput
+    cursor?: MealPlanItemWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` MealPlanRecipes from the position of the cursor.
+     * Take `±n` MealPlanItems from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` MealPlanRecipes.
+     * Skip the first `n` MealPlanItems.
      */
     skip?: number
-    distinct?: MealPlanRecipeScalarFieldEnum | MealPlanRecipeScalarFieldEnum[]
+    distinct?: MealPlanItemScalarFieldEnum | MealPlanItemScalarFieldEnum[]
   }
 
   /**
-   * MealPlanRecipe create
+   * MealPlanItem create
    */
-  export type MealPlanRecipeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * The data needed to create a MealPlanRecipe.
+     * The data needed to create a MealPlanItem.
      */
-    data: XOR<MealPlanRecipeCreateInput, MealPlanRecipeUncheckedCreateInput>
+    data: XOR<MealPlanItemCreateInput, MealPlanItemUncheckedCreateInput>
   }
 
   /**
-   * MealPlanRecipe createMany
+   * MealPlanItem createMany
    */
-  export type MealPlanRecipeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many MealPlanRecipes.
+     * The data used to create many MealPlanItems.
      */
-    data: MealPlanRecipeCreateManyInput | MealPlanRecipeCreateManyInput[]
+    data: MealPlanItemCreateManyInput | MealPlanItemCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * MealPlanRecipe createManyAndReturn
+   * MealPlanItem createManyAndReturn
    */
-  export type MealPlanRecipeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelectCreateManyAndReturn<ExtArgs> | null
+    select?: MealPlanItemSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
-     * The data used to create many MealPlanRecipes.
+     * The data used to create many MealPlanItems.
      */
-    data: MealPlanRecipeCreateManyInput | MealPlanRecipeCreateManyInput[]
+    data: MealPlanItemCreateManyInput | MealPlanItemCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: MealPlanItemIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * MealPlanRecipe update
+   * MealPlanItem update
    */
-  export type MealPlanRecipeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * The data needed to update a MealPlanRecipe.
+     * The data needed to update a MealPlanItem.
      */
-    data: XOR<MealPlanRecipeUpdateInput, MealPlanRecipeUncheckedUpdateInput>
+    data: XOR<MealPlanItemUpdateInput, MealPlanItemUncheckedUpdateInput>
     /**
-     * Choose, which MealPlanRecipe to update.
+     * Choose, which MealPlanItem to update.
      */
-    where: MealPlanRecipeWhereUniqueInput
+    where: MealPlanItemWhereUniqueInput
   }
 
   /**
-   * MealPlanRecipe updateMany
+   * MealPlanItem updateMany
    */
-  export type MealPlanRecipeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update MealPlanRecipes.
+     * The data used to update MealPlanItems.
      */
-    data: XOR<MealPlanRecipeUpdateManyMutationInput, MealPlanRecipeUncheckedUpdateManyInput>
+    data: XOR<MealPlanItemUpdateManyMutationInput, MealPlanItemUncheckedUpdateManyInput>
     /**
-     * Filter which MealPlanRecipes to update
+     * Filter which MealPlanItems to update
      */
-    where?: MealPlanRecipeWhereInput
+    where?: MealPlanItemWhereInput
     /**
-     * Limit how many MealPlanRecipes to update.
+     * Limit how many MealPlanItems to update.
      */
     limit?: number
   }
 
   /**
-   * MealPlanRecipe updateManyAndReturn
+   * MealPlanItem updateManyAndReturn
    */
-  export type MealPlanRecipeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: MealPlanItemSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
-     * The data used to update MealPlanRecipes.
+     * The data used to update MealPlanItems.
      */
-    data: XOR<MealPlanRecipeUpdateManyMutationInput, MealPlanRecipeUncheckedUpdateManyInput>
+    data: XOR<MealPlanItemUpdateManyMutationInput, MealPlanItemUncheckedUpdateManyInput>
     /**
-     * Filter which MealPlanRecipes to update
+     * Filter which MealPlanItems to update
      */
-    where?: MealPlanRecipeWhereInput
+    where?: MealPlanItemWhereInput
     /**
-     * Limit how many MealPlanRecipes to update.
+     * Limit how many MealPlanItems to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: MealPlanItemIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * MealPlanRecipe upsert
+   * MealPlanItem upsert
    */
-  export type MealPlanRecipeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * The filter to search for the MealPlanRecipe to update in case it exists.
+     * The filter to search for the MealPlanItem to update in case it exists.
      */
-    where: MealPlanRecipeWhereUniqueInput
+    where: MealPlanItemWhereUniqueInput
     /**
-     * In case the MealPlanRecipe found by the `where` argument doesn't exist, create a new MealPlanRecipe with this data.
+     * In case the MealPlanItem found by the `where` argument doesn't exist, create a new MealPlanItem with this data.
      */
-    create: XOR<MealPlanRecipeCreateInput, MealPlanRecipeUncheckedCreateInput>
+    create: XOR<MealPlanItemCreateInput, MealPlanItemUncheckedCreateInput>
     /**
-     * In case the MealPlanRecipe was found with the provided `where` argument, update it with this data.
+     * In case the MealPlanItem was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<MealPlanRecipeUpdateInput, MealPlanRecipeUncheckedUpdateInput>
+    update: XOR<MealPlanItemUpdateInput, MealPlanItemUncheckedUpdateInput>
   }
 
   /**
-   * MealPlanRecipe delete
+   * MealPlanItem delete
    */
-  export type MealPlanRecipeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the MealPlanItem
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: MealPlanItemSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the MealPlanItem
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: MealPlanItemOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: MealPlanItemInclude<ExtArgs> | null
     /**
-     * Filter which MealPlanRecipe to delete.
+     * Filter which MealPlanItem to delete.
      */
-    where: MealPlanRecipeWhereUniqueInput
+    where: MealPlanItemWhereUniqueInput
   }
 
   /**
-   * MealPlanRecipe deleteMany
+   * MealPlanItem deleteMany
    */
-  export type MealPlanRecipeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which MealPlanRecipes to delete
+     * Filter which MealPlanItems to delete
      */
-    where?: MealPlanRecipeWhereInput
+    where?: MealPlanItemWhereInput
     /**
-     * Limit how many MealPlanRecipes to delete.
+     * Limit how many MealPlanItems to delete.
      */
     limit?: number
   }
 
   /**
-   * MealPlanRecipe without action
+   * MealPlanItem.cachedRecipe
    */
-  export type MealPlanRecipeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MealPlanItem$cachedRecipeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MealPlanRecipe
+     * Select specific fields to fetch from the Recipe
      */
-    select?: MealPlanRecipeSelect<ExtArgs> | null
+    select?: RecipeSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MealPlanRecipe
+     * Omit specific fields from the Recipe
      */
-    omit?: MealPlanRecipeOmit<ExtArgs> | null
+    omit?: RecipeOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MealPlanRecipeInclude<ExtArgs> | null
+    include?: RecipeInclude<ExtArgs> | null
+    where?: RecipeWhereInput
+  }
+
+  /**
+   * MealPlanItem without action
+   */
+  export type MealPlanItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MealPlanItem
+     */
+    select?: MealPlanItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MealPlanItem
+     */
+    omit?: MealPlanItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealPlanItemInclude<ExtArgs> | null
   }
 
 
@@ -8194,6 +7308,2602 @@ export namespace Prisma {
 
 
   /**
+   * Model Recipe
+   */
+
+  export type AggregateRecipe = {
+    _count: RecipeCountAggregateOutputType | null
+    _avg: RecipeAvgAggregateOutputType | null
+    _sum: RecipeSumAggregateOutputType | null
+    _min: RecipeMinAggregateOutputType | null
+    _max: RecipeMaxAggregateOutputType | null
+  }
+
+  export type RecipeAvgAggregateOutputType = {
+    prepTime: number | null
+    cookTime: number | null
+    totalTime: number | null
+    servings: number | null
+    userRating: number | null
+    savedCount: number | null
+  }
+
+  export type RecipeSumAggregateOutputType = {
+    prepTime: number | null
+    cookTime: number | null
+    totalTime: number | null
+    servings: number | null
+    userRating: number | null
+    savedCount: number | null
+  }
+
+  export type RecipeMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    imageUrl: string | null
+    fallbackImageUrl: string | null
+    sourceType: $Enums.RecipeSourceType | null
+    sourceId: string | null
+    sourceUrl: string | null
+    cuisine: string | null
+    mealType: string | null
+    difficulty: $Enums.RecipeDifficulty | null
+    prepTime: number | null
+    cookTime: number | null
+    totalTime: number | null
+    servings: number | null
+    userRating: number | null
+    savedCount: number | null
+    isPublic: boolean | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RecipeMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    imageUrl: string | null
+    fallbackImageUrl: string | null
+    sourceType: $Enums.RecipeSourceType | null
+    sourceId: string | null
+    sourceUrl: string | null
+    cuisine: string | null
+    mealType: string | null
+    difficulty: $Enums.RecipeDifficulty | null
+    prepTime: number | null
+    cookTime: number | null
+    totalTime: number | null
+    servings: number | null
+    userRating: number | null
+    savedCount: number | null
+    isPublic: boolean | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RecipeCountAggregateOutputType = {
+    id: number
+    title: number
+    description: number
+    imageUrl: number
+    fallbackImageUrl: number
+    sourceType: number
+    sourceId: number
+    sourceUrl: number
+    cuisine: number
+    mealType: number
+    difficulty: number
+    prepTime: number
+    cookTime: number
+    totalTime: number
+    servings: number
+    instructions: number
+    nutrition: number
+    tags: number
+    namedEntities: number
+    userRating: number
+    savedCount: number
+    isPublic: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RecipeAvgAggregateInputType = {
+    prepTime?: true
+    cookTime?: true
+    totalTime?: true
+    servings?: true
+    userRating?: true
+    savedCount?: true
+  }
+
+  export type RecipeSumAggregateInputType = {
+    prepTime?: true
+    cookTime?: true
+    totalTime?: true
+    servings?: true
+    userRating?: true
+    savedCount?: true
+  }
+
+  export type RecipeMinAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    imageUrl?: true
+    fallbackImageUrl?: true
+    sourceType?: true
+    sourceId?: true
+    sourceUrl?: true
+    cuisine?: true
+    mealType?: true
+    difficulty?: true
+    prepTime?: true
+    cookTime?: true
+    totalTime?: true
+    servings?: true
+    userRating?: true
+    savedCount?: true
+    isPublic?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RecipeMaxAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    imageUrl?: true
+    fallbackImageUrl?: true
+    sourceType?: true
+    sourceId?: true
+    sourceUrl?: true
+    cuisine?: true
+    mealType?: true
+    difficulty?: true
+    prepTime?: true
+    cookTime?: true
+    totalTime?: true
+    servings?: true
+    userRating?: true
+    savedCount?: true
+    isPublic?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RecipeCountAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    imageUrl?: true
+    fallbackImageUrl?: true
+    sourceType?: true
+    sourceId?: true
+    sourceUrl?: true
+    cuisine?: true
+    mealType?: true
+    difficulty?: true
+    prepTime?: true
+    cookTime?: true
+    totalTime?: true
+    servings?: true
+    instructions?: true
+    nutrition?: true
+    tags?: true
+    namedEntities?: true
+    userRating?: true
+    savedCount?: true
+    isPublic?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RecipeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Recipe to aggregate.
+     */
+    where?: RecipeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Recipes to fetch.
+     */
+    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RecipeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Recipes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Recipes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Recipes
+    **/
+    _count?: true | RecipeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RecipeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RecipeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RecipeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RecipeMaxAggregateInputType
+  }
+
+  export type GetRecipeAggregateType<T extends RecipeAggregateArgs> = {
+        [P in keyof T & keyof AggregateRecipe]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRecipe[P]>
+      : GetScalarType<T[P], AggregateRecipe[P]>
+  }
+
+
+
+
+  export type RecipeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecipeWhereInput
+    orderBy?: RecipeOrderByWithAggregationInput | RecipeOrderByWithAggregationInput[]
+    by: RecipeScalarFieldEnum[] | RecipeScalarFieldEnum
+    having?: RecipeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RecipeCountAggregateInputType | true
+    _avg?: RecipeAvgAggregateInputType
+    _sum?: RecipeSumAggregateInputType
+    _min?: RecipeMinAggregateInputType
+    _max?: RecipeMaxAggregateInputType
+  }
+
+  export type RecipeGroupByOutputType = {
+    id: string
+    title: string
+    description: string | null
+    imageUrl: string | null
+    fallbackImageUrl: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId: string | null
+    sourceUrl: string | null
+    cuisine: string | null
+    mealType: string | null
+    difficulty: $Enums.RecipeDifficulty | null
+    prepTime: number | null
+    cookTime: number | null
+    totalTime: number | null
+    servings: number | null
+    instructions: string[]
+    nutrition: JsonValue | null
+    tags: string[]
+    namedEntities: string[]
+    userRating: number | null
+    savedCount: number
+    isPublic: boolean
+    createdById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: RecipeCountAggregateOutputType | null
+    _avg: RecipeAvgAggregateOutputType | null
+    _sum: RecipeSumAggregateOutputType | null
+    _min: RecipeMinAggregateOutputType | null
+    _max: RecipeMaxAggregateOutputType | null
+  }
+
+  type GetRecipeGroupByPayload<T extends RecipeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RecipeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RecipeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RecipeGroupByOutputType[P]>
+            : GetScalarType<T[P], RecipeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RecipeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    fallbackImageUrl?: boolean
+    sourceType?: boolean
+    sourceId?: boolean
+    sourceUrl?: boolean
+    cuisine?: boolean
+    mealType?: boolean
+    difficulty?: boolean
+    prepTime?: boolean
+    cookTime?: boolean
+    totalTime?: boolean
+    servings?: boolean
+    instructions?: boolean
+    nutrition?: boolean
+    tags?: boolean
+    namedEntities?: boolean
+    userRating?: boolean
+    savedCount?: boolean
+    isPublic?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ingredients?: boolean | Recipe$ingredientsArgs<ExtArgs>
+    createdBy?: boolean | Recipe$createdByArgs<ExtArgs>
+    userRecipes?: boolean | Recipe$userRecipesArgs<ExtArgs>
+    mealPlanItems?: boolean | Recipe$mealPlanItemsArgs<ExtArgs>
+    _count?: boolean | RecipeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recipe"]>
+
+  export type RecipeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    fallbackImageUrl?: boolean
+    sourceType?: boolean
+    sourceId?: boolean
+    sourceUrl?: boolean
+    cuisine?: boolean
+    mealType?: boolean
+    difficulty?: boolean
+    prepTime?: boolean
+    cookTime?: boolean
+    totalTime?: boolean
+    servings?: boolean
+    instructions?: boolean
+    nutrition?: boolean
+    tags?: boolean
+    namedEntities?: boolean
+    userRating?: boolean
+    savedCount?: boolean
+    isPublic?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdBy?: boolean | Recipe$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["recipe"]>
+
+  export type RecipeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    fallbackImageUrl?: boolean
+    sourceType?: boolean
+    sourceId?: boolean
+    sourceUrl?: boolean
+    cuisine?: boolean
+    mealType?: boolean
+    difficulty?: boolean
+    prepTime?: boolean
+    cookTime?: boolean
+    totalTime?: boolean
+    servings?: boolean
+    instructions?: boolean
+    nutrition?: boolean
+    tags?: boolean
+    namedEntities?: boolean
+    userRating?: boolean
+    savedCount?: boolean
+    isPublic?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdBy?: boolean | Recipe$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["recipe"]>
+
+  export type RecipeSelectScalar = {
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    fallbackImageUrl?: boolean
+    sourceType?: boolean
+    sourceId?: boolean
+    sourceUrl?: boolean
+    cuisine?: boolean
+    mealType?: boolean
+    difficulty?: boolean
+    prepTime?: boolean
+    cookTime?: boolean
+    totalTime?: boolean
+    servings?: boolean
+    instructions?: boolean
+    nutrition?: boolean
+    tags?: boolean
+    namedEntities?: boolean
+    userRating?: boolean
+    savedCount?: boolean
+    isPublic?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RecipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "imageUrl" | "fallbackImageUrl" | "sourceType" | "sourceId" | "sourceUrl" | "cuisine" | "mealType" | "difficulty" | "prepTime" | "cookTime" | "totalTime" | "servings" | "instructions" | "nutrition" | "tags" | "namedEntities" | "userRating" | "savedCount" | "isPublic" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["recipe"]>
+  export type RecipeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ingredients?: boolean | Recipe$ingredientsArgs<ExtArgs>
+    createdBy?: boolean | Recipe$createdByArgs<ExtArgs>
+    userRecipes?: boolean | Recipe$userRecipesArgs<ExtArgs>
+    mealPlanItems?: boolean | Recipe$mealPlanItemsArgs<ExtArgs>
+    _count?: boolean | RecipeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type RecipeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | Recipe$createdByArgs<ExtArgs>
+  }
+  export type RecipeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | Recipe$createdByArgs<ExtArgs>
+  }
+
+  export type $RecipePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Recipe"
+    objects: {
+      ingredients: Prisma.$RecipeIngredientPayload<ExtArgs>[]
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+      userRecipes: Prisma.$UserRecipePayload<ExtArgs>[]
+      mealPlanItems: Prisma.$MealPlanItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      description: string | null
+      imageUrl: string | null
+      fallbackImageUrl: string | null
+      sourceType: $Enums.RecipeSourceType
+      sourceId: string | null
+      sourceUrl: string | null
+      cuisine: string | null
+      mealType: string | null
+      difficulty: $Enums.RecipeDifficulty | null
+      prepTime: number | null
+      cookTime: number | null
+      totalTime: number | null
+      servings: number | null
+      instructions: string[]
+      nutrition: Prisma.JsonValue | null
+      tags: string[]
+      namedEntities: string[]
+      userRating: number | null
+      savedCount: number
+      isPublic: boolean
+      createdById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["recipe"]>
+    composites: {}
+  }
+
+  type RecipeGetPayload<S extends boolean | null | undefined | RecipeDefaultArgs> = $Result.GetResult<Prisma.$RecipePayload, S>
+
+  type RecipeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RecipeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RecipeCountAggregateInputType | true
+    }
+
+  export interface RecipeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Recipe'], meta: { name: 'Recipe' } }
+    /**
+     * Find zero or one Recipe that matches the filter.
+     * @param {RecipeFindUniqueArgs} args - Arguments to find a Recipe
+     * @example
+     * // Get one Recipe
+     * const recipe = await prisma.recipe.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RecipeFindUniqueArgs>(args: SelectSubset<T, RecipeFindUniqueArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Recipe that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RecipeFindUniqueOrThrowArgs} args - Arguments to find a Recipe
+     * @example
+     * // Get one Recipe
+     * const recipe = await prisma.recipe.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RecipeFindUniqueOrThrowArgs>(args: SelectSubset<T, RecipeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Recipe that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeFindFirstArgs} args - Arguments to find a Recipe
+     * @example
+     * // Get one Recipe
+     * const recipe = await prisma.recipe.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RecipeFindFirstArgs>(args?: SelectSubset<T, RecipeFindFirstArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Recipe that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeFindFirstOrThrowArgs} args - Arguments to find a Recipe
+     * @example
+     * // Get one Recipe
+     * const recipe = await prisma.recipe.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RecipeFindFirstOrThrowArgs>(args?: SelectSubset<T, RecipeFindFirstOrThrowArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Recipes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Recipes
+     * const recipes = await prisma.recipe.findMany()
+     * 
+     * // Get first 10 Recipes
+     * const recipes = await prisma.recipe.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const recipeWithIdOnly = await prisma.recipe.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RecipeFindManyArgs>(args?: SelectSubset<T, RecipeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Recipe.
+     * @param {RecipeCreateArgs} args - Arguments to create a Recipe.
+     * @example
+     * // Create one Recipe
+     * const Recipe = await prisma.recipe.create({
+     *   data: {
+     *     // ... data to create a Recipe
+     *   }
+     * })
+     * 
+     */
+    create<T extends RecipeCreateArgs>(args: SelectSubset<T, RecipeCreateArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Recipes.
+     * @param {RecipeCreateManyArgs} args - Arguments to create many Recipes.
+     * @example
+     * // Create many Recipes
+     * const recipe = await prisma.recipe.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RecipeCreateManyArgs>(args?: SelectSubset<T, RecipeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Recipes and returns the data saved in the database.
+     * @param {RecipeCreateManyAndReturnArgs} args - Arguments to create many Recipes.
+     * @example
+     * // Create many Recipes
+     * const recipe = await prisma.recipe.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Recipes and only return the `id`
+     * const recipeWithIdOnly = await prisma.recipe.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RecipeCreateManyAndReturnArgs>(args?: SelectSubset<T, RecipeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Recipe.
+     * @param {RecipeDeleteArgs} args - Arguments to delete one Recipe.
+     * @example
+     * // Delete one Recipe
+     * const Recipe = await prisma.recipe.delete({
+     *   where: {
+     *     // ... filter to delete one Recipe
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RecipeDeleteArgs>(args: SelectSubset<T, RecipeDeleteArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Recipe.
+     * @param {RecipeUpdateArgs} args - Arguments to update one Recipe.
+     * @example
+     * // Update one Recipe
+     * const recipe = await prisma.recipe.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RecipeUpdateArgs>(args: SelectSubset<T, RecipeUpdateArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Recipes.
+     * @param {RecipeDeleteManyArgs} args - Arguments to filter Recipes to delete.
+     * @example
+     * // Delete a few Recipes
+     * const { count } = await prisma.recipe.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RecipeDeleteManyArgs>(args?: SelectSubset<T, RecipeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Recipes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Recipes
+     * const recipe = await prisma.recipe.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RecipeUpdateManyArgs>(args: SelectSubset<T, RecipeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Recipes and returns the data updated in the database.
+     * @param {RecipeUpdateManyAndReturnArgs} args - Arguments to update many Recipes.
+     * @example
+     * // Update many Recipes
+     * const recipe = await prisma.recipe.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Recipes and only return the `id`
+     * const recipeWithIdOnly = await prisma.recipe.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RecipeUpdateManyAndReturnArgs>(args: SelectSubset<T, RecipeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Recipe.
+     * @param {RecipeUpsertArgs} args - Arguments to update or create a Recipe.
+     * @example
+     * // Update or create a Recipe
+     * const recipe = await prisma.recipe.upsert({
+     *   create: {
+     *     // ... data to create a Recipe
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Recipe we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RecipeUpsertArgs>(args: SelectSubset<T, RecipeUpsertArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Recipes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeCountArgs} args - Arguments to filter Recipes to count.
+     * @example
+     * // Count the number of Recipes
+     * const count = await prisma.recipe.count({
+     *   where: {
+     *     // ... the filter for the Recipes we want to count
+     *   }
+     * })
+    **/
+    count<T extends RecipeCountArgs>(
+      args?: Subset<T, RecipeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RecipeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Recipe.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RecipeAggregateArgs>(args: Subset<T, RecipeAggregateArgs>): Prisma.PrismaPromise<GetRecipeAggregateType<T>>
+
+    /**
+     * Group by Recipe.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RecipeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RecipeGroupByArgs['orderBy'] }
+        : { orderBy?: RecipeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RecipeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRecipeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Recipe model
+   */
+  readonly fields: RecipeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Recipe.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RecipeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    ingredients<T extends Recipe$ingredientsArgs<ExtArgs> = {}>(args?: Subset<T, Recipe$ingredientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdBy<T extends Recipe$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Recipe$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    userRecipes<T extends Recipe$userRecipesArgs<ExtArgs> = {}>(args?: Subset<T, Recipe$userRecipesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRecipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    mealPlanItems<T extends Recipe$mealPlanItemsArgs<ExtArgs> = {}>(args?: Subset<T, Recipe$mealPlanItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Recipe model
+   */
+  interface RecipeFieldRefs {
+    readonly id: FieldRef<"Recipe", 'String'>
+    readonly title: FieldRef<"Recipe", 'String'>
+    readonly description: FieldRef<"Recipe", 'String'>
+    readonly imageUrl: FieldRef<"Recipe", 'String'>
+    readonly fallbackImageUrl: FieldRef<"Recipe", 'String'>
+    readonly sourceType: FieldRef<"Recipe", 'RecipeSourceType'>
+    readonly sourceId: FieldRef<"Recipe", 'String'>
+    readonly sourceUrl: FieldRef<"Recipe", 'String'>
+    readonly cuisine: FieldRef<"Recipe", 'String'>
+    readonly mealType: FieldRef<"Recipe", 'String'>
+    readonly difficulty: FieldRef<"Recipe", 'RecipeDifficulty'>
+    readonly prepTime: FieldRef<"Recipe", 'Int'>
+    readonly cookTime: FieldRef<"Recipe", 'Int'>
+    readonly totalTime: FieldRef<"Recipe", 'Int'>
+    readonly servings: FieldRef<"Recipe", 'Int'>
+    readonly instructions: FieldRef<"Recipe", 'String[]'>
+    readonly nutrition: FieldRef<"Recipe", 'Json'>
+    readonly tags: FieldRef<"Recipe", 'String[]'>
+    readonly namedEntities: FieldRef<"Recipe", 'String[]'>
+    readonly userRating: FieldRef<"Recipe", 'Float'>
+    readonly savedCount: FieldRef<"Recipe", 'Int'>
+    readonly isPublic: FieldRef<"Recipe", 'Boolean'>
+    readonly createdById: FieldRef<"Recipe", 'String'>
+    readonly createdAt: FieldRef<"Recipe", 'DateTime'>
+    readonly updatedAt: FieldRef<"Recipe", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Recipe findUnique
+   */
+  export type RecipeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recipe to fetch.
+     */
+    where: RecipeWhereUniqueInput
+  }
+
+  /**
+   * Recipe findUniqueOrThrow
+   */
+  export type RecipeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recipe to fetch.
+     */
+    where: RecipeWhereUniqueInput
+  }
+
+  /**
+   * Recipe findFirst
+   */
+  export type RecipeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recipe to fetch.
+     */
+    where?: RecipeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Recipes to fetch.
+     */
+    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Recipes.
+     */
+    cursor?: RecipeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Recipes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Recipes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Recipes.
+     */
+    distinct?: RecipeScalarFieldEnum | RecipeScalarFieldEnum[]
+  }
+
+  /**
+   * Recipe findFirstOrThrow
+   */
+  export type RecipeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recipe to fetch.
+     */
+    where?: RecipeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Recipes to fetch.
+     */
+    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Recipes.
+     */
+    cursor?: RecipeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Recipes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Recipes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Recipes.
+     */
+    distinct?: RecipeScalarFieldEnum | RecipeScalarFieldEnum[]
+  }
+
+  /**
+   * Recipe findMany
+   */
+  export type RecipeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recipes to fetch.
+     */
+    where?: RecipeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Recipes to fetch.
+     */
+    orderBy?: RecipeOrderByWithRelationInput | RecipeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Recipes.
+     */
+    cursor?: RecipeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Recipes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Recipes.
+     */
+    skip?: number
+    distinct?: RecipeScalarFieldEnum | RecipeScalarFieldEnum[]
+  }
+
+  /**
+   * Recipe create
+   */
+  export type RecipeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Recipe.
+     */
+    data: XOR<RecipeCreateInput, RecipeUncheckedCreateInput>
+  }
+
+  /**
+   * Recipe createMany
+   */
+  export type RecipeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Recipes.
+     */
+    data: RecipeCreateManyInput | RecipeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Recipe createManyAndReturn
+   */
+  export type RecipeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * The data used to create many Recipes.
+     */
+    data: RecipeCreateManyInput | RecipeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Recipe update
+   */
+  export type RecipeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Recipe.
+     */
+    data: XOR<RecipeUpdateInput, RecipeUncheckedUpdateInput>
+    /**
+     * Choose, which Recipe to update.
+     */
+    where: RecipeWhereUniqueInput
+  }
+
+  /**
+   * Recipe updateMany
+   */
+  export type RecipeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Recipes.
+     */
+    data: XOR<RecipeUpdateManyMutationInput, RecipeUncheckedUpdateManyInput>
+    /**
+     * Filter which Recipes to update
+     */
+    where?: RecipeWhereInput
+    /**
+     * Limit how many Recipes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Recipe updateManyAndReturn
+   */
+  export type RecipeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * The data used to update Recipes.
+     */
+    data: XOR<RecipeUpdateManyMutationInput, RecipeUncheckedUpdateManyInput>
+    /**
+     * Filter which Recipes to update
+     */
+    where?: RecipeWhereInput
+    /**
+     * Limit how many Recipes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Recipe upsert
+   */
+  export type RecipeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Recipe to update in case it exists.
+     */
+    where: RecipeWhereUniqueInput
+    /**
+     * In case the Recipe found by the `where` argument doesn't exist, create a new Recipe with this data.
+     */
+    create: XOR<RecipeCreateInput, RecipeUncheckedCreateInput>
+    /**
+     * In case the Recipe was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RecipeUpdateInput, RecipeUncheckedUpdateInput>
+  }
+
+  /**
+   * Recipe delete
+   */
+  export type RecipeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+    /**
+     * Filter which Recipe to delete.
+     */
+    where: RecipeWhereUniqueInput
+  }
+
+  /**
+   * Recipe deleteMany
+   */
+  export type RecipeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Recipes to delete
+     */
+    where?: RecipeWhereInput
+    /**
+     * Limit how many Recipes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Recipe.ingredients
+   */
+  export type Recipe$ingredientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    where?: RecipeIngredientWhereInput
+    orderBy?: RecipeIngredientOrderByWithRelationInput | RecipeIngredientOrderByWithRelationInput[]
+    cursor?: RecipeIngredientWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RecipeIngredientScalarFieldEnum | RecipeIngredientScalarFieldEnum[]
+  }
+
+  /**
+   * Recipe.createdBy
+   */
+  export type Recipe$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Recipe.userRecipes
+   */
+  export type Recipe$userRecipesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserRecipe
+     */
+    select?: UserRecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserRecipe
+     */
+    omit?: UserRecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserRecipeInclude<ExtArgs> | null
+    where?: UserRecipeWhereInput
+    orderBy?: UserRecipeOrderByWithRelationInput | UserRecipeOrderByWithRelationInput[]
+    cursor?: UserRecipeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserRecipeScalarFieldEnum | UserRecipeScalarFieldEnum[]
+  }
+
+  /**
+   * Recipe.mealPlanItems
+   */
+  export type Recipe$mealPlanItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MealPlanItem
+     */
+    select?: MealPlanItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MealPlanItem
+     */
+    omit?: MealPlanItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MealPlanItemInclude<ExtArgs> | null
+    where?: MealPlanItemWhereInput
+    orderBy?: MealPlanItemOrderByWithRelationInput | MealPlanItemOrderByWithRelationInput[]
+    cursor?: MealPlanItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MealPlanItemScalarFieldEnum | MealPlanItemScalarFieldEnum[]
+  }
+
+  /**
+   * Recipe without action
+   */
+  export type RecipeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recipe
+     */
+    select?: RecipeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recipe
+     */
+    omit?: RecipeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RecipeIngredient
+   */
+
+  export type AggregateRecipeIngredient = {
+    _count: RecipeIngredientCountAggregateOutputType | null
+    _avg: RecipeIngredientAvgAggregateOutputType | null
+    _sum: RecipeIngredientSumAggregateOutputType | null
+    _min: RecipeIngredientMinAggregateOutputType | null
+    _max: RecipeIngredientMaxAggregateOutputType | null
+  }
+
+  export type RecipeIngredientAvgAggregateOutputType = {
+    ingredientId: number | null
+    amount: number | null
+  }
+
+  export type RecipeIngredientSumAggregateOutputType = {
+    ingredientId: number | null
+    amount: number | null
+  }
+
+  export type RecipeIngredientMinAggregateOutputType = {
+    id: string | null
+    recipeId: string | null
+    ingredientId: number | null
+    name: string | null
+    amount: number | null
+    unit: string | null
+    original: string | null
+    image: string | null
+  }
+
+  export type RecipeIngredientMaxAggregateOutputType = {
+    id: string | null
+    recipeId: string | null
+    ingredientId: number | null
+    name: string | null
+    amount: number | null
+    unit: string | null
+    original: string | null
+    image: string | null
+  }
+
+  export type RecipeIngredientCountAggregateOutputType = {
+    id: number
+    recipeId: number
+    ingredientId: number
+    name: number
+    amount: number
+    unit: number
+    original: number
+    image: number
+    _all: number
+  }
+
+
+  export type RecipeIngredientAvgAggregateInputType = {
+    ingredientId?: true
+    amount?: true
+  }
+
+  export type RecipeIngredientSumAggregateInputType = {
+    ingredientId?: true
+    amount?: true
+  }
+
+  export type RecipeIngredientMinAggregateInputType = {
+    id?: true
+    recipeId?: true
+    ingredientId?: true
+    name?: true
+    amount?: true
+    unit?: true
+    original?: true
+    image?: true
+  }
+
+  export type RecipeIngredientMaxAggregateInputType = {
+    id?: true
+    recipeId?: true
+    ingredientId?: true
+    name?: true
+    amount?: true
+    unit?: true
+    original?: true
+    image?: true
+  }
+
+  export type RecipeIngredientCountAggregateInputType = {
+    id?: true
+    recipeId?: true
+    ingredientId?: true
+    name?: true
+    amount?: true
+    unit?: true
+    original?: true
+    image?: true
+    _all?: true
+  }
+
+  export type RecipeIngredientAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RecipeIngredient to aggregate.
+     */
+    where?: RecipeIngredientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecipeIngredients to fetch.
+     */
+    orderBy?: RecipeIngredientOrderByWithRelationInput | RecipeIngredientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RecipeIngredientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecipeIngredients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecipeIngredients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RecipeIngredients
+    **/
+    _count?: true | RecipeIngredientCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RecipeIngredientAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RecipeIngredientSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RecipeIngredientMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RecipeIngredientMaxAggregateInputType
+  }
+
+  export type GetRecipeIngredientAggregateType<T extends RecipeIngredientAggregateArgs> = {
+        [P in keyof T & keyof AggregateRecipeIngredient]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRecipeIngredient[P]>
+      : GetScalarType<T[P], AggregateRecipeIngredient[P]>
+  }
+
+
+
+
+  export type RecipeIngredientGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecipeIngredientWhereInput
+    orderBy?: RecipeIngredientOrderByWithAggregationInput | RecipeIngredientOrderByWithAggregationInput[]
+    by: RecipeIngredientScalarFieldEnum[] | RecipeIngredientScalarFieldEnum
+    having?: RecipeIngredientScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RecipeIngredientCountAggregateInputType | true
+    _avg?: RecipeIngredientAvgAggregateInputType
+    _sum?: RecipeIngredientSumAggregateInputType
+    _min?: RecipeIngredientMinAggregateInputType
+    _max?: RecipeIngredientMaxAggregateInputType
+  }
+
+  export type RecipeIngredientGroupByOutputType = {
+    id: string
+    recipeId: string
+    ingredientId: number
+    name: string
+    amount: number
+    unit: string
+    original: string
+    image: string | null
+    _count: RecipeIngredientCountAggregateOutputType | null
+    _avg: RecipeIngredientAvgAggregateOutputType | null
+    _sum: RecipeIngredientSumAggregateOutputType | null
+    _min: RecipeIngredientMinAggregateOutputType | null
+    _max: RecipeIngredientMaxAggregateOutputType | null
+  }
+
+  type GetRecipeIngredientGroupByPayload<T extends RecipeIngredientGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RecipeIngredientGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RecipeIngredientGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RecipeIngredientGroupByOutputType[P]>
+            : GetScalarType<T[P], RecipeIngredientGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RecipeIngredientSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipeId?: boolean
+    ingredientId?: boolean
+    name?: boolean
+    amount?: boolean
+    unit?: boolean
+    original?: boolean
+    image?: boolean
+    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recipeIngredient"]>
+
+  export type RecipeIngredientSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipeId?: boolean
+    ingredientId?: boolean
+    name?: boolean
+    amount?: boolean
+    unit?: boolean
+    original?: boolean
+    image?: boolean
+    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recipeIngredient"]>
+
+  export type RecipeIngredientSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipeId?: boolean
+    ingredientId?: boolean
+    name?: boolean
+    amount?: boolean
+    unit?: boolean
+    original?: boolean
+    image?: boolean
+    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recipeIngredient"]>
+
+  export type RecipeIngredientSelectScalar = {
+    id?: boolean
+    recipeId?: boolean
+    ingredientId?: boolean
+    name?: boolean
+    amount?: boolean
+    unit?: boolean
+    original?: boolean
+    image?: boolean
+  }
+
+  export type RecipeIngredientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipeId" | "ingredientId" | "name" | "amount" | "unit" | "original" | "image", ExtArgs["result"]["recipeIngredient"]>
+  export type RecipeIngredientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+  }
+  export type RecipeIngredientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+  }
+  export type RecipeIngredientIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    recipe?: boolean | RecipeDefaultArgs<ExtArgs>
+  }
+
+  export type $RecipeIngredientPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RecipeIngredient"
+    objects: {
+      recipe: Prisma.$RecipePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      recipeId: string
+      ingredientId: number
+      name: string
+      amount: number
+      unit: string
+      original: string
+      image: string | null
+    }, ExtArgs["result"]["recipeIngredient"]>
+    composites: {}
+  }
+
+  type RecipeIngredientGetPayload<S extends boolean | null | undefined | RecipeIngredientDefaultArgs> = $Result.GetResult<Prisma.$RecipeIngredientPayload, S>
+
+  type RecipeIngredientCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RecipeIngredientFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RecipeIngredientCountAggregateInputType | true
+    }
+
+  export interface RecipeIngredientDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RecipeIngredient'], meta: { name: 'RecipeIngredient' } }
+    /**
+     * Find zero or one RecipeIngredient that matches the filter.
+     * @param {RecipeIngredientFindUniqueArgs} args - Arguments to find a RecipeIngredient
+     * @example
+     * // Get one RecipeIngredient
+     * const recipeIngredient = await prisma.recipeIngredient.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RecipeIngredientFindUniqueArgs>(args: SelectSubset<T, RecipeIngredientFindUniqueArgs<ExtArgs>>): Prisma__RecipeIngredientClient<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RecipeIngredient that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RecipeIngredientFindUniqueOrThrowArgs} args - Arguments to find a RecipeIngredient
+     * @example
+     * // Get one RecipeIngredient
+     * const recipeIngredient = await prisma.recipeIngredient.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RecipeIngredientFindUniqueOrThrowArgs>(args: SelectSubset<T, RecipeIngredientFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RecipeIngredientClient<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RecipeIngredient that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeIngredientFindFirstArgs} args - Arguments to find a RecipeIngredient
+     * @example
+     * // Get one RecipeIngredient
+     * const recipeIngredient = await prisma.recipeIngredient.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RecipeIngredientFindFirstArgs>(args?: SelectSubset<T, RecipeIngredientFindFirstArgs<ExtArgs>>): Prisma__RecipeIngredientClient<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RecipeIngredient that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeIngredientFindFirstOrThrowArgs} args - Arguments to find a RecipeIngredient
+     * @example
+     * // Get one RecipeIngredient
+     * const recipeIngredient = await prisma.recipeIngredient.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RecipeIngredientFindFirstOrThrowArgs>(args?: SelectSubset<T, RecipeIngredientFindFirstOrThrowArgs<ExtArgs>>): Prisma__RecipeIngredientClient<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RecipeIngredients that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeIngredientFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RecipeIngredients
+     * const recipeIngredients = await prisma.recipeIngredient.findMany()
+     * 
+     * // Get first 10 RecipeIngredients
+     * const recipeIngredients = await prisma.recipeIngredient.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const recipeIngredientWithIdOnly = await prisma.recipeIngredient.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RecipeIngredientFindManyArgs>(args?: SelectSubset<T, RecipeIngredientFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RecipeIngredient.
+     * @param {RecipeIngredientCreateArgs} args - Arguments to create a RecipeIngredient.
+     * @example
+     * // Create one RecipeIngredient
+     * const RecipeIngredient = await prisma.recipeIngredient.create({
+     *   data: {
+     *     // ... data to create a RecipeIngredient
+     *   }
+     * })
+     * 
+     */
+    create<T extends RecipeIngredientCreateArgs>(args: SelectSubset<T, RecipeIngredientCreateArgs<ExtArgs>>): Prisma__RecipeIngredientClient<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RecipeIngredients.
+     * @param {RecipeIngredientCreateManyArgs} args - Arguments to create many RecipeIngredients.
+     * @example
+     * // Create many RecipeIngredients
+     * const recipeIngredient = await prisma.recipeIngredient.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RecipeIngredientCreateManyArgs>(args?: SelectSubset<T, RecipeIngredientCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RecipeIngredients and returns the data saved in the database.
+     * @param {RecipeIngredientCreateManyAndReturnArgs} args - Arguments to create many RecipeIngredients.
+     * @example
+     * // Create many RecipeIngredients
+     * const recipeIngredient = await prisma.recipeIngredient.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RecipeIngredients and only return the `id`
+     * const recipeIngredientWithIdOnly = await prisma.recipeIngredient.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RecipeIngredientCreateManyAndReturnArgs>(args?: SelectSubset<T, RecipeIngredientCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RecipeIngredient.
+     * @param {RecipeIngredientDeleteArgs} args - Arguments to delete one RecipeIngredient.
+     * @example
+     * // Delete one RecipeIngredient
+     * const RecipeIngredient = await prisma.recipeIngredient.delete({
+     *   where: {
+     *     // ... filter to delete one RecipeIngredient
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RecipeIngredientDeleteArgs>(args: SelectSubset<T, RecipeIngredientDeleteArgs<ExtArgs>>): Prisma__RecipeIngredientClient<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RecipeIngredient.
+     * @param {RecipeIngredientUpdateArgs} args - Arguments to update one RecipeIngredient.
+     * @example
+     * // Update one RecipeIngredient
+     * const recipeIngredient = await prisma.recipeIngredient.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RecipeIngredientUpdateArgs>(args: SelectSubset<T, RecipeIngredientUpdateArgs<ExtArgs>>): Prisma__RecipeIngredientClient<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RecipeIngredients.
+     * @param {RecipeIngredientDeleteManyArgs} args - Arguments to filter RecipeIngredients to delete.
+     * @example
+     * // Delete a few RecipeIngredients
+     * const { count } = await prisma.recipeIngredient.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RecipeIngredientDeleteManyArgs>(args?: SelectSubset<T, RecipeIngredientDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RecipeIngredients.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeIngredientUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RecipeIngredients
+     * const recipeIngredient = await prisma.recipeIngredient.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RecipeIngredientUpdateManyArgs>(args: SelectSubset<T, RecipeIngredientUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RecipeIngredients and returns the data updated in the database.
+     * @param {RecipeIngredientUpdateManyAndReturnArgs} args - Arguments to update many RecipeIngredients.
+     * @example
+     * // Update many RecipeIngredients
+     * const recipeIngredient = await prisma.recipeIngredient.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RecipeIngredients and only return the `id`
+     * const recipeIngredientWithIdOnly = await prisma.recipeIngredient.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RecipeIngredientUpdateManyAndReturnArgs>(args: SelectSubset<T, RecipeIngredientUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RecipeIngredient.
+     * @param {RecipeIngredientUpsertArgs} args - Arguments to update or create a RecipeIngredient.
+     * @example
+     * // Update or create a RecipeIngredient
+     * const recipeIngredient = await prisma.recipeIngredient.upsert({
+     *   create: {
+     *     // ... data to create a RecipeIngredient
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RecipeIngredient we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RecipeIngredientUpsertArgs>(args: SelectSubset<T, RecipeIngredientUpsertArgs<ExtArgs>>): Prisma__RecipeIngredientClient<$Result.GetResult<Prisma.$RecipeIngredientPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RecipeIngredients.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeIngredientCountArgs} args - Arguments to filter RecipeIngredients to count.
+     * @example
+     * // Count the number of RecipeIngredients
+     * const count = await prisma.recipeIngredient.count({
+     *   where: {
+     *     // ... the filter for the RecipeIngredients we want to count
+     *   }
+     * })
+    **/
+    count<T extends RecipeIngredientCountArgs>(
+      args?: Subset<T, RecipeIngredientCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RecipeIngredientCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RecipeIngredient.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeIngredientAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RecipeIngredientAggregateArgs>(args: Subset<T, RecipeIngredientAggregateArgs>): Prisma.PrismaPromise<GetRecipeIngredientAggregateType<T>>
+
+    /**
+     * Group by RecipeIngredient.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecipeIngredientGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RecipeIngredientGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RecipeIngredientGroupByArgs['orderBy'] }
+        : { orderBy?: RecipeIngredientGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RecipeIngredientGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRecipeIngredientGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RecipeIngredient model
+   */
+  readonly fields: RecipeIngredientFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RecipeIngredient.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RecipeIngredientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    recipe<T extends RecipeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RecipeDefaultArgs<ExtArgs>>): Prisma__RecipeClient<$Result.GetResult<Prisma.$RecipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RecipeIngredient model
+   */
+  interface RecipeIngredientFieldRefs {
+    readonly id: FieldRef<"RecipeIngredient", 'String'>
+    readonly recipeId: FieldRef<"RecipeIngredient", 'String'>
+    readonly ingredientId: FieldRef<"RecipeIngredient", 'Int'>
+    readonly name: FieldRef<"RecipeIngredient", 'String'>
+    readonly amount: FieldRef<"RecipeIngredient", 'Float'>
+    readonly unit: FieldRef<"RecipeIngredient", 'String'>
+    readonly original: FieldRef<"RecipeIngredient", 'String'>
+    readonly image: FieldRef<"RecipeIngredient", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RecipeIngredient findUnique
+   */
+  export type RecipeIngredientFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * Filter, which RecipeIngredient to fetch.
+     */
+    where: RecipeIngredientWhereUniqueInput
+  }
+
+  /**
+   * RecipeIngredient findUniqueOrThrow
+   */
+  export type RecipeIngredientFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * Filter, which RecipeIngredient to fetch.
+     */
+    where: RecipeIngredientWhereUniqueInput
+  }
+
+  /**
+   * RecipeIngredient findFirst
+   */
+  export type RecipeIngredientFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * Filter, which RecipeIngredient to fetch.
+     */
+    where?: RecipeIngredientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecipeIngredients to fetch.
+     */
+    orderBy?: RecipeIngredientOrderByWithRelationInput | RecipeIngredientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RecipeIngredients.
+     */
+    cursor?: RecipeIngredientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecipeIngredients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecipeIngredients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecipeIngredients.
+     */
+    distinct?: RecipeIngredientScalarFieldEnum | RecipeIngredientScalarFieldEnum[]
+  }
+
+  /**
+   * RecipeIngredient findFirstOrThrow
+   */
+  export type RecipeIngredientFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * Filter, which RecipeIngredient to fetch.
+     */
+    where?: RecipeIngredientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecipeIngredients to fetch.
+     */
+    orderBy?: RecipeIngredientOrderByWithRelationInput | RecipeIngredientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RecipeIngredients.
+     */
+    cursor?: RecipeIngredientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecipeIngredients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecipeIngredients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecipeIngredients.
+     */
+    distinct?: RecipeIngredientScalarFieldEnum | RecipeIngredientScalarFieldEnum[]
+  }
+
+  /**
+   * RecipeIngredient findMany
+   */
+  export type RecipeIngredientFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * Filter, which RecipeIngredients to fetch.
+     */
+    where?: RecipeIngredientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecipeIngredients to fetch.
+     */
+    orderBy?: RecipeIngredientOrderByWithRelationInput | RecipeIngredientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RecipeIngredients.
+     */
+    cursor?: RecipeIngredientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecipeIngredients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecipeIngredients.
+     */
+    skip?: number
+    distinct?: RecipeIngredientScalarFieldEnum | RecipeIngredientScalarFieldEnum[]
+  }
+
+  /**
+   * RecipeIngredient create
+   */
+  export type RecipeIngredientCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RecipeIngredient.
+     */
+    data: XOR<RecipeIngredientCreateInput, RecipeIngredientUncheckedCreateInput>
+  }
+
+  /**
+   * RecipeIngredient createMany
+   */
+  export type RecipeIngredientCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RecipeIngredients.
+     */
+    data: RecipeIngredientCreateManyInput | RecipeIngredientCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RecipeIngredient createManyAndReturn
+   */
+  export type RecipeIngredientCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * The data used to create many RecipeIngredients.
+     */
+    data: RecipeIngredientCreateManyInput | RecipeIngredientCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RecipeIngredient update
+   */
+  export type RecipeIngredientUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RecipeIngredient.
+     */
+    data: XOR<RecipeIngredientUpdateInput, RecipeIngredientUncheckedUpdateInput>
+    /**
+     * Choose, which RecipeIngredient to update.
+     */
+    where: RecipeIngredientWhereUniqueInput
+  }
+
+  /**
+   * RecipeIngredient updateMany
+   */
+  export type RecipeIngredientUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RecipeIngredients.
+     */
+    data: XOR<RecipeIngredientUpdateManyMutationInput, RecipeIngredientUncheckedUpdateManyInput>
+    /**
+     * Filter which RecipeIngredients to update
+     */
+    where?: RecipeIngredientWhereInput
+    /**
+     * Limit how many RecipeIngredients to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RecipeIngredient updateManyAndReturn
+   */
+  export type RecipeIngredientUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * The data used to update RecipeIngredients.
+     */
+    data: XOR<RecipeIngredientUpdateManyMutationInput, RecipeIngredientUncheckedUpdateManyInput>
+    /**
+     * Filter which RecipeIngredients to update
+     */
+    where?: RecipeIngredientWhereInput
+    /**
+     * Limit how many RecipeIngredients to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RecipeIngredient upsert
+   */
+  export type RecipeIngredientUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RecipeIngredient to update in case it exists.
+     */
+    where: RecipeIngredientWhereUniqueInput
+    /**
+     * In case the RecipeIngredient found by the `where` argument doesn't exist, create a new RecipeIngredient with this data.
+     */
+    create: XOR<RecipeIngredientCreateInput, RecipeIngredientUncheckedCreateInput>
+    /**
+     * In case the RecipeIngredient was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RecipeIngredientUpdateInput, RecipeIngredientUncheckedUpdateInput>
+  }
+
+  /**
+   * RecipeIngredient delete
+   */
+  export type RecipeIngredientDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+    /**
+     * Filter which RecipeIngredient to delete.
+     */
+    where: RecipeIngredientWhereUniqueInput
+  }
+
+  /**
+   * RecipeIngredient deleteMany
+   */
+  export type RecipeIngredientDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RecipeIngredients to delete
+     */
+    where?: RecipeIngredientWhereInput
+    /**
+     * Limit how many RecipeIngredients to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RecipeIngredient without action
+   */
+  export type RecipeIngredientDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecipeIngredient
+     */
+    select?: RecipeIngredientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecipeIngredient
+     */
+    omit?: RecipeIngredientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecipeIngredientInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8225,31 +9935,16 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-  export const RecipeScalarFieldEnum: {
+  export const UserRecipeScalarFieldEnum: {
     id: 'id',
-    title: 'title',
-    ingredients: 'ingredients',
-    instructions: 'instructions',
-    source: 'source',
-    link: 'link',
-    namedEntities: 'namedEntities',
-    nutrition: 'nutrition',
-    cuisine: 'cuisine',
-    mealType: 'mealType',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    userId: 'userId',
+    sourceId: 'sourceId',
+    status: 'status',
+    dateAdded: 'dateAdded',
+    cachedRecipeId: 'cachedRecipeId'
   };
 
-  export type RecipeScalarFieldEnum = (typeof RecipeScalarFieldEnum)[keyof typeof RecipeScalarFieldEnum]
-
-
-  export const RecipeEmbeddingScalarFieldEnum: {
-    id: 'id',
-    embedding: 'embedding',
-    recipeId: 'recipeId'
-  };
-
-  export type RecipeEmbeddingScalarFieldEnum = (typeof RecipeEmbeddingScalarFieldEnum)[keyof typeof RecipeEmbeddingScalarFieldEnum]
+  export type UserRecipeScalarFieldEnum = (typeof UserRecipeScalarFieldEnum)[keyof typeof UserRecipeScalarFieldEnum]
 
 
   export const MealPlanScalarFieldEnum: {
@@ -8264,14 +9959,16 @@ export namespace Prisma {
   export type MealPlanScalarFieldEnum = (typeof MealPlanScalarFieldEnum)[keyof typeof MealPlanScalarFieldEnum]
 
 
-  export const MealPlanRecipeScalarFieldEnum: {
+  export const MealPlanItemScalarFieldEnum: {
+    id: 'id',
     mealPlanId: 'mealPlanId',
-    recipeId: 'recipeId',
-    day: 'day',
-    mealSlot: 'mealSlot'
+    sourceId: 'sourceId',
+    dayOfWeek: 'dayOfWeek',
+    mealType: 'mealType',
+    cachedRecipeId: 'cachedRecipeId'
   };
 
-  export type MealPlanRecipeScalarFieldEnum = (typeof MealPlanRecipeScalarFieldEnum)[keyof typeof MealPlanRecipeScalarFieldEnum]
+  export type MealPlanItemScalarFieldEnum = (typeof MealPlanItemScalarFieldEnum)[keyof typeof MealPlanItemScalarFieldEnum]
 
 
   export const ProgressScalarFieldEnum: {
@@ -8285,6 +9982,51 @@ export namespace Prisma {
   };
 
   export type ProgressScalarFieldEnum = (typeof ProgressScalarFieldEnum)[keyof typeof ProgressScalarFieldEnum]
+
+
+  export const RecipeScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    imageUrl: 'imageUrl',
+    fallbackImageUrl: 'fallbackImageUrl',
+    sourceType: 'sourceType',
+    sourceId: 'sourceId',
+    sourceUrl: 'sourceUrl',
+    cuisine: 'cuisine',
+    mealType: 'mealType',
+    difficulty: 'difficulty',
+    prepTime: 'prepTime',
+    cookTime: 'cookTime',
+    totalTime: 'totalTime',
+    servings: 'servings',
+    instructions: 'instructions',
+    nutrition: 'nutrition',
+    tags: 'tags',
+    namedEntities: 'namedEntities',
+    userRating: 'userRating',
+    savedCount: 'savedCount',
+    isPublic: 'isPublic',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RecipeScalarFieldEnum = (typeof RecipeScalarFieldEnum)[keyof typeof RecipeScalarFieldEnum]
+
+
+  export const RecipeIngredientScalarFieldEnum: {
+    id: 'id',
+    recipeId: 'recipeId',
+    ingredientId: 'ingredientId',
+    name: 'name',
+    amount: 'amount',
+    unit: 'unit',
+    original: 'original',
+    image: 'image'
+  };
+
+  export type RecipeIngredientScalarFieldEnum = (typeof RecipeIngredientScalarFieldEnum)[keyof typeof RecipeIngredientScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8401,6 +10143,41 @@ export namespace Prisma {
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
+
+
+  /**
+   * Reference to a field of type 'RecipeSourceType'
+   */
+  export type EnumRecipeSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecipeSourceType'>
+    
+
+
+  /**
+   * Reference to a field of type 'RecipeSourceType[]'
+   */
+  export type ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecipeSourceType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'RecipeDifficulty'
+   */
+  export type EnumRecipeDifficultyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecipeDifficulty'>
+    
+
+
+  /**
+   * Reference to a field of type 'RecipeDifficulty[]'
+   */
+  export type ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecipeDifficulty[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
   /**
    * Deep Input Types
    */
@@ -8424,6 +10201,8 @@ export namespace Prisma {
     diet_preference?: StringNullableFilter<"User"> | string | null
     mealPlans?: MealPlanListRelationFilter
     progress?: ProgressListRelationFilter
+    userRecipes?: UserRecipeListRelationFilter
+    recipes?: RecipeListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -8441,6 +10220,8 @@ export namespace Prisma {
     diet_preference?: SortOrderInput | SortOrder
     mealPlans?: MealPlanOrderByRelationAggregateInput
     progress?: ProgressOrderByRelationAggregateInput
+    userRecipes?: UserRecipeOrderByRelationAggregateInput
+    recipes?: RecipeOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8461,6 +10242,8 @@ export namespace Prisma {
     diet_preference?: StringNullableFilter<"User"> | string | null
     mealPlans?: MealPlanListRelationFilter
     progress?: ProgressListRelationFilter
+    userRecipes?: UserRecipeListRelationFilter
+    recipes?: RecipeListRelationFilter
   }, "id" | "clerkId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -8501,144 +10284,68 @@ export namespace Prisma {
     diet_preference?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
-  export type RecipeWhereInput = {
-    AND?: RecipeWhereInput | RecipeWhereInput[]
-    OR?: RecipeWhereInput[]
-    NOT?: RecipeWhereInput | RecipeWhereInput[]
-    id?: StringFilter<"Recipe"> | string
-    title?: StringFilter<"Recipe"> | string
-    ingredients?: StringNullableListFilter<"Recipe">
-    instructions?: StringNullableListFilter<"Recipe">
-    source?: StringNullableFilter<"Recipe"> | string | null
-    link?: StringNullableFilter<"Recipe"> | string | null
-    namedEntities?: StringNullableListFilter<"Recipe">
-    nutrition?: JsonNullableFilter<"Recipe">
-    cuisine?: StringNullableFilter<"Recipe"> | string | null
-    mealType?: StringNullableFilter<"Recipe"> | string | null
-    createdAt?: DateTimeFilter<"Recipe"> | Date | string
-    updatedAt?: DateTimeFilter<"Recipe"> | Date | string
-    mealPlanRecipes?: MealPlanRecipeListRelationFilter
-    embeddings?: RecipeEmbeddingListRelationFilter
+  export type UserRecipeWhereInput = {
+    AND?: UserRecipeWhereInput | UserRecipeWhereInput[]
+    OR?: UserRecipeWhereInput[]
+    NOT?: UserRecipeWhereInput | UserRecipeWhereInput[]
+    id?: StringFilter<"UserRecipe"> | string
+    userId?: StringFilter<"UserRecipe"> | string
+    sourceId?: StringNullableFilter<"UserRecipe"> | string | null
+    status?: StringFilter<"UserRecipe"> | string
+    dateAdded?: DateTimeFilter<"UserRecipe"> | Date | string
+    cachedRecipeId?: StringNullableFilter<"UserRecipe"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    cachedRecipe?: XOR<RecipeNullableScalarRelationFilter, RecipeWhereInput> | null
   }
 
-  export type RecipeOrderByWithRelationInput = {
+  export type UserRecipeOrderByWithRelationInput = {
     id?: SortOrder
-    title?: SortOrder
-    ingredients?: SortOrder
-    instructions?: SortOrder
-    source?: SortOrderInput | SortOrder
-    link?: SortOrderInput | SortOrder
-    namedEntities?: SortOrder
-    nutrition?: SortOrderInput | SortOrder
-    cuisine?: SortOrderInput | SortOrder
-    mealType?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    mealPlanRecipes?: MealPlanRecipeOrderByRelationAggregateInput
-    embeddings?: RecipeEmbeddingOrderByRelationAggregateInput
+    userId?: SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    dateAdded?: SortOrder
+    cachedRecipeId?: SortOrderInput | SortOrder
+    user?: UserOrderByWithRelationInput
+    cachedRecipe?: RecipeOrderByWithRelationInput
   }
 
-  export type RecipeWhereUniqueInput = Prisma.AtLeast<{
+  export type UserRecipeWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: RecipeWhereInput | RecipeWhereInput[]
-    OR?: RecipeWhereInput[]
-    NOT?: RecipeWhereInput | RecipeWhereInput[]
-    title?: StringFilter<"Recipe"> | string
-    ingredients?: StringNullableListFilter<"Recipe">
-    instructions?: StringNullableListFilter<"Recipe">
-    source?: StringNullableFilter<"Recipe"> | string | null
-    link?: StringNullableFilter<"Recipe"> | string | null
-    namedEntities?: StringNullableListFilter<"Recipe">
-    nutrition?: JsonNullableFilter<"Recipe">
-    cuisine?: StringNullableFilter<"Recipe"> | string | null
-    mealType?: StringNullableFilter<"Recipe"> | string | null
-    createdAt?: DateTimeFilter<"Recipe"> | Date | string
-    updatedAt?: DateTimeFilter<"Recipe"> | Date | string
-    mealPlanRecipes?: MealPlanRecipeListRelationFilter
-    embeddings?: RecipeEmbeddingListRelationFilter
-  }, "id">
+    userId_sourceId_status?: UserRecipeUserIdSourceIdStatusCompoundUniqueInput
+    AND?: UserRecipeWhereInput | UserRecipeWhereInput[]
+    OR?: UserRecipeWhereInput[]
+    NOT?: UserRecipeWhereInput | UserRecipeWhereInput[]
+    userId?: StringFilter<"UserRecipe"> | string
+    sourceId?: StringNullableFilter<"UserRecipe"> | string | null
+    status?: StringFilter<"UserRecipe"> | string
+    dateAdded?: DateTimeFilter<"UserRecipe"> | Date | string
+    cachedRecipeId?: StringNullableFilter<"UserRecipe"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    cachedRecipe?: XOR<RecipeNullableScalarRelationFilter, RecipeWhereInput> | null
+  }, "id" | "userId_sourceId_status">
 
-  export type RecipeOrderByWithAggregationInput = {
+  export type UserRecipeOrderByWithAggregationInput = {
     id?: SortOrder
-    title?: SortOrder
-    ingredients?: SortOrder
-    instructions?: SortOrder
-    source?: SortOrderInput | SortOrder
-    link?: SortOrderInput | SortOrder
-    namedEntities?: SortOrder
-    nutrition?: SortOrderInput | SortOrder
-    cuisine?: SortOrderInput | SortOrder
-    mealType?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: RecipeCountOrderByAggregateInput
-    _max?: RecipeMaxOrderByAggregateInput
-    _min?: RecipeMinOrderByAggregateInput
+    userId?: SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    dateAdded?: SortOrder
+    cachedRecipeId?: SortOrderInput | SortOrder
+    _count?: UserRecipeCountOrderByAggregateInput
+    _max?: UserRecipeMaxOrderByAggregateInput
+    _min?: UserRecipeMinOrderByAggregateInput
   }
 
-  export type RecipeScalarWhereWithAggregatesInput = {
-    AND?: RecipeScalarWhereWithAggregatesInput | RecipeScalarWhereWithAggregatesInput[]
-    OR?: RecipeScalarWhereWithAggregatesInput[]
-    NOT?: RecipeScalarWhereWithAggregatesInput | RecipeScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Recipe"> | string
-    title?: StringWithAggregatesFilter<"Recipe"> | string
-    ingredients?: StringNullableListFilter<"Recipe">
-    instructions?: StringNullableListFilter<"Recipe">
-    source?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
-    link?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
-    namedEntities?: StringNullableListFilter<"Recipe">
-    nutrition?: JsonNullableWithAggregatesFilter<"Recipe">
-    cuisine?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
-    mealType?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Recipe"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Recipe"> | Date | string
-  }
-
-  export type RecipeEmbeddingWhereInput = {
-    AND?: RecipeEmbeddingWhereInput | RecipeEmbeddingWhereInput[]
-    OR?: RecipeEmbeddingWhereInput[]
-    NOT?: RecipeEmbeddingWhereInput | RecipeEmbeddingWhereInput[]
-    id?: StringFilter<"RecipeEmbedding"> | string
-    embedding?: FloatNullableListFilter<"RecipeEmbedding">
-    recipeId?: StringFilter<"RecipeEmbedding"> | string
-    recipe?: XOR<RecipeScalarRelationFilter, RecipeWhereInput>
-  }
-
-  export type RecipeEmbeddingOrderByWithRelationInput = {
-    id?: SortOrder
-    embedding?: SortOrder
-    recipeId?: SortOrder
-    recipe?: RecipeOrderByWithRelationInput
-  }
-
-  export type RecipeEmbeddingWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: RecipeEmbeddingWhereInput | RecipeEmbeddingWhereInput[]
-    OR?: RecipeEmbeddingWhereInput[]
-    NOT?: RecipeEmbeddingWhereInput | RecipeEmbeddingWhereInput[]
-    embedding?: FloatNullableListFilter<"RecipeEmbedding">
-    recipeId?: StringFilter<"RecipeEmbedding"> | string
-    recipe?: XOR<RecipeScalarRelationFilter, RecipeWhereInput>
-  }, "id">
-
-  export type RecipeEmbeddingOrderByWithAggregationInput = {
-    id?: SortOrder
-    embedding?: SortOrder
-    recipeId?: SortOrder
-    _count?: RecipeEmbeddingCountOrderByAggregateInput
-    _avg?: RecipeEmbeddingAvgOrderByAggregateInput
-    _max?: RecipeEmbeddingMaxOrderByAggregateInput
-    _min?: RecipeEmbeddingMinOrderByAggregateInput
-    _sum?: RecipeEmbeddingSumOrderByAggregateInput
-  }
-
-  export type RecipeEmbeddingScalarWhereWithAggregatesInput = {
-    AND?: RecipeEmbeddingScalarWhereWithAggregatesInput | RecipeEmbeddingScalarWhereWithAggregatesInput[]
-    OR?: RecipeEmbeddingScalarWhereWithAggregatesInput[]
-    NOT?: RecipeEmbeddingScalarWhereWithAggregatesInput | RecipeEmbeddingScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"RecipeEmbedding"> | string
-    embedding?: FloatNullableListFilter<"RecipeEmbedding">
-    recipeId?: StringWithAggregatesFilter<"RecipeEmbedding"> | string
+  export type UserRecipeScalarWhereWithAggregatesInput = {
+    AND?: UserRecipeScalarWhereWithAggregatesInput | UserRecipeScalarWhereWithAggregatesInput[]
+    OR?: UserRecipeScalarWhereWithAggregatesInput[]
+    NOT?: UserRecipeScalarWhereWithAggregatesInput | UserRecipeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserRecipe"> | string
+    userId?: StringWithAggregatesFilter<"UserRecipe"> | string
+    sourceId?: StringNullableWithAggregatesFilter<"UserRecipe"> | string | null
+    status?: StringWithAggregatesFilter<"UserRecipe"> | string
+    dateAdded?: DateTimeWithAggregatesFilter<"UserRecipe"> | Date | string
+    cachedRecipeId?: StringNullableWithAggregatesFilter<"UserRecipe"> | string | null
   }
 
   export type MealPlanWhereInput = {
@@ -8652,7 +10359,7 @@ export namespace Prisma {
     constraints?: JsonNullableFilter<"MealPlan">
     createdAt?: DateTimeFilter<"MealPlan"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    recipes?: MealPlanRecipeListRelationFilter
+    mealPlanItems?: MealPlanItemListRelationFilter
   }
 
   export type MealPlanOrderByWithRelationInput = {
@@ -8663,7 +10370,7 @@ export namespace Prisma {
     constraints?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
-    recipes?: MealPlanRecipeOrderByRelationAggregateInput
+    mealPlanItems?: MealPlanItemOrderByRelationAggregateInput
   }
 
   export type MealPlanWhereUniqueInput = Prisma.AtLeast<{
@@ -8677,7 +10384,7 @@ export namespace Prisma {
     constraints?: JsonNullableFilter<"MealPlan">
     createdAt?: DateTimeFilter<"MealPlan"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    recipes?: MealPlanRecipeListRelationFilter
+    mealPlanItems?: MealPlanItemListRelationFilter
   }, "id">
 
   export type MealPlanOrderByWithAggregationInput = {
@@ -8704,60 +10411,70 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"MealPlan"> | Date | string
   }
 
-  export type MealPlanRecipeWhereInput = {
-    AND?: MealPlanRecipeWhereInput | MealPlanRecipeWhereInput[]
-    OR?: MealPlanRecipeWhereInput[]
-    NOT?: MealPlanRecipeWhereInput | MealPlanRecipeWhereInput[]
-    mealPlanId?: StringFilter<"MealPlanRecipe"> | string
-    recipeId?: StringFilter<"MealPlanRecipe"> | string
-    day?: IntFilter<"MealPlanRecipe"> | number
-    mealSlot?: StringFilter<"MealPlanRecipe"> | string
+  export type MealPlanItemWhereInput = {
+    AND?: MealPlanItemWhereInput | MealPlanItemWhereInput[]
+    OR?: MealPlanItemWhereInput[]
+    NOT?: MealPlanItemWhereInput | MealPlanItemWhereInput[]
+    id?: StringFilter<"MealPlanItem"> | string
+    mealPlanId?: StringFilter<"MealPlanItem"> | string
+    sourceId?: StringNullableFilter<"MealPlanItem"> | string | null
+    dayOfWeek?: IntFilter<"MealPlanItem"> | number
+    mealType?: StringFilter<"MealPlanItem"> | string
+    cachedRecipeId?: StringNullableFilter<"MealPlanItem"> | string | null
     mealPlan?: XOR<MealPlanScalarRelationFilter, MealPlanWhereInput>
-    recipe?: XOR<RecipeScalarRelationFilter, RecipeWhereInput>
+    cachedRecipe?: XOR<RecipeNullableScalarRelationFilter, RecipeWhereInput> | null
   }
 
-  export type MealPlanRecipeOrderByWithRelationInput = {
+  export type MealPlanItemOrderByWithRelationInput = {
+    id?: SortOrder
     mealPlanId?: SortOrder
-    recipeId?: SortOrder
-    day?: SortOrder
-    mealSlot?: SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    dayOfWeek?: SortOrder
+    mealType?: SortOrder
+    cachedRecipeId?: SortOrderInput | SortOrder
     mealPlan?: MealPlanOrderByWithRelationInput
-    recipe?: RecipeOrderByWithRelationInput
+    cachedRecipe?: RecipeOrderByWithRelationInput
   }
 
-  export type MealPlanRecipeWhereUniqueInput = Prisma.AtLeast<{
-    mealPlanId_recipeId_day_mealSlot?: MealPlanRecipeMealPlanIdRecipeIdDayMealSlotCompoundUniqueInput
-    AND?: MealPlanRecipeWhereInput | MealPlanRecipeWhereInput[]
-    OR?: MealPlanRecipeWhereInput[]
-    NOT?: MealPlanRecipeWhereInput | MealPlanRecipeWhereInput[]
-    mealPlanId?: StringFilter<"MealPlanRecipe"> | string
-    recipeId?: StringFilter<"MealPlanRecipe"> | string
-    day?: IntFilter<"MealPlanRecipe"> | number
-    mealSlot?: StringFilter<"MealPlanRecipe"> | string
+  export type MealPlanItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    mealPlanId_dayOfWeek_mealType?: MealPlanItemMealPlanIdDayOfWeekMealTypeCompoundUniqueInput
+    AND?: MealPlanItemWhereInput | MealPlanItemWhereInput[]
+    OR?: MealPlanItemWhereInput[]
+    NOT?: MealPlanItemWhereInput | MealPlanItemWhereInput[]
+    mealPlanId?: StringFilter<"MealPlanItem"> | string
+    sourceId?: StringNullableFilter<"MealPlanItem"> | string | null
+    dayOfWeek?: IntFilter<"MealPlanItem"> | number
+    mealType?: StringFilter<"MealPlanItem"> | string
+    cachedRecipeId?: StringNullableFilter<"MealPlanItem"> | string | null
     mealPlan?: XOR<MealPlanScalarRelationFilter, MealPlanWhereInput>
-    recipe?: XOR<RecipeScalarRelationFilter, RecipeWhereInput>
-  }, "mealPlanId_recipeId_day_mealSlot">
+    cachedRecipe?: XOR<RecipeNullableScalarRelationFilter, RecipeWhereInput> | null
+  }, "id" | "mealPlanId_dayOfWeek_mealType">
 
-  export type MealPlanRecipeOrderByWithAggregationInput = {
+  export type MealPlanItemOrderByWithAggregationInput = {
+    id?: SortOrder
     mealPlanId?: SortOrder
-    recipeId?: SortOrder
-    day?: SortOrder
-    mealSlot?: SortOrder
-    _count?: MealPlanRecipeCountOrderByAggregateInput
-    _avg?: MealPlanRecipeAvgOrderByAggregateInput
-    _max?: MealPlanRecipeMaxOrderByAggregateInput
-    _min?: MealPlanRecipeMinOrderByAggregateInput
-    _sum?: MealPlanRecipeSumOrderByAggregateInput
+    sourceId?: SortOrderInput | SortOrder
+    dayOfWeek?: SortOrder
+    mealType?: SortOrder
+    cachedRecipeId?: SortOrderInput | SortOrder
+    _count?: MealPlanItemCountOrderByAggregateInput
+    _avg?: MealPlanItemAvgOrderByAggregateInput
+    _max?: MealPlanItemMaxOrderByAggregateInput
+    _min?: MealPlanItemMinOrderByAggregateInput
+    _sum?: MealPlanItemSumOrderByAggregateInput
   }
 
-  export type MealPlanRecipeScalarWhereWithAggregatesInput = {
-    AND?: MealPlanRecipeScalarWhereWithAggregatesInput | MealPlanRecipeScalarWhereWithAggregatesInput[]
-    OR?: MealPlanRecipeScalarWhereWithAggregatesInput[]
-    NOT?: MealPlanRecipeScalarWhereWithAggregatesInput | MealPlanRecipeScalarWhereWithAggregatesInput[]
-    mealPlanId?: StringWithAggregatesFilter<"MealPlanRecipe"> | string
-    recipeId?: StringWithAggregatesFilter<"MealPlanRecipe"> | string
-    day?: IntWithAggregatesFilter<"MealPlanRecipe"> | number
-    mealSlot?: StringWithAggregatesFilter<"MealPlanRecipe"> | string
+  export type MealPlanItemScalarWhereWithAggregatesInput = {
+    AND?: MealPlanItemScalarWhereWithAggregatesInput | MealPlanItemScalarWhereWithAggregatesInput[]
+    OR?: MealPlanItemScalarWhereWithAggregatesInput[]
+    NOT?: MealPlanItemScalarWhereWithAggregatesInput | MealPlanItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MealPlanItem"> | string
+    mealPlanId?: StringWithAggregatesFilter<"MealPlanItem"> | string
+    sourceId?: StringNullableWithAggregatesFilter<"MealPlanItem"> | string | null
+    dayOfWeek?: IntWithAggregatesFilter<"MealPlanItem"> | number
+    mealType?: StringWithAggregatesFilter<"MealPlanItem"> | string
+    cachedRecipeId?: StringNullableWithAggregatesFilter<"MealPlanItem"> | string | null
   }
 
   export type ProgressWhereInput = {
@@ -8827,6 +10544,244 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Progress"> | Date | string
   }
 
+  export type RecipeWhereInput = {
+    AND?: RecipeWhereInput | RecipeWhereInput[]
+    OR?: RecipeWhereInput[]
+    NOT?: RecipeWhereInput | RecipeWhereInput[]
+    id?: StringFilter<"Recipe"> | string
+    title?: StringFilter<"Recipe"> | string
+    description?: StringNullableFilter<"Recipe"> | string | null
+    imageUrl?: StringNullableFilter<"Recipe"> | string | null
+    fallbackImageUrl?: StringNullableFilter<"Recipe"> | string | null
+    sourceType?: EnumRecipeSourceTypeFilter<"Recipe"> | $Enums.RecipeSourceType
+    sourceId?: StringNullableFilter<"Recipe"> | string | null
+    sourceUrl?: StringNullableFilter<"Recipe"> | string | null
+    cuisine?: StringNullableFilter<"Recipe"> | string | null
+    mealType?: StringNullableFilter<"Recipe"> | string | null
+    difficulty?: EnumRecipeDifficultyNullableFilter<"Recipe"> | $Enums.RecipeDifficulty | null
+    prepTime?: IntNullableFilter<"Recipe"> | number | null
+    cookTime?: IntNullableFilter<"Recipe"> | number | null
+    totalTime?: IntNullableFilter<"Recipe"> | number | null
+    servings?: IntNullableFilter<"Recipe"> | number | null
+    instructions?: StringNullableListFilter<"Recipe">
+    nutrition?: JsonNullableFilter<"Recipe">
+    tags?: StringNullableListFilter<"Recipe">
+    namedEntities?: StringNullableListFilter<"Recipe">
+    userRating?: FloatNullableFilter<"Recipe"> | number | null
+    savedCount?: IntFilter<"Recipe"> | number
+    isPublic?: BoolFilter<"Recipe"> | boolean
+    createdById?: StringNullableFilter<"Recipe"> | string | null
+    createdAt?: DateTimeFilter<"Recipe"> | Date | string
+    updatedAt?: DateTimeFilter<"Recipe"> | Date | string
+    ingredients?: RecipeIngredientListRelationFilter
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    userRecipes?: UserRecipeListRelationFilter
+    mealPlanItems?: MealPlanItemListRelationFilter
+  }
+
+  export type RecipeOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    fallbackImageUrl?: SortOrderInput | SortOrder
+    sourceType?: SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    sourceUrl?: SortOrderInput | SortOrder
+    cuisine?: SortOrderInput | SortOrder
+    mealType?: SortOrderInput | SortOrder
+    difficulty?: SortOrderInput | SortOrder
+    prepTime?: SortOrderInput | SortOrder
+    cookTime?: SortOrderInput | SortOrder
+    totalTime?: SortOrderInput | SortOrder
+    servings?: SortOrderInput | SortOrder
+    instructions?: SortOrder
+    nutrition?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    namedEntities?: SortOrder
+    userRating?: SortOrderInput | SortOrder
+    savedCount?: SortOrder
+    isPublic?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    ingredients?: RecipeIngredientOrderByRelationAggregateInput
+    createdBy?: UserOrderByWithRelationInput
+    userRecipes?: UserRecipeOrderByRelationAggregateInput
+    mealPlanItems?: MealPlanItemOrderByRelationAggregateInput
+  }
+
+  export type RecipeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RecipeWhereInput | RecipeWhereInput[]
+    OR?: RecipeWhereInput[]
+    NOT?: RecipeWhereInput | RecipeWhereInput[]
+    title?: StringFilter<"Recipe"> | string
+    description?: StringNullableFilter<"Recipe"> | string | null
+    imageUrl?: StringNullableFilter<"Recipe"> | string | null
+    fallbackImageUrl?: StringNullableFilter<"Recipe"> | string | null
+    sourceType?: EnumRecipeSourceTypeFilter<"Recipe"> | $Enums.RecipeSourceType
+    sourceId?: StringNullableFilter<"Recipe"> | string | null
+    sourceUrl?: StringNullableFilter<"Recipe"> | string | null
+    cuisine?: StringNullableFilter<"Recipe"> | string | null
+    mealType?: StringNullableFilter<"Recipe"> | string | null
+    difficulty?: EnumRecipeDifficultyNullableFilter<"Recipe"> | $Enums.RecipeDifficulty | null
+    prepTime?: IntNullableFilter<"Recipe"> | number | null
+    cookTime?: IntNullableFilter<"Recipe"> | number | null
+    totalTime?: IntNullableFilter<"Recipe"> | number | null
+    servings?: IntNullableFilter<"Recipe"> | number | null
+    instructions?: StringNullableListFilter<"Recipe">
+    nutrition?: JsonNullableFilter<"Recipe">
+    tags?: StringNullableListFilter<"Recipe">
+    namedEntities?: StringNullableListFilter<"Recipe">
+    userRating?: FloatNullableFilter<"Recipe"> | number | null
+    savedCount?: IntFilter<"Recipe"> | number
+    isPublic?: BoolFilter<"Recipe"> | boolean
+    createdById?: StringNullableFilter<"Recipe"> | string | null
+    createdAt?: DateTimeFilter<"Recipe"> | Date | string
+    updatedAt?: DateTimeFilter<"Recipe"> | Date | string
+    ingredients?: RecipeIngredientListRelationFilter
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    userRecipes?: UserRecipeListRelationFilter
+    mealPlanItems?: MealPlanItemListRelationFilter
+  }, "id">
+
+  export type RecipeOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    fallbackImageUrl?: SortOrderInput | SortOrder
+    sourceType?: SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    sourceUrl?: SortOrderInput | SortOrder
+    cuisine?: SortOrderInput | SortOrder
+    mealType?: SortOrderInput | SortOrder
+    difficulty?: SortOrderInput | SortOrder
+    prepTime?: SortOrderInput | SortOrder
+    cookTime?: SortOrderInput | SortOrder
+    totalTime?: SortOrderInput | SortOrder
+    servings?: SortOrderInput | SortOrder
+    instructions?: SortOrder
+    nutrition?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    namedEntities?: SortOrder
+    userRating?: SortOrderInput | SortOrder
+    savedCount?: SortOrder
+    isPublic?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RecipeCountOrderByAggregateInput
+    _avg?: RecipeAvgOrderByAggregateInput
+    _max?: RecipeMaxOrderByAggregateInput
+    _min?: RecipeMinOrderByAggregateInput
+    _sum?: RecipeSumOrderByAggregateInput
+  }
+
+  export type RecipeScalarWhereWithAggregatesInput = {
+    AND?: RecipeScalarWhereWithAggregatesInput | RecipeScalarWhereWithAggregatesInput[]
+    OR?: RecipeScalarWhereWithAggregatesInput[]
+    NOT?: RecipeScalarWhereWithAggregatesInput | RecipeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Recipe"> | string
+    title?: StringWithAggregatesFilter<"Recipe"> | string
+    description?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
+    imageUrl?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
+    fallbackImageUrl?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
+    sourceType?: EnumRecipeSourceTypeWithAggregatesFilter<"Recipe"> | $Enums.RecipeSourceType
+    sourceId?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
+    sourceUrl?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
+    cuisine?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
+    mealType?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
+    difficulty?: EnumRecipeDifficultyNullableWithAggregatesFilter<"Recipe"> | $Enums.RecipeDifficulty | null
+    prepTime?: IntNullableWithAggregatesFilter<"Recipe"> | number | null
+    cookTime?: IntNullableWithAggregatesFilter<"Recipe"> | number | null
+    totalTime?: IntNullableWithAggregatesFilter<"Recipe"> | number | null
+    servings?: IntNullableWithAggregatesFilter<"Recipe"> | number | null
+    instructions?: StringNullableListFilter<"Recipe">
+    nutrition?: JsonNullableWithAggregatesFilter<"Recipe">
+    tags?: StringNullableListFilter<"Recipe">
+    namedEntities?: StringNullableListFilter<"Recipe">
+    userRating?: FloatNullableWithAggregatesFilter<"Recipe"> | number | null
+    savedCount?: IntWithAggregatesFilter<"Recipe"> | number
+    isPublic?: BoolWithAggregatesFilter<"Recipe"> | boolean
+    createdById?: StringNullableWithAggregatesFilter<"Recipe"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Recipe"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Recipe"> | Date | string
+  }
+
+  export type RecipeIngredientWhereInput = {
+    AND?: RecipeIngredientWhereInput | RecipeIngredientWhereInput[]
+    OR?: RecipeIngredientWhereInput[]
+    NOT?: RecipeIngredientWhereInput | RecipeIngredientWhereInput[]
+    id?: StringFilter<"RecipeIngredient"> | string
+    recipeId?: StringFilter<"RecipeIngredient"> | string
+    ingredientId?: IntFilter<"RecipeIngredient"> | number
+    name?: StringFilter<"RecipeIngredient"> | string
+    amount?: FloatFilter<"RecipeIngredient"> | number
+    unit?: StringFilter<"RecipeIngredient"> | string
+    original?: StringFilter<"RecipeIngredient"> | string
+    image?: StringNullableFilter<"RecipeIngredient"> | string | null
+    recipe?: XOR<RecipeScalarRelationFilter, RecipeWhereInput>
+  }
+
+  export type RecipeIngredientOrderByWithRelationInput = {
+    id?: SortOrder
+    recipeId?: SortOrder
+    ingredientId?: SortOrder
+    name?: SortOrder
+    amount?: SortOrder
+    unit?: SortOrder
+    original?: SortOrder
+    image?: SortOrderInput | SortOrder
+    recipe?: RecipeOrderByWithRelationInput
+  }
+
+  export type RecipeIngredientWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RecipeIngredientWhereInput | RecipeIngredientWhereInput[]
+    OR?: RecipeIngredientWhereInput[]
+    NOT?: RecipeIngredientWhereInput | RecipeIngredientWhereInput[]
+    recipeId?: StringFilter<"RecipeIngredient"> | string
+    ingredientId?: IntFilter<"RecipeIngredient"> | number
+    name?: StringFilter<"RecipeIngredient"> | string
+    amount?: FloatFilter<"RecipeIngredient"> | number
+    unit?: StringFilter<"RecipeIngredient"> | string
+    original?: StringFilter<"RecipeIngredient"> | string
+    image?: StringNullableFilter<"RecipeIngredient"> | string | null
+    recipe?: XOR<RecipeScalarRelationFilter, RecipeWhereInput>
+  }, "id">
+
+  export type RecipeIngredientOrderByWithAggregationInput = {
+    id?: SortOrder
+    recipeId?: SortOrder
+    ingredientId?: SortOrder
+    name?: SortOrder
+    amount?: SortOrder
+    unit?: SortOrder
+    original?: SortOrder
+    image?: SortOrderInput | SortOrder
+    _count?: RecipeIngredientCountOrderByAggregateInput
+    _avg?: RecipeIngredientAvgOrderByAggregateInput
+    _max?: RecipeIngredientMaxOrderByAggregateInput
+    _min?: RecipeIngredientMinOrderByAggregateInput
+    _sum?: RecipeIngredientSumOrderByAggregateInput
+  }
+
+  export type RecipeIngredientScalarWhereWithAggregatesInput = {
+    AND?: RecipeIngredientScalarWhereWithAggregatesInput | RecipeIngredientScalarWhereWithAggregatesInput[]
+    OR?: RecipeIngredientScalarWhereWithAggregatesInput[]
+    NOT?: RecipeIngredientScalarWhereWithAggregatesInput | RecipeIngredientScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RecipeIngredient"> | string
+    recipeId?: StringWithAggregatesFilter<"RecipeIngredient"> | string
+    ingredientId?: IntWithAggregatesFilter<"RecipeIngredient"> | number
+    name?: StringWithAggregatesFilter<"RecipeIngredient"> | string
+    amount?: FloatWithAggregatesFilter<"RecipeIngredient"> | number
+    unit?: StringWithAggregatesFilter<"RecipeIngredient"> | string
+    original?: StringWithAggregatesFilter<"RecipeIngredient"> | string
+    image?: StringNullableWithAggregatesFilter<"RecipeIngredient"> | string | null
+  }
+
   export type UserCreateInput = {
     id?: string
     clerkId: string
@@ -8842,6 +10797,8 @@ export namespace Prisma {
     diet_preference?: string | null
     mealPlans?: MealPlanCreateNestedManyWithoutUserInput
     progress?: ProgressCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutUserInput
+    recipes?: RecipeCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -8859,6 +10816,8 @@ export namespace Prisma {
     diet_preference?: string | null
     mealPlans?: MealPlanUncheckedCreateNestedManyWithoutUserInput
     progress?: ProgressUncheckedCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutUserInput
+    recipes?: RecipeUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -8876,6 +10835,8 @@ export namespace Prisma {
     diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
     mealPlans?: MealPlanUpdateManyWithoutUserNestedInput
     progress?: ProgressUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutUserNestedInput
+    recipes?: RecipeUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8893,6 +10854,8 @@ export namespace Prisma {
     diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
     mealPlans?: MealPlanUncheckedUpdateManyWithoutUserNestedInput
     progress?: ProgressUncheckedUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutUserNestedInput
+    recipes?: RecipeUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -8940,158 +10903,65 @@ export namespace Prisma {
     diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type RecipeCreateInput = {
+  export type UserRecipeCreateInput = {
     id?: string
-    title: string
-    ingredients?: RecipeCreateingredientsInput | string[]
-    instructions?: RecipeCreateinstructionsInput | string[]
-    source?: string | null
-    link?: string | null
-    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: string | null
-    mealType?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    mealPlanRecipes?: MealPlanRecipeCreateNestedManyWithoutRecipeInput
-    embeddings?: RecipeEmbeddingCreateNestedManyWithoutRecipeInput
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+    user: UserCreateNestedOneWithoutUserRecipesInput
+    cachedRecipe?: RecipeCreateNestedOneWithoutUserRecipesInput
   }
 
-  export type RecipeUncheckedCreateInput = {
+  export type UserRecipeUncheckedCreateInput = {
     id?: string
-    title: string
-    ingredients?: RecipeCreateingredientsInput | string[]
-    instructions?: RecipeCreateinstructionsInput | string[]
-    source?: string | null
-    link?: string | null
-    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: string | null
-    mealType?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    mealPlanRecipes?: MealPlanRecipeUncheckedCreateNestedManyWithoutRecipeInput
-    embeddings?: RecipeEmbeddingUncheckedCreateNestedManyWithoutRecipeInput
+    userId: string
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+    cachedRecipeId?: string | null
   }
 
-  export type RecipeUpdateInput = {
+  export type UserRecipeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    ingredients?: RecipeUpdateingredientsInput | string[]
-    instructions?: RecipeUpdateinstructionsInput | string[]
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    link?: NullableStringFieldUpdateOperationsInput | string | null
-    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
-    mealType?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mealPlanRecipes?: MealPlanRecipeUpdateManyWithoutRecipeNestedInput
-    embeddings?: RecipeEmbeddingUpdateManyWithoutRecipeNestedInput
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutUserRecipesNestedInput
+    cachedRecipe?: RecipeUpdateOneWithoutUserRecipesNestedInput
   }
 
-  export type RecipeUncheckedUpdateInput = {
+  export type UserRecipeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    ingredients?: RecipeUpdateingredientsInput | string[]
-    instructions?: RecipeUpdateinstructionsInput | string[]
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    link?: NullableStringFieldUpdateOperationsInput | string | null
-    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
-    mealType?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mealPlanRecipes?: MealPlanRecipeUncheckedUpdateManyWithoutRecipeNestedInput
-    embeddings?: RecipeEmbeddingUncheckedUpdateManyWithoutRecipeNestedInput
+    userId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+    cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type RecipeCreateManyInput = {
+  export type UserRecipeCreateManyInput = {
     id?: string
-    title: string
-    ingredients?: RecipeCreateingredientsInput | string[]
-    instructions?: RecipeCreateinstructionsInput | string[]
-    source?: string | null
-    link?: string | null
-    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: string | null
-    mealType?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    userId: string
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+    cachedRecipeId?: string | null
   }
 
-  export type RecipeUpdateManyMutationInput = {
+  export type UserRecipeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    ingredients?: RecipeUpdateingredientsInput | string[]
-    instructions?: RecipeUpdateinstructionsInput | string[]
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    link?: NullableStringFieldUpdateOperationsInput | string | null
-    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
-    mealType?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type RecipeUncheckedUpdateManyInput = {
+  export type UserRecipeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    ingredients?: RecipeUpdateingredientsInput | string[]
-    instructions?: RecipeUpdateinstructionsInput | string[]
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    link?: NullableStringFieldUpdateOperationsInput | string | null
-    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
-    mealType?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RecipeEmbeddingCreateInput = {
-    id?: string
-    embedding?: RecipeEmbeddingCreateembeddingInput | number[]
-    recipe: RecipeCreateNestedOneWithoutEmbeddingsInput
-  }
-
-  export type RecipeEmbeddingUncheckedCreateInput = {
-    id?: string
-    embedding?: RecipeEmbeddingCreateembeddingInput | number[]
-    recipeId: string
-  }
-
-  export type RecipeEmbeddingUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    embedding?: RecipeEmbeddingUpdateembeddingInput | number[]
-    recipe?: RecipeUpdateOneRequiredWithoutEmbeddingsNestedInput
-  }
-
-  export type RecipeEmbeddingUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    embedding?: RecipeEmbeddingUpdateembeddingInput | number[]
-    recipeId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type RecipeEmbeddingCreateManyInput = {
-    id?: string
-    embedding?: RecipeEmbeddingCreateembeddingInput | number[]
-    recipeId: string
-  }
-
-  export type RecipeEmbeddingUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    embedding?: RecipeEmbeddingUpdateembeddingInput | number[]
-  }
-
-  export type RecipeEmbeddingUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    embedding?: RecipeEmbeddingUpdateembeddingInput | number[]
-    recipeId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+    cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MealPlanCreateInput = {
@@ -9101,7 +10971,7 @@ export namespace Prisma {
     constraints?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutMealPlansInput
-    recipes?: MealPlanRecipeCreateNestedManyWithoutMealPlanInput
+    mealPlanItems?: MealPlanItemCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanUncheckedCreateInput = {
@@ -9111,7 +10981,7 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
-    recipes?: MealPlanRecipeUncheckedCreateNestedManyWithoutMealPlanInput
+    mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanUpdateInput = {
@@ -9121,7 +10991,7 @@ export namespace Prisma {
     constraints?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutMealPlansNestedInput
-    recipes?: MealPlanRecipeUpdateManyWithoutMealPlanNestedInput
+    mealPlanItems?: MealPlanItemUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanUncheckedUpdateInput = {
@@ -9131,7 +11001,7 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    recipes?: MealPlanRecipeUncheckedUpdateManyWithoutMealPlanNestedInput
+    mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanCreateManyInput = {
@@ -9160,51 +11030,65 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type MealPlanRecipeCreateInput = {
-    day: number
-    mealSlot: string
-    mealPlan: MealPlanCreateNestedOneWithoutRecipesInput
-    recipe: RecipeCreateNestedOneWithoutMealPlanRecipesInput
+  export type MealPlanItemCreateInput = {
+    id?: string
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+    mealPlan: MealPlanCreateNestedOneWithoutMealPlanItemsInput
+    cachedRecipe?: RecipeCreateNestedOneWithoutMealPlanItemsInput
   }
 
-  export type MealPlanRecipeUncheckedCreateInput = {
+  export type MealPlanItemUncheckedCreateInput = {
+    id?: string
     mealPlanId: string
-    recipeId: string
-    day: number
-    mealSlot: string
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+    cachedRecipeId?: string | null
   }
 
-  export type MealPlanRecipeUpdateInput = {
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
-    mealPlan?: MealPlanUpdateOneRequiredWithoutRecipesNestedInput
-    recipe?: RecipeUpdateOneRequiredWithoutMealPlanRecipesNestedInput
+  export type MealPlanItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
+    mealPlan?: MealPlanUpdateOneRequiredWithoutMealPlanItemsNestedInput
+    cachedRecipe?: RecipeUpdateOneWithoutMealPlanItemsNestedInput
   }
 
-  export type MealPlanRecipeUncheckedUpdateInput = {
+  export type MealPlanItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     mealPlanId?: StringFieldUpdateOperationsInput | string
-    recipeId?: StringFieldUpdateOperationsInput | string
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
+    cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type MealPlanRecipeCreateManyInput = {
+  export type MealPlanItemCreateManyInput = {
+    id?: string
     mealPlanId: string
-    recipeId: string
-    day: number
-    mealSlot: string
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+    cachedRecipeId?: string | null
   }
 
-  export type MealPlanRecipeUpdateManyMutationInput = {
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
+  export type MealPlanItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
   }
 
-  export type MealPlanRecipeUncheckedUpdateManyInput = {
+  export type MealPlanItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     mealPlanId?: StringFieldUpdateOperationsInput | string
-    recipeId?: StringFieldUpdateOperationsInput | string
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
+    cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProgressCreateInput = {
@@ -9274,6 +11158,289 @@ export namespace Prisma {
     caloriesConsumed?: NullableIntFieldUpdateOperationsInput | number | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecipeCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ingredients?: RecipeIngredientCreateNestedManyWithoutRecipeInput
+    createdBy?: UserCreateNestedOneWithoutRecipesInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutCachedRecipeInput
+    mealPlanItems?: MealPlanItemCreateNestedManyWithoutCachedRecipeInput
+  }
+
+  export type RecipeUncheckedCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ingredients?: RecipeIngredientUncheckedCreateNestedManyWithoutRecipeInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutCachedRecipeInput
+    mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutCachedRecipeInput
+  }
+
+  export type RecipeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ingredients?: RecipeIngredientUpdateManyWithoutRecipeNestedInput
+    createdBy?: UserUpdateOneWithoutRecipesNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutCachedRecipeNestedInput
+    mealPlanItems?: MealPlanItemUpdateManyWithoutCachedRecipeNestedInput
+  }
+
+  export type RecipeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ingredients?: RecipeIngredientUncheckedUpdateManyWithoutRecipeNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutCachedRecipeNestedInput
+    mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutCachedRecipeNestedInput
+  }
+
+  export type RecipeCreateManyInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RecipeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecipeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecipeIngredientCreateInput = {
+    id?: string
+    ingredientId: number
+    name: string
+    amount: number
+    unit: string
+    original: string
+    image?: string | null
+    recipe: RecipeCreateNestedOneWithoutIngredientsInput
+  }
+
+  export type RecipeIngredientUncheckedCreateInput = {
+    id?: string
+    recipeId: string
+    ingredientId: number
+    name: string
+    amount: number
+    unit: string
+    original: string
+    image?: string | null
+  }
+
+  export type RecipeIngredientUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ingredientId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    recipe?: RecipeUpdateOneRequiredWithoutIngredientsNestedInput
+  }
+
+  export type RecipeIngredientUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipeId?: StringFieldUpdateOperationsInput | string
+    ingredientId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RecipeIngredientCreateManyInput = {
+    id?: string
+    recipeId: string
+    ingredientId: number
+    name: string
+    amount: number
+    unit: string
+    original: string
+    image?: string | null
+  }
+
+  export type RecipeIngredientUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ingredientId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RecipeIngredientUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipeId?: StringFieldUpdateOperationsInput | string
+    ingredientId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -9351,6 +11518,18 @@ export namespace Prisma {
     none?: ProgressWhereInput
   }
 
+  export type UserRecipeListRelationFilter = {
+    every?: UserRecipeWhereInput
+    some?: UserRecipeWhereInput
+    none?: UserRecipeWhereInput
+  }
+
+  export type RecipeListRelationFilter = {
+    every?: RecipeWhereInput
+    some?: RecipeWhereInput
+    none?: RecipeWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -9361,6 +11540,14 @@ export namespace Prisma {
   }
 
   export type ProgressOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserRecipeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RecipeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9503,12 +11690,47 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type RecipeNullableScalarRelationFilter = {
+    is?: RecipeWhereInput | null
+    isNot?: RecipeWhereInput | null
+  }
+
+  export type UserRecipeUserIdSourceIdStatusCompoundUniqueInput = {
+    userId: string
+    sourceId: string
+    status: string
+  }
+
+  export type UserRecipeCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sourceId?: SortOrder
+    status?: SortOrder
+    dateAdded?: SortOrder
+    cachedRecipeId?: SortOrder
+  }
+
+  export type UserRecipeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sourceId?: SortOrder
+    status?: SortOrder
+    dateAdded?: SortOrder
+    cachedRecipeId?: SortOrder
+  }
+
+  export type UserRecipeMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sourceId?: SortOrder
+    status?: SortOrder
+    dateAdded?: SortOrder
+    cachedRecipeId?: SortOrder
   }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -9534,61 +11756,39 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type MealPlanRecipeListRelationFilter = {
-    every?: MealPlanRecipeWhereInput
-    some?: MealPlanRecipeWhereInput
-    none?: MealPlanRecipeWhereInput
+  export type MealPlanItemListRelationFilter = {
+    every?: MealPlanItemWhereInput
+    some?: MealPlanItemWhereInput
+    none?: MealPlanItemWhereInput
   }
 
-  export type RecipeEmbeddingListRelationFilter = {
-    every?: RecipeEmbeddingWhereInput
-    some?: RecipeEmbeddingWhereInput
-    none?: RecipeEmbeddingWhereInput
-  }
-
-  export type MealPlanRecipeOrderByRelationAggregateInput = {
+  export type MealPlanItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type RecipeEmbeddingOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type MealPlanCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    constraints?: SortOrder
+    createdAt?: SortOrder
   }
 
-  export type RecipeCountOrderByAggregateInput = {
+  export type MealPlanMaxOrderByAggregateInput = {
     id?: SortOrder
-    title?: SortOrder
-    ingredients?: SortOrder
-    instructions?: SortOrder
-    source?: SortOrder
-    link?: SortOrder
-    namedEntities?: SortOrder
-    nutrition?: SortOrder
-    cuisine?: SortOrder
-    mealType?: SortOrder
+    userId?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
 
-  export type RecipeMaxOrderByAggregateInput = {
+  export type MealPlanMinOrderByAggregateInput = {
     id?: SortOrder
-    title?: SortOrder
-    source?: SortOrder
-    link?: SortOrder
-    cuisine?: SortOrder
-    mealType?: SortOrder
+    userId?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type RecipeMinOrderByAggregateInput = {
-    id?: SortOrder
-    title?: SortOrder
-    source?: SortOrder
-    link?: SortOrder
-    cuisine?: SortOrder
-    mealType?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -9617,73 +11817,6 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
-  export type FloatNullableListFilter<$PrismaModel = never> = {
-    equals?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    has?: number | FloatFieldRefInput<$PrismaModel> | null
-    hasEvery?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    hasSome?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
-  export type RecipeScalarRelationFilter = {
-    is?: RecipeWhereInput
-    isNot?: RecipeWhereInput
-  }
-
-  export type RecipeEmbeddingCountOrderByAggregateInput = {
-    id?: SortOrder
-    embedding?: SortOrder
-    recipeId?: SortOrder
-  }
-
-  export type RecipeEmbeddingAvgOrderByAggregateInput = {
-    embedding?: SortOrder
-  }
-
-  export type RecipeEmbeddingMaxOrderByAggregateInput = {
-    id?: SortOrder
-    recipeId?: SortOrder
-  }
-
-  export type RecipeEmbeddingMinOrderByAggregateInput = {
-    id?: SortOrder
-    recipeId?: SortOrder
-  }
-
-  export type RecipeEmbeddingSumOrderByAggregateInput = {
-    embedding?: SortOrder
-  }
-
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
-  export type MealPlanCountOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    startDate?: SortOrder
-    endDate?: SortOrder
-    constraints?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type MealPlanMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    startDate?: SortOrder
-    endDate?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type MealPlanMinOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    startDate?: SortOrder
-    endDate?: SortOrder
-    createdAt?: SortOrder
-  }
-
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -9700,40 +11833,45 @@ export namespace Prisma {
     isNot?: MealPlanWhereInput
   }
 
-  export type MealPlanRecipeMealPlanIdRecipeIdDayMealSlotCompoundUniqueInput = {
+  export type MealPlanItemMealPlanIdDayOfWeekMealTypeCompoundUniqueInput = {
     mealPlanId: string
-    recipeId: string
-    day: number
-    mealSlot: string
+    dayOfWeek: number
+    mealType: string
   }
 
-  export type MealPlanRecipeCountOrderByAggregateInput = {
+  export type MealPlanItemCountOrderByAggregateInput = {
+    id?: SortOrder
     mealPlanId?: SortOrder
-    recipeId?: SortOrder
-    day?: SortOrder
-    mealSlot?: SortOrder
+    sourceId?: SortOrder
+    dayOfWeek?: SortOrder
+    mealType?: SortOrder
+    cachedRecipeId?: SortOrder
   }
 
-  export type MealPlanRecipeAvgOrderByAggregateInput = {
-    day?: SortOrder
+  export type MealPlanItemAvgOrderByAggregateInput = {
+    dayOfWeek?: SortOrder
   }
 
-  export type MealPlanRecipeMaxOrderByAggregateInput = {
+  export type MealPlanItemMaxOrderByAggregateInput = {
+    id?: SortOrder
     mealPlanId?: SortOrder
-    recipeId?: SortOrder
-    day?: SortOrder
-    mealSlot?: SortOrder
+    sourceId?: SortOrder
+    dayOfWeek?: SortOrder
+    mealType?: SortOrder
+    cachedRecipeId?: SortOrder
   }
 
-  export type MealPlanRecipeMinOrderByAggregateInput = {
+  export type MealPlanItemMinOrderByAggregateInput = {
+    id?: SortOrder
     mealPlanId?: SortOrder
-    recipeId?: SortOrder
-    day?: SortOrder
-    mealSlot?: SortOrder
+    sourceId?: SortOrder
+    dayOfWeek?: SortOrder
+    mealType?: SortOrder
+    cachedRecipeId?: SortOrder
   }
 
-  export type MealPlanRecipeSumOrderByAggregateInput = {
-    day?: SortOrder
+  export type MealPlanItemSumOrderByAggregateInput = {
+    dayOfWeek?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -9792,6 +11930,245 @@ export namespace Prisma {
     caloriesConsumed?: SortOrder
   }
 
+  export type EnumRecipeSourceTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.RecipeSourceType | EnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RecipeSourceType[] | ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RecipeSourceType[] | ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRecipeSourceTypeFilter<$PrismaModel> | $Enums.RecipeSourceType
+  }
+
+  export type EnumRecipeDifficultyNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.RecipeDifficulty | EnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RecipeDifficulty[] | ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RecipeDifficulty[] | ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRecipeDifficultyNullableFilter<$PrismaModel> | $Enums.RecipeDifficulty | null
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type RecipeIngredientListRelationFilter = {
+    every?: RecipeIngredientWhereInput
+    some?: RecipeIngredientWhereInput
+    none?: RecipeIngredientWhereInput
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type RecipeIngredientOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RecipeCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    fallbackImageUrl?: SortOrder
+    sourceType?: SortOrder
+    sourceId?: SortOrder
+    sourceUrl?: SortOrder
+    cuisine?: SortOrder
+    mealType?: SortOrder
+    difficulty?: SortOrder
+    prepTime?: SortOrder
+    cookTime?: SortOrder
+    totalTime?: SortOrder
+    servings?: SortOrder
+    instructions?: SortOrder
+    nutrition?: SortOrder
+    tags?: SortOrder
+    namedEntities?: SortOrder
+    userRating?: SortOrder
+    savedCount?: SortOrder
+    isPublic?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RecipeAvgOrderByAggregateInput = {
+    prepTime?: SortOrder
+    cookTime?: SortOrder
+    totalTime?: SortOrder
+    servings?: SortOrder
+    userRating?: SortOrder
+    savedCount?: SortOrder
+  }
+
+  export type RecipeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    fallbackImageUrl?: SortOrder
+    sourceType?: SortOrder
+    sourceId?: SortOrder
+    sourceUrl?: SortOrder
+    cuisine?: SortOrder
+    mealType?: SortOrder
+    difficulty?: SortOrder
+    prepTime?: SortOrder
+    cookTime?: SortOrder
+    totalTime?: SortOrder
+    servings?: SortOrder
+    userRating?: SortOrder
+    savedCount?: SortOrder
+    isPublic?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RecipeMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    fallbackImageUrl?: SortOrder
+    sourceType?: SortOrder
+    sourceId?: SortOrder
+    sourceUrl?: SortOrder
+    cuisine?: SortOrder
+    mealType?: SortOrder
+    difficulty?: SortOrder
+    prepTime?: SortOrder
+    cookTime?: SortOrder
+    totalTime?: SortOrder
+    servings?: SortOrder
+    userRating?: SortOrder
+    savedCount?: SortOrder
+    isPublic?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RecipeSumOrderByAggregateInput = {
+    prepTime?: SortOrder
+    cookTime?: SortOrder
+    totalTime?: SortOrder
+    servings?: SortOrder
+    userRating?: SortOrder
+    savedCount?: SortOrder
+  }
+
+  export type EnumRecipeSourceTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RecipeSourceType | EnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RecipeSourceType[] | ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RecipeSourceType[] | ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRecipeSourceTypeWithAggregatesFilter<$PrismaModel> | $Enums.RecipeSourceType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRecipeSourceTypeFilter<$PrismaModel>
+    _max?: NestedEnumRecipeSourceTypeFilter<$PrismaModel>
+  }
+
+  export type EnumRecipeDifficultyNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RecipeDifficulty | EnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RecipeDifficulty[] | ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RecipeDifficulty[] | ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRecipeDifficultyNullableWithAggregatesFilter<$PrismaModel> | $Enums.RecipeDifficulty | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRecipeDifficultyNullableFilter<$PrismaModel>
+    _max?: NestedEnumRecipeDifficultyNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type RecipeScalarRelationFilter = {
+    is?: RecipeWhereInput
+    isNot?: RecipeWhereInput
+  }
+
+  export type RecipeIngredientCountOrderByAggregateInput = {
+    id?: SortOrder
+    recipeId?: SortOrder
+    ingredientId?: SortOrder
+    name?: SortOrder
+    amount?: SortOrder
+    unit?: SortOrder
+    original?: SortOrder
+    image?: SortOrder
+  }
+
+  export type RecipeIngredientAvgOrderByAggregateInput = {
+    ingredientId?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type RecipeIngredientMaxOrderByAggregateInput = {
+    id?: SortOrder
+    recipeId?: SortOrder
+    ingredientId?: SortOrder
+    name?: SortOrder
+    amount?: SortOrder
+    unit?: SortOrder
+    original?: SortOrder
+    image?: SortOrder
+  }
+
+  export type RecipeIngredientMinOrderByAggregateInput = {
+    id?: SortOrder
+    recipeId?: SortOrder
+    ingredientId?: SortOrder
+    name?: SortOrder
+    amount?: SortOrder
+    unit?: SortOrder
+    original?: SortOrder
+    image?: SortOrder
+  }
+
+  export type RecipeIngredientSumOrderByAggregateInput = {
+    ingredientId?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type MealPlanCreateNestedManyWithoutUserInput = {
     create?: XOR<MealPlanCreateWithoutUserInput, MealPlanUncheckedCreateWithoutUserInput> | MealPlanCreateWithoutUserInput[] | MealPlanUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MealPlanCreateOrConnectWithoutUserInput | MealPlanCreateOrConnectWithoutUserInput[]
@@ -9806,6 +12183,20 @@ export namespace Prisma {
     connect?: ProgressWhereUniqueInput | ProgressWhereUniqueInput[]
   }
 
+  export type UserRecipeCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserRecipeCreateWithoutUserInput, UserRecipeUncheckedCreateWithoutUserInput> | UserRecipeCreateWithoutUserInput[] | UserRecipeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserRecipeCreateOrConnectWithoutUserInput | UserRecipeCreateOrConnectWithoutUserInput[]
+    createMany?: UserRecipeCreateManyUserInputEnvelope
+    connect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+  }
+
+  export type RecipeCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<RecipeCreateWithoutCreatedByInput, RecipeUncheckedCreateWithoutCreatedByInput> | RecipeCreateWithoutCreatedByInput[] | RecipeUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: RecipeCreateOrConnectWithoutCreatedByInput | RecipeCreateOrConnectWithoutCreatedByInput[]
+    createMany?: RecipeCreateManyCreatedByInputEnvelope
+    connect?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+  }
+
   export type MealPlanUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<MealPlanCreateWithoutUserInput, MealPlanUncheckedCreateWithoutUserInput> | MealPlanCreateWithoutUserInput[] | MealPlanUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MealPlanCreateOrConnectWithoutUserInput | MealPlanCreateOrConnectWithoutUserInput[]
@@ -9818,6 +12209,20 @@ export namespace Prisma {
     connectOrCreate?: ProgressCreateOrConnectWithoutUserInput | ProgressCreateOrConnectWithoutUserInput[]
     createMany?: ProgressCreateManyUserInputEnvelope
     connect?: ProgressWhereUniqueInput | ProgressWhereUniqueInput[]
+  }
+
+  export type UserRecipeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserRecipeCreateWithoutUserInput, UserRecipeUncheckedCreateWithoutUserInput> | UserRecipeCreateWithoutUserInput[] | UserRecipeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserRecipeCreateOrConnectWithoutUserInput | UserRecipeCreateOrConnectWithoutUserInput[]
+    createMany?: UserRecipeCreateManyUserInputEnvelope
+    connect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+  }
+
+  export type RecipeUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<RecipeCreateWithoutCreatedByInput, RecipeUncheckedCreateWithoutCreatedByInput> | RecipeCreateWithoutCreatedByInput[] | RecipeUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: RecipeCreateOrConnectWithoutCreatedByInput | RecipeCreateOrConnectWithoutCreatedByInput[]
+    createMany?: RecipeCreateManyCreatedByInputEnvelope
+    connect?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -9876,6 +12281,34 @@ export namespace Prisma {
     deleteMany?: ProgressScalarWhereInput | ProgressScalarWhereInput[]
   }
 
+  export type UserRecipeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserRecipeCreateWithoutUserInput, UserRecipeUncheckedCreateWithoutUserInput> | UserRecipeCreateWithoutUserInput[] | UserRecipeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserRecipeCreateOrConnectWithoutUserInput | UserRecipeCreateOrConnectWithoutUserInput[]
+    upsert?: UserRecipeUpsertWithWhereUniqueWithoutUserInput | UserRecipeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserRecipeCreateManyUserInputEnvelope
+    set?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    disconnect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    delete?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    connect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    update?: UserRecipeUpdateWithWhereUniqueWithoutUserInput | UserRecipeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserRecipeUpdateManyWithWhereWithoutUserInput | UserRecipeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserRecipeScalarWhereInput | UserRecipeScalarWhereInput[]
+  }
+
+  export type RecipeUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<RecipeCreateWithoutCreatedByInput, RecipeUncheckedCreateWithoutCreatedByInput> | RecipeCreateWithoutCreatedByInput[] | RecipeUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: RecipeCreateOrConnectWithoutCreatedByInput | RecipeCreateOrConnectWithoutCreatedByInput[]
+    upsert?: RecipeUpsertWithWhereUniqueWithoutCreatedByInput | RecipeUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: RecipeCreateManyCreatedByInputEnvelope
+    set?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+    disconnect?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+    delete?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+    connect?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+    update?: RecipeUpdateWithWhereUniqueWithoutCreatedByInput | RecipeUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: RecipeUpdateManyWithWhereWithoutCreatedByInput | RecipeUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: RecipeScalarWhereInput | RecipeScalarWhereInput[]
+  }
+
   export type MealPlanUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<MealPlanCreateWithoutUserInput, MealPlanUncheckedCreateWithoutUserInput> | MealPlanCreateWithoutUserInput[] | MealPlanUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MealPlanCreateOrConnectWithoutUserInput | MealPlanCreateOrConnectWithoutUserInput[]
@@ -9904,138 +12337,62 @@ export namespace Prisma {
     deleteMany?: ProgressScalarWhereInput | ProgressScalarWhereInput[]
   }
 
-  export type RecipeCreateingredientsInput = {
-    set: string[]
+  export type UserRecipeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserRecipeCreateWithoutUserInput, UserRecipeUncheckedCreateWithoutUserInput> | UserRecipeCreateWithoutUserInput[] | UserRecipeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserRecipeCreateOrConnectWithoutUserInput | UserRecipeCreateOrConnectWithoutUserInput[]
+    upsert?: UserRecipeUpsertWithWhereUniqueWithoutUserInput | UserRecipeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserRecipeCreateManyUserInputEnvelope
+    set?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    disconnect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    delete?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    connect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    update?: UserRecipeUpdateWithWhereUniqueWithoutUserInput | UserRecipeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserRecipeUpdateManyWithWhereWithoutUserInput | UserRecipeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserRecipeScalarWhereInput | UserRecipeScalarWhereInput[]
   }
 
-  export type RecipeCreateinstructionsInput = {
-    set: string[]
+  export type RecipeUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<RecipeCreateWithoutCreatedByInput, RecipeUncheckedCreateWithoutCreatedByInput> | RecipeCreateWithoutCreatedByInput[] | RecipeUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: RecipeCreateOrConnectWithoutCreatedByInput | RecipeCreateOrConnectWithoutCreatedByInput[]
+    upsert?: RecipeUpsertWithWhereUniqueWithoutCreatedByInput | RecipeUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: RecipeCreateManyCreatedByInputEnvelope
+    set?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+    disconnect?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+    delete?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+    connect?: RecipeWhereUniqueInput | RecipeWhereUniqueInput[]
+    update?: RecipeUpdateWithWhereUniqueWithoutCreatedByInput | RecipeUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: RecipeUpdateManyWithWhereWithoutCreatedByInput | RecipeUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: RecipeScalarWhereInput | RecipeScalarWhereInput[]
   }
 
-  export type RecipeCreatenamedEntitiesInput = {
-    set: string[]
+  export type UserCreateNestedOneWithoutUserRecipesInput = {
+    create?: XOR<UserCreateWithoutUserRecipesInput, UserUncheckedCreateWithoutUserRecipesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserRecipesInput
+    connect?: UserWhereUniqueInput
   }
 
-  export type MealPlanRecipeCreateNestedManyWithoutRecipeInput = {
-    create?: XOR<MealPlanRecipeCreateWithoutRecipeInput, MealPlanRecipeUncheckedCreateWithoutRecipeInput> | MealPlanRecipeCreateWithoutRecipeInput[] | MealPlanRecipeUncheckedCreateWithoutRecipeInput[]
-    connectOrCreate?: MealPlanRecipeCreateOrConnectWithoutRecipeInput | MealPlanRecipeCreateOrConnectWithoutRecipeInput[]
-    createMany?: MealPlanRecipeCreateManyRecipeInputEnvelope
-    connect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-  }
-
-  export type RecipeEmbeddingCreateNestedManyWithoutRecipeInput = {
-    create?: XOR<RecipeEmbeddingCreateWithoutRecipeInput, RecipeEmbeddingUncheckedCreateWithoutRecipeInput> | RecipeEmbeddingCreateWithoutRecipeInput[] | RecipeEmbeddingUncheckedCreateWithoutRecipeInput[]
-    connectOrCreate?: RecipeEmbeddingCreateOrConnectWithoutRecipeInput | RecipeEmbeddingCreateOrConnectWithoutRecipeInput[]
-    createMany?: RecipeEmbeddingCreateManyRecipeInputEnvelope
-    connect?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-  }
-
-  export type MealPlanRecipeUncheckedCreateNestedManyWithoutRecipeInput = {
-    create?: XOR<MealPlanRecipeCreateWithoutRecipeInput, MealPlanRecipeUncheckedCreateWithoutRecipeInput> | MealPlanRecipeCreateWithoutRecipeInput[] | MealPlanRecipeUncheckedCreateWithoutRecipeInput[]
-    connectOrCreate?: MealPlanRecipeCreateOrConnectWithoutRecipeInput | MealPlanRecipeCreateOrConnectWithoutRecipeInput[]
-    createMany?: MealPlanRecipeCreateManyRecipeInputEnvelope
-    connect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-  }
-
-  export type RecipeEmbeddingUncheckedCreateNestedManyWithoutRecipeInput = {
-    create?: XOR<RecipeEmbeddingCreateWithoutRecipeInput, RecipeEmbeddingUncheckedCreateWithoutRecipeInput> | RecipeEmbeddingCreateWithoutRecipeInput[] | RecipeEmbeddingUncheckedCreateWithoutRecipeInput[]
-    connectOrCreate?: RecipeEmbeddingCreateOrConnectWithoutRecipeInput | RecipeEmbeddingCreateOrConnectWithoutRecipeInput[]
-    createMany?: RecipeEmbeddingCreateManyRecipeInputEnvelope
-    connect?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-  }
-
-  export type RecipeUpdateingredientsInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
-  export type RecipeUpdateinstructionsInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
-  export type RecipeUpdatenamedEntitiesInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
-  export type MealPlanRecipeUpdateManyWithoutRecipeNestedInput = {
-    create?: XOR<MealPlanRecipeCreateWithoutRecipeInput, MealPlanRecipeUncheckedCreateWithoutRecipeInput> | MealPlanRecipeCreateWithoutRecipeInput[] | MealPlanRecipeUncheckedCreateWithoutRecipeInput[]
-    connectOrCreate?: MealPlanRecipeCreateOrConnectWithoutRecipeInput | MealPlanRecipeCreateOrConnectWithoutRecipeInput[]
-    upsert?: MealPlanRecipeUpsertWithWhereUniqueWithoutRecipeInput | MealPlanRecipeUpsertWithWhereUniqueWithoutRecipeInput[]
-    createMany?: MealPlanRecipeCreateManyRecipeInputEnvelope
-    set?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    disconnect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    delete?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    connect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    update?: MealPlanRecipeUpdateWithWhereUniqueWithoutRecipeInput | MealPlanRecipeUpdateWithWhereUniqueWithoutRecipeInput[]
-    updateMany?: MealPlanRecipeUpdateManyWithWhereWithoutRecipeInput | MealPlanRecipeUpdateManyWithWhereWithoutRecipeInput[]
-    deleteMany?: MealPlanRecipeScalarWhereInput | MealPlanRecipeScalarWhereInput[]
-  }
-
-  export type RecipeEmbeddingUpdateManyWithoutRecipeNestedInput = {
-    create?: XOR<RecipeEmbeddingCreateWithoutRecipeInput, RecipeEmbeddingUncheckedCreateWithoutRecipeInput> | RecipeEmbeddingCreateWithoutRecipeInput[] | RecipeEmbeddingUncheckedCreateWithoutRecipeInput[]
-    connectOrCreate?: RecipeEmbeddingCreateOrConnectWithoutRecipeInput | RecipeEmbeddingCreateOrConnectWithoutRecipeInput[]
-    upsert?: RecipeEmbeddingUpsertWithWhereUniqueWithoutRecipeInput | RecipeEmbeddingUpsertWithWhereUniqueWithoutRecipeInput[]
-    createMany?: RecipeEmbeddingCreateManyRecipeInputEnvelope
-    set?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-    disconnect?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-    delete?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-    connect?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-    update?: RecipeEmbeddingUpdateWithWhereUniqueWithoutRecipeInput | RecipeEmbeddingUpdateWithWhereUniqueWithoutRecipeInput[]
-    updateMany?: RecipeEmbeddingUpdateManyWithWhereWithoutRecipeInput | RecipeEmbeddingUpdateManyWithWhereWithoutRecipeInput[]
-    deleteMany?: RecipeEmbeddingScalarWhereInput | RecipeEmbeddingScalarWhereInput[]
-  }
-
-  export type MealPlanRecipeUncheckedUpdateManyWithoutRecipeNestedInput = {
-    create?: XOR<MealPlanRecipeCreateWithoutRecipeInput, MealPlanRecipeUncheckedCreateWithoutRecipeInput> | MealPlanRecipeCreateWithoutRecipeInput[] | MealPlanRecipeUncheckedCreateWithoutRecipeInput[]
-    connectOrCreate?: MealPlanRecipeCreateOrConnectWithoutRecipeInput | MealPlanRecipeCreateOrConnectWithoutRecipeInput[]
-    upsert?: MealPlanRecipeUpsertWithWhereUniqueWithoutRecipeInput | MealPlanRecipeUpsertWithWhereUniqueWithoutRecipeInput[]
-    createMany?: MealPlanRecipeCreateManyRecipeInputEnvelope
-    set?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    disconnect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    delete?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    connect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    update?: MealPlanRecipeUpdateWithWhereUniqueWithoutRecipeInput | MealPlanRecipeUpdateWithWhereUniqueWithoutRecipeInput[]
-    updateMany?: MealPlanRecipeUpdateManyWithWhereWithoutRecipeInput | MealPlanRecipeUpdateManyWithWhereWithoutRecipeInput[]
-    deleteMany?: MealPlanRecipeScalarWhereInput | MealPlanRecipeScalarWhereInput[]
-  }
-
-  export type RecipeEmbeddingUncheckedUpdateManyWithoutRecipeNestedInput = {
-    create?: XOR<RecipeEmbeddingCreateWithoutRecipeInput, RecipeEmbeddingUncheckedCreateWithoutRecipeInput> | RecipeEmbeddingCreateWithoutRecipeInput[] | RecipeEmbeddingUncheckedCreateWithoutRecipeInput[]
-    connectOrCreate?: RecipeEmbeddingCreateOrConnectWithoutRecipeInput | RecipeEmbeddingCreateOrConnectWithoutRecipeInput[]
-    upsert?: RecipeEmbeddingUpsertWithWhereUniqueWithoutRecipeInput | RecipeEmbeddingUpsertWithWhereUniqueWithoutRecipeInput[]
-    createMany?: RecipeEmbeddingCreateManyRecipeInputEnvelope
-    set?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-    disconnect?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-    delete?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-    connect?: RecipeEmbeddingWhereUniqueInput | RecipeEmbeddingWhereUniqueInput[]
-    update?: RecipeEmbeddingUpdateWithWhereUniqueWithoutRecipeInput | RecipeEmbeddingUpdateWithWhereUniqueWithoutRecipeInput[]
-    updateMany?: RecipeEmbeddingUpdateManyWithWhereWithoutRecipeInput | RecipeEmbeddingUpdateManyWithWhereWithoutRecipeInput[]
-    deleteMany?: RecipeEmbeddingScalarWhereInput | RecipeEmbeddingScalarWhereInput[]
-  }
-
-  export type RecipeEmbeddingCreateembeddingInput = {
-    set: number[]
-  }
-
-  export type RecipeCreateNestedOneWithoutEmbeddingsInput = {
-    create?: XOR<RecipeCreateWithoutEmbeddingsInput, RecipeUncheckedCreateWithoutEmbeddingsInput>
-    connectOrCreate?: RecipeCreateOrConnectWithoutEmbeddingsInput
+  export type RecipeCreateNestedOneWithoutUserRecipesInput = {
+    create?: XOR<RecipeCreateWithoutUserRecipesInput, RecipeUncheckedCreateWithoutUserRecipesInput>
+    connectOrCreate?: RecipeCreateOrConnectWithoutUserRecipesInput
     connect?: RecipeWhereUniqueInput
   }
 
-  export type RecipeEmbeddingUpdateembeddingInput = {
-    set?: number[]
-    push?: number | number[]
+  export type UserUpdateOneRequiredWithoutUserRecipesNestedInput = {
+    create?: XOR<UserCreateWithoutUserRecipesInput, UserUncheckedCreateWithoutUserRecipesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserRecipesInput
+    upsert?: UserUpsertWithoutUserRecipesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserRecipesInput, UserUpdateWithoutUserRecipesInput>, UserUncheckedUpdateWithoutUserRecipesInput>
   }
 
-  export type RecipeUpdateOneRequiredWithoutEmbeddingsNestedInput = {
-    create?: XOR<RecipeCreateWithoutEmbeddingsInput, RecipeUncheckedCreateWithoutEmbeddingsInput>
-    connectOrCreate?: RecipeCreateOrConnectWithoutEmbeddingsInput
-    upsert?: RecipeUpsertWithoutEmbeddingsInput
+  export type RecipeUpdateOneWithoutUserRecipesNestedInput = {
+    create?: XOR<RecipeCreateWithoutUserRecipesInput, RecipeUncheckedCreateWithoutUserRecipesInput>
+    connectOrCreate?: RecipeCreateOrConnectWithoutUserRecipesInput
+    upsert?: RecipeUpsertWithoutUserRecipesInput
+    disconnect?: RecipeWhereInput | boolean
+    delete?: RecipeWhereInput | boolean
     connect?: RecipeWhereUniqueInput
-    update?: XOR<XOR<RecipeUpdateToOneWithWhereWithoutEmbeddingsInput, RecipeUpdateWithoutEmbeddingsInput>, RecipeUncheckedUpdateWithoutEmbeddingsInput>
+    update?: XOR<XOR<RecipeUpdateToOneWithWhereWithoutUserRecipesInput, RecipeUpdateWithoutUserRecipesInput>, RecipeUncheckedUpdateWithoutUserRecipesInput>
   }
 
   export type UserCreateNestedOneWithoutMealPlansInput = {
@@ -10044,18 +12401,18 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type MealPlanRecipeCreateNestedManyWithoutMealPlanInput = {
-    create?: XOR<MealPlanRecipeCreateWithoutMealPlanInput, MealPlanRecipeUncheckedCreateWithoutMealPlanInput> | MealPlanRecipeCreateWithoutMealPlanInput[] | MealPlanRecipeUncheckedCreateWithoutMealPlanInput[]
-    connectOrCreate?: MealPlanRecipeCreateOrConnectWithoutMealPlanInput | MealPlanRecipeCreateOrConnectWithoutMealPlanInput[]
-    createMany?: MealPlanRecipeCreateManyMealPlanInputEnvelope
-    connect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
+  export type MealPlanItemCreateNestedManyWithoutMealPlanInput = {
+    create?: XOR<MealPlanItemCreateWithoutMealPlanInput, MealPlanItemUncheckedCreateWithoutMealPlanInput> | MealPlanItemCreateWithoutMealPlanInput[] | MealPlanItemUncheckedCreateWithoutMealPlanInput[]
+    connectOrCreate?: MealPlanItemCreateOrConnectWithoutMealPlanInput | MealPlanItemCreateOrConnectWithoutMealPlanInput[]
+    createMany?: MealPlanItemCreateManyMealPlanInputEnvelope
+    connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
   }
 
-  export type MealPlanRecipeUncheckedCreateNestedManyWithoutMealPlanInput = {
-    create?: XOR<MealPlanRecipeCreateWithoutMealPlanInput, MealPlanRecipeUncheckedCreateWithoutMealPlanInput> | MealPlanRecipeCreateWithoutMealPlanInput[] | MealPlanRecipeUncheckedCreateWithoutMealPlanInput[]
-    connectOrCreate?: MealPlanRecipeCreateOrConnectWithoutMealPlanInput | MealPlanRecipeCreateOrConnectWithoutMealPlanInput[]
-    createMany?: MealPlanRecipeCreateManyMealPlanInputEnvelope
-    connect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
+  export type MealPlanItemUncheckedCreateNestedManyWithoutMealPlanInput = {
+    create?: XOR<MealPlanItemCreateWithoutMealPlanInput, MealPlanItemUncheckedCreateWithoutMealPlanInput> | MealPlanItemCreateWithoutMealPlanInput[] | MealPlanItemUncheckedCreateWithoutMealPlanInput[]
+    connectOrCreate?: MealPlanItemCreateOrConnectWithoutMealPlanInput | MealPlanItemCreateOrConnectWithoutMealPlanInput[]
+    createMany?: MealPlanItemCreateManyMealPlanInputEnvelope
+    connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutMealPlansNestedInput = {
@@ -10066,43 +12423,43 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMealPlansInput, UserUpdateWithoutMealPlansInput>, UserUncheckedUpdateWithoutMealPlansInput>
   }
 
-  export type MealPlanRecipeUpdateManyWithoutMealPlanNestedInput = {
-    create?: XOR<MealPlanRecipeCreateWithoutMealPlanInput, MealPlanRecipeUncheckedCreateWithoutMealPlanInput> | MealPlanRecipeCreateWithoutMealPlanInput[] | MealPlanRecipeUncheckedCreateWithoutMealPlanInput[]
-    connectOrCreate?: MealPlanRecipeCreateOrConnectWithoutMealPlanInput | MealPlanRecipeCreateOrConnectWithoutMealPlanInput[]
-    upsert?: MealPlanRecipeUpsertWithWhereUniqueWithoutMealPlanInput | MealPlanRecipeUpsertWithWhereUniqueWithoutMealPlanInput[]
-    createMany?: MealPlanRecipeCreateManyMealPlanInputEnvelope
-    set?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    disconnect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    delete?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    connect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    update?: MealPlanRecipeUpdateWithWhereUniqueWithoutMealPlanInput | MealPlanRecipeUpdateWithWhereUniqueWithoutMealPlanInput[]
-    updateMany?: MealPlanRecipeUpdateManyWithWhereWithoutMealPlanInput | MealPlanRecipeUpdateManyWithWhereWithoutMealPlanInput[]
-    deleteMany?: MealPlanRecipeScalarWhereInput | MealPlanRecipeScalarWhereInput[]
+  export type MealPlanItemUpdateManyWithoutMealPlanNestedInput = {
+    create?: XOR<MealPlanItemCreateWithoutMealPlanInput, MealPlanItemUncheckedCreateWithoutMealPlanInput> | MealPlanItemCreateWithoutMealPlanInput[] | MealPlanItemUncheckedCreateWithoutMealPlanInput[]
+    connectOrCreate?: MealPlanItemCreateOrConnectWithoutMealPlanInput | MealPlanItemCreateOrConnectWithoutMealPlanInput[]
+    upsert?: MealPlanItemUpsertWithWhereUniqueWithoutMealPlanInput | MealPlanItemUpsertWithWhereUniqueWithoutMealPlanInput[]
+    createMany?: MealPlanItemCreateManyMealPlanInputEnvelope
+    set?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    disconnect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    delete?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    update?: MealPlanItemUpdateWithWhereUniqueWithoutMealPlanInput | MealPlanItemUpdateWithWhereUniqueWithoutMealPlanInput[]
+    updateMany?: MealPlanItemUpdateManyWithWhereWithoutMealPlanInput | MealPlanItemUpdateManyWithWhereWithoutMealPlanInput[]
+    deleteMany?: MealPlanItemScalarWhereInput | MealPlanItemScalarWhereInput[]
   }
 
-  export type MealPlanRecipeUncheckedUpdateManyWithoutMealPlanNestedInput = {
-    create?: XOR<MealPlanRecipeCreateWithoutMealPlanInput, MealPlanRecipeUncheckedCreateWithoutMealPlanInput> | MealPlanRecipeCreateWithoutMealPlanInput[] | MealPlanRecipeUncheckedCreateWithoutMealPlanInput[]
-    connectOrCreate?: MealPlanRecipeCreateOrConnectWithoutMealPlanInput | MealPlanRecipeCreateOrConnectWithoutMealPlanInput[]
-    upsert?: MealPlanRecipeUpsertWithWhereUniqueWithoutMealPlanInput | MealPlanRecipeUpsertWithWhereUniqueWithoutMealPlanInput[]
-    createMany?: MealPlanRecipeCreateManyMealPlanInputEnvelope
-    set?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    disconnect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    delete?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    connect?: MealPlanRecipeWhereUniqueInput | MealPlanRecipeWhereUniqueInput[]
-    update?: MealPlanRecipeUpdateWithWhereUniqueWithoutMealPlanInput | MealPlanRecipeUpdateWithWhereUniqueWithoutMealPlanInput[]
-    updateMany?: MealPlanRecipeUpdateManyWithWhereWithoutMealPlanInput | MealPlanRecipeUpdateManyWithWhereWithoutMealPlanInput[]
-    deleteMany?: MealPlanRecipeScalarWhereInput | MealPlanRecipeScalarWhereInput[]
+  export type MealPlanItemUncheckedUpdateManyWithoutMealPlanNestedInput = {
+    create?: XOR<MealPlanItemCreateWithoutMealPlanInput, MealPlanItemUncheckedCreateWithoutMealPlanInput> | MealPlanItemCreateWithoutMealPlanInput[] | MealPlanItemUncheckedCreateWithoutMealPlanInput[]
+    connectOrCreate?: MealPlanItemCreateOrConnectWithoutMealPlanInput | MealPlanItemCreateOrConnectWithoutMealPlanInput[]
+    upsert?: MealPlanItemUpsertWithWhereUniqueWithoutMealPlanInput | MealPlanItemUpsertWithWhereUniqueWithoutMealPlanInput[]
+    createMany?: MealPlanItemCreateManyMealPlanInputEnvelope
+    set?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    disconnect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    delete?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    update?: MealPlanItemUpdateWithWhereUniqueWithoutMealPlanInput | MealPlanItemUpdateWithWhereUniqueWithoutMealPlanInput[]
+    updateMany?: MealPlanItemUpdateManyWithWhereWithoutMealPlanInput | MealPlanItemUpdateManyWithWhereWithoutMealPlanInput[]
+    deleteMany?: MealPlanItemScalarWhereInput | MealPlanItemScalarWhereInput[]
   }
 
-  export type MealPlanCreateNestedOneWithoutRecipesInput = {
-    create?: XOR<MealPlanCreateWithoutRecipesInput, MealPlanUncheckedCreateWithoutRecipesInput>
-    connectOrCreate?: MealPlanCreateOrConnectWithoutRecipesInput
+  export type MealPlanCreateNestedOneWithoutMealPlanItemsInput = {
+    create?: XOR<MealPlanCreateWithoutMealPlanItemsInput, MealPlanUncheckedCreateWithoutMealPlanItemsInput>
+    connectOrCreate?: MealPlanCreateOrConnectWithoutMealPlanItemsInput
     connect?: MealPlanWhereUniqueInput
   }
 
-  export type RecipeCreateNestedOneWithoutMealPlanRecipesInput = {
-    create?: XOR<RecipeCreateWithoutMealPlanRecipesInput, RecipeUncheckedCreateWithoutMealPlanRecipesInput>
-    connectOrCreate?: RecipeCreateOrConnectWithoutMealPlanRecipesInput
+  export type RecipeCreateNestedOneWithoutMealPlanItemsInput = {
+    create?: XOR<RecipeCreateWithoutMealPlanItemsInput, RecipeUncheckedCreateWithoutMealPlanItemsInput>
+    connectOrCreate?: RecipeCreateOrConnectWithoutMealPlanItemsInput
     connect?: RecipeWhereUniqueInput
   }
 
@@ -10114,20 +12471,22 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type MealPlanUpdateOneRequiredWithoutRecipesNestedInput = {
-    create?: XOR<MealPlanCreateWithoutRecipesInput, MealPlanUncheckedCreateWithoutRecipesInput>
-    connectOrCreate?: MealPlanCreateOrConnectWithoutRecipesInput
-    upsert?: MealPlanUpsertWithoutRecipesInput
+  export type MealPlanUpdateOneRequiredWithoutMealPlanItemsNestedInput = {
+    create?: XOR<MealPlanCreateWithoutMealPlanItemsInput, MealPlanUncheckedCreateWithoutMealPlanItemsInput>
+    connectOrCreate?: MealPlanCreateOrConnectWithoutMealPlanItemsInput
+    upsert?: MealPlanUpsertWithoutMealPlanItemsInput
     connect?: MealPlanWhereUniqueInput
-    update?: XOR<XOR<MealPlanUpdateToOneWithWhereWithoutRecipesInput, MealPlanUpdateWithoutRecipesInput>, MealPlanUncheckedUpdateWithoutRecipesInput>
+    update?: XOR<XOR<MealPlanUpdateToOneWithWhereWithoutMealPlanItemsInput, MealPlanUpdateWithoutMealPlanItemsInput>, MealPlanUncheckedUpdateWithoutMealPlanItemsInput>
   }
 
-  export type RecipeUpdateOneRequiredWithoutMealPlanRecipesNestedInput = {
-    create?: XOR<RecipeCreateWithoutMealPlanRecipesInput, RecipeUncheckedCreateWithoutMealPlanRecipesInput>
-    connectOrCreate?: RecipeCreateOrConnectWithoutMealPlanRecipesInput
-    upsert?: RecipeUpsertWithoutMealPlanRecipesInput
+  export type RecipeUpdateOneWithoutMealPlanItemsNestedInput = {
+    create?: XOR<RecipeCreateWithoutMealPlanItemsInput, RecipeUncheckedCreateWithoutMealPlanItemsInput>
+    connectOrCreate?: RecipeCreateOrConnectWithoutMealPlanItemsInput
+    upsert?: RecipeUpsertWithoutMealPlanItemsInput
+    disconnect?: RecipeWhereInput | boolean
+    delete?: RecipeWhereInput | boolean
     connect?: RecipeWhereUniqueInput
-    update?: XOR<XOR<RecipeUpdateToOneWithWhereWithoutMealPlanRecipesInput, RecipeUpdateWithoutMealPlanRecipesInput>, RecipeUncheckedUpdateWithoutMealPlanRecipesInput>
+    update?: XOR<XOR<RecipeUpdateToOneWithWhereWithoutMealPlanItemsInput, RecipeUpdateWithoutMealPlanItemsInput>, RecipeUncheckedUpdateWithoutMealPlanItemsInput>
   }
 
   export type UserCreateNestedOneWithoutProgressInput = {
@@ -10142,6 +12501,209 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutProgressInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProgressInput, UserUpdateWithoutProgressInput>, UserUncheckedUpdateWithoutProgressInput>
+  }
+
+  export type RecipeCreateinstructionsInput = {
+    set: string[]
+  }
+
+  export type RecipeCreatetagsInput = {
+    set: string[]
+  }
+
+  export type RecipeCreatenamedEntitiesInput = {
+    set: string[]
+  }
+
+  export type RecipeIngredientCreateNestedManyWithoutRecipeInput = {
+    create?: XOR<RecipeIngredientCreateWithoutRecipeInput, RecipeIngredientUncheckedCreateWithoutRecipeInput> | RecipeIngredientCreateWithoutRecipeInput[] | RecipeIngredientUncheckedCreateWithoutRecipeInput[]
+    connectOrCreate?: RecipeIngredientCreateOrConnectWithoutRecipeInput | RecipeIngredientCreateOrConnectWithoutRecipeInput[]
+    createMany?: RecipeIngredientCreateManyRecipeInputEnvelope
+    connect?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutRecipesInput = {
+    create?: XOR<UserCreateWithoutRecipesInput, UserUncheckedCreateWithoutRecipesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRecipesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserRecipeCreateNestedManyWithoutCachedRecipeInput = {
+    create?: XOR<UserRecipeCreateWithoutCachedRecipeInput, UserRecipeUncheckedCreateWithoutCachedRecipeInput> | UserRecipeCreateWithoutCachedRecipeInput[] | UserRecipeUncheckedCreateWithoutCachedRecipeInput[]
+    connectOrCreate?: UserRecipeCreateOrConnectWithoutCachedRecipeInput | UserRecipeCreateOrConnectWithoutCachedRecipeInput[]
+    createMany?: UserRecipeCreateManyCachedRecipeInputEnvelope
+    connect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+  }
+
+  export type MealPlanItemCreateNestedManyWithoutCachedRecipeInput = {
+    create?: XOR<MealPlanItemCreateWithoutCachedRecipeInput, MealPlanItemUncheckedCreateWithoutCachedRecipeInput> | MealPlanItemCreateWithoutCachedRecipeInput[] | MealPlanItemUncheckedCreateWithoutCachedRecipeInput[]
+    connectOrCreate?: MealPlanItemCreateOrConnectWithoutCachedRecipeInput | MealPlanItemCreateOrConnectWithoutCachedRecipeInput[]
+    createMany?: MealPlanItemCreateManyCachedRecipeInputEnvelope
+    connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+  }
+
+  export type RecipeIngredientUncheckedCreateNestedManyWithoutRecipeInput = {
+    create?: XOR<RecipeIngredientCreateWithoutRecipeInput, RecipeIngredientUncheckedCreateWithoutRecipeInput> | RecipeIngredientCreateWithoutRecipeInput[] | RecipeIngredientUncheckedCreateWithoutRecipeInput[]
+    connectOrCreate?: RecipeIngredientCreateOrConnectWithoutRecipeInput | RecipeIngredientCreateOrConnectWithoutRecipeInput[]
+    createMany?: RecipeIngredientCreateManyRecipeInputEnvelope
+    connect?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+  }
+
+  export type UserRecipeUncheckedCreateNestedManyWithoutCachedRecipeInput = {
+    create?: XOR<UserRecipeCreateWithoutCachedRecipeInput, UserRecipeUncheckedCreateWithoutCachedRecipeInput> | UserRecipeCreateWithoutCachedRecipeInput[] | UserRecipeUncheckedCreateWithoutCachedRecipeInput[]
+    connectOrCreate?: UserRecipeCreateOrConnectWithoutCachedRecipeInput | UserRecipeCreateOrConnectWithoutCachedRecipeInput[]
+    createMany?: UserRecipeCreateManyCachedRecipeInputEnvelope
+    connect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+  }
+
+  export type MealPlanItemUncheckedCreateNestedManyWithoutCachedRecipeInput = {
+    create?: XOR<MealPlanItemCreateWithoutCachedRecipeInput, MealPlanItemUncheckedCreateWithoutCachedRecipeInput> | MealPlanItemCreateWithoutCachedRecipeInput[] | MealPlanItemUncheckedCreateWithoutCachedRecipeInput[]
+    connectOrCreate?: MealPlanItemCreateOrConnectWithoutCachedRecipeInput | MealPlanItemCreateOrConnectWithoutCachedRecipeInput[]
+    createMany?: MealPlanItemCreateManyCachedRecipeInputEnvelope
+    connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+  }
+
+  export type EnumRecipeSourceTypeFieldUpdateOperationsInput = {
+    set?: $Enums.RecipeSourceType
+  }
+
+  export type NullableEnumRecipeDifficultyFieldUpdateOperationsInput = {
+    set?: $Enums.RecipeDifficulty | null
+  }
+
+  export type RecipeUpdateinstructionsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type RecipeUpdatetagsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type RecipeUpdatenamedEntitiesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type RecipeIngredientUpdateManyWithoutRecipeNestedInput = {
+    create?: XOR<RecipeIngredientCreateWithoutRecipeInput, RecipeIngredientUncheckedCreateWithoutRecipeInput> | RecipeIngredientCreateWithoutRecipeInput[] | RecipeIngredientUncheckedCreateWithoutRecipeInput[]
+    connectOrCreate?: RecipeIngredientCreateOrConnectWithoutRecipeInput | RecipeIngredientCreateOrConnectWithoutRecipeInput[]
+    upsert?: RecipeIngredientUpsertWithWhereUniqueWithoutRecipeInput | RecipeIngredientUpsertWithWhereUniqueWithoutRecipeInput[]
+    createMany?: RecipeIngredientCreateManyRecipeInputEnvelope
+    set?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+    disconnect?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+    delete?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+    connect?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+    update?: RecipeIngredientUpdateWithWhereUniqueWithoutRecipeInput | RecipeIngredientUpdateWithWhereUniqueWithoutRecipeInput[]
+    updateMany?: RecipeIngredientUpdateManyWithWhereWithoutRecipeInput | RecipeIngredientUpdateManyWithWhereWithoutRecipeInput[]
+    deleteMany?: RecipeIngredientScalarWhereInput | RecipeIngredientScalarWhereInput[]
+  }
+
+  export type UserUpdateOneWithoutRecipesNestedInput = {
+    create?: XOR<UserCreateWithoutRecipesInput, UserUncheckedCreateWithoutRecipesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRecipesInput
+    upsert?: UserUpsertWithoutRecipesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRecipesInput, UserUpdateWithoutRecipesInput>, UserUncheckedUpdateWithoutRecipesInput>
+  }
+
+  export type UserRecipeUpdateManyWithoutCachedRecipeNestedInput = {
+    create?: XOR<UserRecipeCreateWithoutCachedRecipeInput, UserRecipeUncheckedCreateWithoutCachedRecipeInput> | UserRecipeCreateWithoutCachedRecipeInput[] | UserRecipeUncheckedCreateWithoutCachedRecipeInput[]
+    connectOrCreate?: UserRecipeCreateOrConnectWithoutCachedRecipeInput | UserRecipeCreateOrConnectWithoutCachedRecipeInput[]
+    upsert?: UserRecipeUpsertWithWhereUniqueWithoutCachedRecipeInput | UserRecipeUpsertWithWhereUniqueWithoutCachedRecipeInput[]
+    createMany?: UserRecipeCreateManyCachedRecipeInputEnvelope
+    set?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    disconnect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    delete?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    connect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    update?: UserRecipeUpdateWithWhereUniqueWithoutCachedRecipeInput | UserRecipeUpdateWithWhereUniqueWithoutCachedRecipeInput[]
+    updateMany?: UserRecipeUpdateManyWithWhereWithoutCachedRecipeInput | UserRecipeUpdateManyWithWhereWithoutCachedRecipeInput[]
+    deleteMany?: UserRecipeScalarWhereInput | UserRecipeScalarWhereInput[]
+  }
+
+  export type MealPlanItemUpdateManyWithoutCachedRecipeNestedInput = {
+    create?: XOR<MealPlanItemCreateWithoutCachedRecipeInput, MealPlanItemUncheckedCreateWithoutCachedRecipeInput> | MealPlanItemCreateWithoutCachedRecipeInput[] | MealPlanItemUncheckedCreateWithoutCachedRecipeInput[]
+    connectOrCreate?: MealPlanItemCreateOrConnectWithoutCachedRecipeInput | MealPlanItemCreateOrConnectWithoutCachedRecipeInput[]
+    upsert?: MealPlanItemUpsertWithWhereUniqueWithoutCachedRecipeInput | MealPlanItemUpsertWithWhereUniqueWithoutCachedRecipeInput[]
+    createMany?: MealPlanItemCreateManyCachedRecipeInputEnvelope
+    set?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    disconnect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    delete?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    update?: MealPlanItemUpdateWithWhereUniqueWithoutCachedRecipeInput | MealPlanItemUpdateWithWhereUniqueWithoutCachedRecipeInput[]
+    updateMany?: MealPlanItemUpdateManyWithWhereWithoutCachedRecipeInput | MealPlanItemUpdateManyWithWhereWithoutCachedRecipeInput[]
+    deleteMany?: MealPlanItemScalarWhereInput | MealPlanItemScalarWhereInput[]
+  }
+
+  export type RecipeIngredientUncheckedUpdateManyWithoutRecipeNestedInput = {
+    create?: XOR<RecipeIngredientCreateWithoutRecipeInput, RecipeIngredientUncheckedCreateWithoutRecipeInput> | RecipeIngredientCreateWithoutRecipeInput[] | RecipeIngredientUncheckedCreateWithoutRecipeInput[]
+    connectOrCreate?: RecipeIngredientCreateOrConnectWithoutRecipeInput | RecipeIngredientCreateOrConnectWithoutRecipeInput[]
+    upsert?: RecipeIngredientUpsertWithWhereUniqueWithoutRecipeInput | RecipeIngredientUpsertWithWhereUniqueWithoutRecipeInput[]
+    createMany?: RecipeIngredientCreateManyRecipeInputEnvelope
+    set?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+    disconnect?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+    delete?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+    connect?: RecipeIngredientWhereUniqueInput | RecipeIngredientWhereUniqueInput[]
+    update?: RecipeIngredientUpdateWithWhereUniqueWithoutRecipeInput | RecipeIngredientUpdateWithWhereUniqueWithoutRecipeInput[]
+    updateMany?: RecipeIngredientUpdateManyWithWhereWithoutRecipeInput | RecipeIngredientUpdateManyWithWhereWithoutRecipeInput[]
+    deleteMany?: RecipeIngredientScalarWhereInput | RecipeIngredientScalarWhereInput[]
+  }
+
+  export type UserRecipeUncheckedUpdateManyWithoutCachedRecipeNestedInput = {
+    create?: XOR<UserRecipeCreateWithoutCachedRecipeInput, UserRecipeUncheckedCreateWithoutCachedRecipeInput> | UserRecipeCreateWithoutCachedRecipeInput[] | UserRecipeUncheckedCreateWithoutCachedRecipeInput[]
+    connectOrCreate?: UserRecipeCreateOrConnectWithoutCachedRecipeInput | UserRecipeCreateOrConnectWithoutCachedRecipeInput[]
+    upsert?: UserRecipeUpsertWithWhereUniqueWithoutCachedRecipeInput | UserRecipeUpsertWithWhereUniqueWithoutCachedRecipeInput[]
+    createMany?: UserRecipeCreateManyCachedRecipeInputEnvelope
+    set?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    disconnect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    delete?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    connect?: UserRecipeWhereUniqueInput | UserRecipeWhereUniqueInput[]
+    update?: UserRecipeUpdateWithWhereUniqueWithoutCachedRecipeInput | UserRecipeUpdateWithWhereUniqueWithoutCachedRecipeInput[]
+    updateMany?: UserRecipeUpdateManyWithWhereWithoutCachedRecipeInput | UserRecipeUpdateManyWithWhereWithoutCachedRecipeInput[]
+    deleteMany?: UserRecipeScalarWhereInput | UserRecipeScalarWhereInput[]
+  }
+
+  export type MealPlanItemUncheckedUpdateManyWithoutCachedRecipeNestedInput = {
+    create?: XOR<MealPlanItemCreateWithoutCachedRecipeInput, MealPlanItemUncheckedCreateWithoutCachedRecipeInput> | MealPlanItemCreateWithoutCachedRecipeInput[] | MealPlanItemUncheckedCreateWithoutCachedRecipeInput[]
+    connectOrCreate?: MealPlanItemCreateOrConnectWithoutCachedRecipeInput | MealPlanItemCreateOrConnectWithoutCachedRecipeInput[]
+    upsert?: MealPlanItemUpsertWithWhereUniqueWithoutCachedRecipeInput | MealPlanItemUpsertWithWhereUniqueWithoutCachedRecipeInput[]
+    createMany?: MealPlanItemCreateManyCachedRecipeInputEnvelope
+    set?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    disconnect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    delete?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
+    update?: MealPlanItemUpdateWithWhereUniqueWithoutCachedRecipeInput | MealPlanItemUpdateWithWhereUniqueWithoutCachedRecipeInput[]
+    updateMany?: MealPlanItemUpdateManyWithWhereWithoutCachedRecipeInput | MealPlanItemUpdateManyWithWhereWithoutCachedRecipeInput[]
+    deleteMany?: MealPlanItemScalarWhereInput | MealPlanItemScalarWhereInput[]
+  }
+
+  export type RecipeCreateNestedOneWithoutIngredientsInput = {
+    create?: XOR<RecipeCreateWithoutIngredientsInput, RecipeUncheckedCreateWithoutIngredientsInput>
+    connectOrCreate?: RecipeCreateOrConnectWithoutIngredientsInput
+    connect?: RecipeWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type RecipeUpdateOneRequiredWithoutIngredientsNestedInput = {
+    create?: XOR<RecipeCreateWithoutIngredientsInput, RecipeUncheckedCreateWithoutIngredientsInput>
+    connectOrCreate?: RecipeCreateOrConnectWithoutIngredientsInput
+    upsert?: RecipeUpsertWithoutIngredientsInput
+    connect?: RecipeWhereUniqueInput
+    update?: XOR<XOR<RecipeUpdateToOneWithWhereWithoutIngredientsInput, RecipeUpdateWithoutIngredientsInput>, RecipeUncheckedUpdateWithoutIngredientsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -10346,13 +12908,76 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumRecipeSourceTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.RecipeSourceType | EnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RecipeSourceType[] | ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RecipeSourceType[] | ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRecipeSourceTypeFilter<$PrismaModel> | $Enums.RecipeSourceType
+  }
+
+  export type NestedEnumRecipeDifficultyNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.RecipeDifficulty | EnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RecipeDifficulty[] | ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RecipeDifficulty[] | ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRecipeDifficultyNullableFilter<$PrismaModel> | $Enums.RecipeDifficulty | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumRecipeSourceTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RecipeSourceType | EnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RecipeSourceType[] | ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RecipeSourceType[] | ListEnumRecipeSourceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRecipeSourceTypeWithAggregatesFilter<$PrismaModel> | $Enums.RecipeSourceType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRecipeSourceTypeFilter<$PrismaModel>
+    _max?: NestedEnumRecipeSourceTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRecipeDifficultyNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RecipeDifficulty | EnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RecipeDifficulty[] | ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RecipeDifficulty[] | ListEnumRecipeDifficultyFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRecipeDifficultyNullableWithAggregatesFilter<$PrismaModel> | $Enums.RecipeDifficulty | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRecipeDifficultyNullableFilter<$PrismaModel>
+    _max?: NestedEnumRecipeDifficultyNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type MealPlanCreateWithoutUserInput = {
     id?: string
     startDate: Date | string
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
-    recipes?: MealPlanRecipeCreateNestedManyWithoutMealPlanInput
+    mealPlanItems?: MealPlanItemCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanUncheckedCreateWithoutUserInput = {
@@ -10361,7 +12986,7 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
-    recipes?: MealPlanRecipeUncheckedCreateNestedManyWithoutMealPlanInput
+    mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanCreateOrConnectWithoutUserInput = {
@@ -10399,6 +13024,102 @@ export namespace Prisma {
 
   export type ProgressCreateManyUserInputEnvelope = {
     data: ProgressCreateManyUserInput | ProgressCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserRecipeCreateWithoutUserInput = {
+    id?: string
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+    cachedRecipe?: RecipeCreateNestedOneWithoutUserRecipesInput
+  }
+
+  export type UserRecipeUncheckedCreateWithoutUserInput = {
+    id?: string
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+    cachedRecipeId?: string | null
+  }
+
+  export type UserRecipeCreateOrConnectWithoutUserInput = {
+    where: UserRecipeWhereUniqueInput
+    create: XOR<UserRecipeCreateWithoutUserInput, UserRecipeUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserRecipeCreateManyUserInputEnvelope = {
+    data: UserRecipeCreateManyUserInput | UserRecipeCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RecipeCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ingredients?: RecipeIngredientCreateNestedManyWithoutRecipeInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutCachedRecipeInput
+    mealPlanItems?: MealPlanItemCreateNestedManyWithoutCachedRecipeInput
+  }
+
+  export type RecipeUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ingredients?: RecipeIngredientUncheckedCreateNestedManyWithoutRecipeInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutCachedRecipeInput
+    mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutCachedRecipeInput
+  }
+
+  export type RecipeCreateOrConnectWithoutCreatedByInput = {
+    where: RecipeWhereUniqueInput
+    create: XOR<RecipeCreateWithoutCreatedByInput, RecipeUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type RecipeCreateManyCreatedByInputEnvelope = {
+    data: RecipeCreateManyCreatedByInput | RecipeCreateManyCreatedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -10459,177 +13180,303 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Progress"> | Date | string
   }
 
-  export type MealPlanRecipeCreateWithoutRecipeInput = {
-    day: number
-    mealSlot: string
-    mealPlan: MealPlanCreateNestedOneWithoutRecipesInput
+  export type UserRecipeUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserRecipeWhereUniqueInput
+    update: XOR<UserRecipeUpdateWithoutUserInput, UserRecipeUncheckedUpdateWithoutUserInput>
+    create: XOR<UserRecipeCreateWithoutUserInput, UserRecipeUncheckedCreateWithoutUserInput>
   }
 
-  export type MealPlanRecipeUncheckedCreateWithoutRecipeInput = {
-    mealPlanId: string
-    day: number
-    mealSlot: string
+  export type UserRecipeUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserRecipeWhereUniqueInput
+    data: XOR<UserRecipeUpdateWithoutUserInput, UserRecipeUncheckedUpdateWithoutUserInput>
   }
 
-  export type MealPlanRecipeCreateOrConnectWithoutRecipeInput = {
-    where: MealPlanRecipeWhereUniqueInput
-    create: XOR<MealPlanRecipeCreateWithoutRecipeInput, MealPlanRecipeUncheckedCreateWithoutRecipeInput>
+  export type UserRecipeUpdateManyWithWhereWithoutUserInput = {
+    where: UserRecipeScalarWhereInput
+    data: XOR<UserRecipeUpdateManyMutationInput, UserRecipeUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type MealPlanRecipeCreateManyRecipeInputEnvelope = {
-    data: MealPlanRecipeCreateManyRecipeInput | MealPlanRecipeCreateManyRecipeInput[]
-    skipDuplicates?: boolean
+  export type UserRecipeScalarWhereInput = {
+    AND?: UserRecipeScalarWhereInput | UserRecipeScalarWhereInput[]
+    OR?: UserRecipeScalarWhereInput[]
+    NOT?: UserRecipeScalarWhereInput | UserRecipeScalarWhereInput[]
+    id?: StringFilter<"UserRecipe"> | string
+    userId?: StringFilter<"UserRecipe"> | string
+    sourceId?: StringNullableFilter<"UserRecipe"> | string | null
+    status?: StringFilter<"UserRecipe"> | string
+    dateAdded?: DateTimeFilter<"UserRecipe"> | Date | string
+    cachedRecipeId?: StringNullableFilter<"UserRecipe"> | string | null
   }
 
-  export type RecipeEmbeddingCreateWithoutRecipeInput = {
-    id?: string
-    embedding?: RecipeEmbeddingCreateembeddingInput | number[]
-  }
-
-  export type RecipeEmbeddingUncheckedCreateWithoutRecipeInput = {
-    id?: string
-    embedding?: RecipeEmbeddingCreateembeddingInput | number[]
-  }
-
-  export type RecipeEmbeddingCreateOrConnectWithoutRecipeInput = {
-    where: RecipeEmbeddingWhereUniqueInput
-    create: XOR<RecipeEmbeddingCreateWithoutRecipeInput, RecipeEmbeddingUncheckedCreateWithoutRecipeInput>
-  }
-
-  export type RecipeEmbeddingCreateManyRecipeInputEnvelope = {
-    data: RecipeEmbeddingCreateManyRecipeInput | RecipeEmbeddingCreateManyRecipeInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type MealPlanRecipeUpsertWithWhereUniqueWithoutRecipeInput = {
-    where: MealPlanRecipeWhereUniqueInput
-    update: XOR<MealPlanRecipeUpdateWithoutRecipeInput, MealPlanRecipeUncheckedUpdateWithoutRecipeInput>
-    create: XOR<MealPlanRecipeCreateWithoutRecipeInput, MealPlanRecipeUncheckedCreateWithoutRecipeInput>
-  }
-
-  export type MealPlanRecipeUpdateWithWhereUniqueWithoutRecipeInput = {
-    where: MealPlanRecipeWhereUniqueInput
-    data: XOR<MealPlanRecipeUpdateWithoutRecipeInput, MealPlanRecipeUncheckedUpdateWithoutRecipeInput>
-  }
-
-  export type MealPlanRecipeUpdateManyWithWhereWithoutRecipeInput = {
-    where: MealPlanRecipeScalarWhereInput
-    data: XOR<MealPlanRecipeUpdateManyMutationInput, MealPlanRecipeUncheckedUpdateManyWithoutRecipeInput>
-  }
-
-  export type MealPlanRecipeScalarWhereInput = {
-    AND?: MealPlanRecipeScalarWhereInput | MealPlanRecipeScalarWhereInput[]
-    OR?: MealPlanRecipeScalarWhereInput[]
-    NOT?: MealPlanRecipeScalarWhereInput | MealPlanRecipeScalarWhereInput[]
-    mealPlanId?: StringFilter<"MealPlanRecipe"> | string
-    recipeId?: StringFilter<"MealPlanRecipe"> | string
-    day?: IntFilter<"MealPlanRecipe"> | number
-    mealSlot?: StringFilter<"MealPlanRecipe"> | string
-  }
-
-  export type RecipeEmbeddingUpsertWithWhereUniqueWithoutRecipeInput = {
-    where: RecipeEmbeddingWhereUniqueInput
-    update: XOR<RecipeEmbeddingUpdateWithoutRecipeInput, RecipeEmbeddingUncheckedUpdateWithoutRecipeInput>
-    create: XOR<RecipeEmbeddingCreateWithoutRecipeInput, RecipeEmbeddingUncheckedCreateWithoutRecipeInput>
-  }
-
-  export type RecipeEmbeddingUpdateWithWhereUniqueWithoutRecipeInput = {
-    where: RecipeEmbeddingWhereUniqueInput
-    data: XOR<RecipeEmbeddingUpdateWithoutRecipeInput, RecipeEmbeddingUncheckedUpdateWithoutRecipeInput>
-  }
-
-  export type RecipeEmbeddingUpdateManyWithWhereWithoutRecipeInput = {
-    where: RecipeEmbeddingScalarWhereInput
-    data: XOR<RecipeEmbeddingUpdateManyMutationInput, RecipeEmbeddingUncheckedUpdateManyWithoutRecipeInput>
-  }
-
-  export type RecipeEmbeddingScalarWhereInput = {
-    AND?: RecipeEmbeddingScalarWhereInput | RecipeEmbeddingScalarWhereInput[]
-    OR?: RecipeEmbeddingScalarWhereInput[]
-    NOT?: RecipeEmbeddingScalarWhereInput | RecipeEmbeddingScalarWhereInput[]
-    id?: StringFilter<"RecipeEmbedding"> | string
-    embedding?: FloatNullableListFilter<"RecipeEmbedding">
-    recipeId?: StringFilter<"RecipeEmbedding"> | string
-  }
-
-  export type RecipeCreateWithoutEmbeddingsInput = {
-    id?: string
-    title: string
-    ingredients?: RecipeCreateingredientsInput | string[]
-    instructions?: RecipeCreateinstructionsInput | string[]
-    source?: string | null
-    link?: string | null
-    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: string | null
-    mealType?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    mealPlanRecipes?: MealPlanRecipeCreateNestedManyWithoutRecipeInput
-  }
-
-  export type RecipeUncheckedCreateWithoutEmbeddingsInput = {
-    id?: string
-    title: string
-    ingredients?: RecipeCreateingredientsInput | string[]
-    instructions?: RecipeCreateinstructionsInput | string[]
-    source?: string | null
-    link?: string | null
-    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
-    cuisine?: string | null
-    mealType?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    mealPlanRecipes?: MealPlanRecipeUncheckedCreateNestedManyWithoutRecipeInput
-  }
-
-  export type RecipeCreateOrConnectWithoutEmbeddingsInput = {
+  export type RecipeUpsertWithWhereUniqueWithoutCreatedByInput = {
     where: RecipeWhereUniqueInput
-    create: XOR<RecipeCreateWithoutEmbeddingsInput, RecipeUncheckedCreateWithoutEmbeddingsInput>
+    update: XOR<RecipeUpdateWithoutCreatedByInput, RecipeUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<RecipeCreateWithoutCreatedByInput, RecipeUncheckedCreateWithoutCreatedByInput>
   }
 
-  export type RecipeUpsertWithoutEmbeddingsInput = {
-    update: XOR<RecipeUpdateWithoutEmbeddingsInput, RecipeUncheckedUpdateWithoutEmbeddingsInput>
-    create: XOR<RecipeCreateWithoutEmbeddingsInput, RecipeUncheckedCreateWithoutEmbeddingsInput>
+  export type RecipeUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: RecipeWhereUniqueInput
+    data: XOR<RecipeUpdateWithoutCreatedByInput, RecipeUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type RecipeUpdateManyWithWhereWithoutCreatedByInput = {
+    where: RecipeScalarWhereInput
+    data: XOR<RecipeUpdateManyMutationInput, RecipeUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type RecipeScalarWhereInput = {
+    AND?: RecipeScalarWhereInput | RecipeScalarWhereInput[]
+    OR?: RecipeScalarWhereInput[]
+    NOT?: RecipeScalarWhereInput | RecipeScalarWhereInput[]
+    id?: StringFilter<"Recipe"> | string
+    title?: StringFilter<"Recipe"> | string
+    description?: StringNullableFilter<"Recipe"> | string | null
+    imageUrl?: StringNullableFilter<"Recipe"> | string | null
+    fallbackImageUrl?: StringNullableFilter<"Recipe"> | string | null
+    sourceType?: EnumRecipeSourceTypeFilter<"Recipe"> | $Enums.RecipeSourceType
+    sourceId?: StringNullableFilter<"Recipe"> | string | null
+    sourceUrl?: StringNullableFilter<"Recipe"> | string | null
+    cuisine?: StringNullableFilter<"Recipe"> | string | null
+    mealType?: StringNullableFilter<"Recipe"> | string | null
+    difficulty?: EnumRecipeDifficultyNullableFilter<"Recipe"> | $Enums.RecipeDifficulty | null
+    prepTime?: IntNullableFilter<"Recipe"> | number | null
+    cookTime?: IntNullableFilter<"Recipe"> | number | null
+    totalTime?: IntNullableFilter<"Recipe"> | number | null
+    servings?: IntNullableFilter<"Recipe"> | number | null
+    instructions?: StringNullableListFilter<"Recipe">
+    nutrition?: JsonNullableFilter<"Recipe">
+    tags?: StringNullableListFilter<"Recipe">
+    namedEntities?: StringNullableListFilter<"Recipe">
+    userRating?: FloatNullableFilter<"Recipe"> | number | null
+    savedCount?: IntFilter<"Recipe"> | number
+    isPublic?: BoolFilter<"Recipe"> | boolean
+    createdById?: StringNullableFilter<"Recipe"> | string | null
+    createdAt?: DateTimeFilter<"Recipe"> | Date | string
+    updatedAt?: DateTimeFilter<"Recipe"> | Date | string
+  }
+
+  export type UserCreateWithoutUserRecipesInput = {
+    id?: string
+    clerkId: string
+    email: string
+    name?: string | null
+    age?: number | null
+    weight?: number | null
+    goals?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activityLevel?: string | null
+    height?: number | null
+    diet_preference?: string | null
+    mealPlans?: MealPlanCreateNestedManyWithoutUserInput
+    progress?: ProgressCreateNestedManyWithoutUserInput
+    recipes?: RecipeCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutUserRecipesInput = {
+    id?: string
+    clerkId: string
+    email: string
+    name?: string | null
+    age?: number | null
+    weight?: number | null
+    goals?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activityLevel?: string | null
+    height?: number | null
+    diet_preference?: string | null
+    mealPlans?: MealPlanUncheckedCreateNestedManyWithoutUserInput
+    progress?: ProgressUncheckedCreateNestedManyWithoutUserInput
+    recipes?: RecipeUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutUserRecipesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUserRecipesInput, UserUncheckedCreateWithoutUserRecipesInput>
+  }
+
+  export type RecipeCreateWithoutUserRecipesInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ingredients?: RecipeIngredientCreateNestedManyWithoutRecipeInput
+    createdBy?: UserCreateNestedOneWithoutRecipesInput
+    mealPlanItems?: MealPlanItemCreateNestedManyWithoutCachedRecipeInput
+  }
+
+  export type RecipeUncheckedCreateWithoutUserRecipesInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ingredients?: RecipeIngredientUncheckedCreateNestedManyWithoutRecipeInput
+    mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutCachedRecipeInput
+  }
+
+  export type RecipeCreateOrConnectWithoutUserRecipesInput = {
+    where: RecipeWhereUniqueInput
+    create: XOR<RecipeCreateWithoutUserRecipesInput, RecipeUncheckedCreateWithoutUserRecipesInput>
+  }
+
+  export type UserUpsertWithoutUserRecipesInput = {
+    update: XOR<UserUpdateWithoutUserRecipesInput, UserUncheckedUpdateWithoutUserRecipesInput>
+    create: XOR<UserCreateWithoutUserRecipesInput, UserUncheckedCreateWithoutUserRecipesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUserRecipesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUserRecipesInput, UserUncheckedUpdateWithoutUserRecipesInput>
+  }
+
+  export type UserUpdateWithoutUserRecipesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableIntFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activityLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
+    mealPlans?: MealPlanUpdateManyWithoutUserNestedInput
+    progress?: ProgressUpdateManyWithoutUserNestedInput
+    recipes?: RecipeUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUserRecipesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableIntFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activityLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
+    mealPlans?: MealPlanUncheckedUpdateManyWithoutUserNestedInput
+    progress?: ProgressUncheckedUpdateManyWithoutUserNestedInput
+    recipes?: RecipeUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type RecipeUpsertWithoutUserRecipesInput = {
+    update: XOR<RecipeUpdateWithoutUserRecipesInput, RecipeUncheckedUpdateWithoutUserRecipesInput>
+    create: XOR<RecipeCreateWithoutUserRecipesInput, RecipeUncheckedCreateWithoutUserRecipesInput>
     where?: RecipeWhereInput
   }
 
-  export type RecipeUpdateToOneWithWhereWithoutEmbeddingsInput = {
+  export type RecipeUpdateToOneWithWhereWithoutUserRecipesInput = {
     where?: RecipeWhereInput
-    data: XOR<RecipeUpdateWithoutEmbeddingsInput, RecipeUncheckedUpdateWithoutEmbeddingsInput>
+    data: XOR<RecipeUpdateWithoutUserRecipesInput, RecipeUncheckedUpdateWithoutUserRecipesInput>
   }
 
-  export type RecipeUpdateWithoutEmbeddingsInput = {
+  export type RecipeUpdateWithoutUserRecipesInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    ingredients?: RecipeUpdateingredientsInput | string[]
-    instructions?: RecipeUpdateinstructionsInput | string[]
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    link?: NullableStringFieldUpdateOperationsInput | string | null
-    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     cuisine?: NullableStringFieldUpdateOperationsInput | string | null
     mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mealPlanRecipes?: MealPlanRecipeUpdateManyWithoutRecipeNestedInput
+    ingredients?: RecipeIngredientUpdateManyWithoutRecipeNestedInput
+    createdBy?: UserUpdateOneWithoutRecipesNestedInput
+    mealPlanItems?: MealPlanItemUpdateManyWithoutCachedRecipeNestedInput
   }
 
-  export type RecipeUncheckedUpdateWithoutEmbeddingsInput = {
+  export type RecipeUncheckedUpdateWithoutUserRecipesInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    ingredients?: RecipeUpdateingredientsInput | string[]
-    instructions?: RecipeUpdateinstructionsInput | string[]
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    link?: NullableStringFieldUpdateOperationsInput | string | null
-    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     cuisine?: NullableStringFieldUpdateOperationsInput | string | null
     mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mealPlanRecipes?: MealPlanRecipeUncheckedUpdateManyWithoutRecipeNestedInput
+    ingredients?: RecipeIngredientUncheckedUpdateManyWithoutRecipeNestedInput
+    mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutCachedRecipeNestedInput
   }
 
   export type UserCreateWithoutMealPlansInput = {
@@ -10646,6 +13493,8 @@ export namespace Prisma {
     height?: number | null
     diet_preference?: string | null
     progress?: ProgressCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutUserInput
+    recipes?: RecipeCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutMealPlansInput = {
@@ -10662,6 +13511,8 @@ export namespace Prisma {
     height?: number | null
     diet_preference?: string | null
     progress?: ProgressUncheckedCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutUserInput
+    recipes?: RecipeUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutMealPlansInput = {
@@ -10669,25 +13520,29 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutMealPlansInput, UserUncheckedCreateWithoutMealPlansInput>
   }
 
-  export type MealPlanRecipeCreateWithoutMealPlanInput = {
-    day: number
-    mealSlot: string
-    recipe: RecipeCreateNestedOneWithoutMealPlanRecipesInput
+  export type MealPlanItemCreateWithoutMealPlanInput = {
+    id?: string
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+    cachedRecipe?: RecipeCreateNestedOneWithoutMealPlanItemsInput
   }
 
-  export type MealPlanRecipeUncheckedCreateWithoutMealPlanInput = {
-    recipeId: string
-    day: number
-    mealSlot: string
+  export type MealPlanItemUncheckedCreateWithoutMealPlanInput = {
+    id?: string
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+    cachedRecipeId?: string | null
   }
 
-  export type MealPlanRecipeCreateOrConnectWithoutMealPlanInput = {
-    where: MealPlanRecipeWhereUniqueInput
-    create: XOR<MealPlanRecipeCreateWithoutMealPlanInput, MealPlanRecipeUncheckedCreateWithoutMealPlanInput>
+  export type MealPlanItemCreateOrConnectWithoutMealPlanInput = {
+    where: MealPlanItemWhereUniqueInput
+    create: XOR<MealPlanItemCreateWithoutMealPlanInput, MealPlanItemUncheckedCreateWithoutMealPlanInput>
   }
 
-  export type MealPlanRecipeCreateManyMealPlanInputEnvelope = {
-    data: MealPlanRecipeCreateManyMealPlanInput | MealPlanRecipeCreateManyMealPlanInput[]
+  export type MealPlanItemCreateManyMealPlanInputEnvelope = {
+    data: MealPlanItemCreateManyMealPlanInput | MealPlanItemCreateManyMealPlanInput[]
     skipDuplicates?: boolean
   }
 
@@ -10716,6 +13571,8 @@ export namespace Prisma {
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
     progress?: ProgressUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutUserNestedInput
+    recipes?: RecipeUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMealPlansInput = {
@@ -10732,25 +13589,39 @@ export namespace Prisma {
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
     progress?: ProgressUncheckedUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutUserNestedInput
+    recipes?: RecipeUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
-  export type MealPlanRecipeUpsertWithWhereUniqueWithoutMealPlanInput = {
-    where: MealPlanRecipeWhereUniqueInput
-    update: XOR<MealPlanRecipeUpdateWithoutMealPlanInput, MealPlanRecipeUncheckedUpdateWithoutMealPlanInput>
-    create: XOR<MealPlanRecipeCreateWithoutMealPlanInput, MealPlanRecipeUncheckedCreateWithoutMealPlanInput>
+  export type MealPlanItemUpsertWithWhereUniqueWithoutMealPlanInput = {
+    where: MealPlanItemWhereUniqueInput
+    update: XOR<MealPlanItemUpdateWithoutMealPlanInput, MealPlanItemUncheckedUpdateWithoutMealPlanInput>
+    create: XOR<MealPlanItemCreateWithoutMealPlanInput, MealPlanItemUncheckedCreateWithoutMealPlanInput>
   }
 
-  export type MealPlanRecipeUpdateWithWhereUniqueWithoutMealPlanInput = {
-    where: MealPlanRecipeWhereUniqueInput
-    data: XOR<MealPlanRecipeUpdateWithoutMealPlanInput, MealPlanRecipeUncheckedUpdateWithoutMealPlanInput>
+  export type MealPlanItemUpdateWithWhereUniqueWithoutMealPlanInput = {
+    where: MealPlanItemWhereUniqueInput
+    data: XOR<MealPlanItemUpdateWithoutMealPlanInput, MealPlanItemUncheckedUpdateWithoutMealPlanInput>
   }
 
-  export type MealPlanRecipeUpdateManyWithWhereWithoutMealPlanInput = {
-    where: MealPlanRecipeScalarWhereInput
-    data: XOR<MealPlanRecipeUpdateManyMutationInput, MealPlanRecipeUncheckedUpdateManyWithoutMealPlanInput>
+  export type MealPlanItemUpdateManyWithWhereWithoutMealPlanInput = {
+    where: MealPlanItemScalarWhereInput
+    data: XOR<MealPlanItemUpdateManyMutationInput, MealPlanItemUncheckedUpdateManyWithoutMealPlanInput>
   }
 
-  export type MealPlanCreateWithoutRecipesInput = {
+  export type MealPlanItemScalarWhereInput = {
+    AND?: MealPlanItemScalarWhereInput | MealPlanItemScalarWhereInput[]
+    OR?: MealPlanItemScalarWhereInput[]
+    NOT?: MealPlanItemScalarWhereInput | MealPlanItemScalarWhereInput[]
+    id?: StringFilter<"MealPlanItem"> | string
+    mealPlanId?: StringFilter<"MealPlanItem"> | string
+    sourceId?: StringNullableFilter<"MealPlanItem"> | string | null
+    dayOfWeek?: IntFilter<"MealPlanItem"> | number
+    mealType?: StringFilter<"MealPlanItem"> | string
+    cachedRecipeId?: StringNullableFilter<"MealPlanItem"> | string | null
+  }
+
+  export type MealPlanCreateWithoutMealPlanItemsInput = {
     id?: string
     startDate: Date | string
     endDate: Date | string
@@ -10759,7 +13630,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutMealPlansInput
   }
 
-  export type MealPlanUncheckedCreateWithoutRecipesInput = {
+  export type MealPlanUncheckedCreateWithoutMealPlanItemsInput = {
     id?: string
     userId: string
     startDate: Date | string
@@ -10768,60 +13639,88 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type MealPlanCreateOrConnectWithoutRecipesInput = {
+  export type MealPlanCreateOrConnectWithoutMealPlanItemsInput = {
     where: MealPlanWhereUniqueInput
-    create: XOR<MealPlanCreateWithoutRecipesInput, MealPlanUncheckedCreateWithoutRecipesInput>
+    create: XOR<MealPlanCreateWithoutMealPlanItemsInput, MealPlanUncheckedCreateWithoutMealPlanItemsInput>
   }
 
-  export type RecipeCreateWithoutMealPlanRecipesInput = {
+  export type RecipeCreateWithoutMealPlanItemsInput = {
     id?: string
     title: string
-    ingredients?: RecipeCreateingredientsInput | string[]
-    instructions?: RecipeCreateinstructionsInput | string[]
-    source?: string | null
-    link?: string | null
-    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
     cuisine?: string | null
     mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    embeddings?: RecipeEmbeddingCreateNestedManyWithoutRecipeInput
+    ingredients?: RecipeIngredientCreateNestedManyWithoutRecipeInput
+    createdBy?: UserCreateNestedOneWithoutRecipesInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutCachedRecipeInput
   }
 
-  export type RecipeUncheckedCreateWithoutMealPlanRecipesInput = {
+  export type RecipeUncheckedCreateWithoutMealPlanItemsInput = {
     id?: string
     title: string
-    ingredients?: RecipeCreateingredientsInput | string[]
-    instructions?: RecipeCreateinstructionsInput | string[]
-    source?: string | null
-    link?: string | null
-    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
     cuisine?: string | null
     mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    embeddings?: RecipeEmbeddingUncheckedCreateNestedManyWithoutRecipeInput
+    ingredients?: RecipeIngredientUncheckedCreateNestedManyWithoutRecipeInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutCachedRecipeInput
   }
 
-  export type RecipeCreateOrConnectWithoutMealPlanRecipesInput = {
+  export type RecipeCreateOrConnectWithoutMealPlanItemsInput = {
     where: RecipeWhereUniqueInput
-    create: XOR<RecipeCreateWithoutMealPlanRecipesInput, RecipeUncheckedCreateWithoutMealPlanRecipesInput>
+    create: XOR<RecipeCreateWithoutMealPlanItemsInput, RecipeUncheckedCreateWithoutMealPlanItemsInput>
   }
 
-  export type MealPlanUpsertWithoutRecipesInput = {
-    update: XOR<MealPlanUpdateWithoutRecipesInput, MealPlanUncheckedUpdateWithoutRecipesInput>
-    create: XOR<MealPlanCreateWithoutRecipesInput, MealPlanUncheckedCreateWithoutRecipesInput>
+  export type MealPlanUpsertWithoutMealPlanItemsInput = {
+    update: XOR<MealPlanUpdateWithoutMealPlanItemsInput, MealPlanUncheckedUpdateWithoutMealPlanItemsInput>
+    create: XOR<MealPlanCreateWithoutMealPlanItemsInput, MealPlanUncheckedCreateWithoutMealPlanItemsInput>
     where?: MealPlanWhereInput
   }
 
-  export type MealPlanUpdateToOneWithWhereWithoutRecipesInput = {
+  export type MealPlanUpdateToOneWithWhereWithoutMealPlanItemsInput = {
     where?: MealPlanWhereInput
-    data: XOR<MealPlanUpdateWithoutRecipesInput, MealPlanUncheckedUpdateWithoutRecipesInput>
+    data: XOR<MealPlanUpdateWithoutMealPlanItemsInput, MealPlanUncheckedUpdateWithoutMealPlanItemsInput>
   }
 
-  export type MealPlanUpdateWithoutRecipesInput = {
+  export type MealPlanUpdateWithoutMealPlanItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10830,7 +13729,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutMealPlansNestedInput
   }
 
-  export type MealPlanUncheckedUpdateWithoutRecipesInput = {
+  export type MealPlanUncheckedUpdateWithoutMealPlanItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10839,47 +13738,75 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type RecipeUpsertWithoutMealPlanRecipesInput = {
-    update: XOR<RecipeUpdateWithoutMealPlanRecipesInput, RecipeUncheckedUpdateWithoutMealPlanRecipesInput>
-    create: XOR<RecipeCreateWithoutMealPlanRecipesInput, RecipeUncheckedCreateWithoutMealPlanRecipesInput>
+  export type RecipeUpsertWithoutMealPlanItemsInput = {
+    update: XOR<RecipeUpdateWithoutMealPlanItemsInput, RecipeUncheckedUpdateWithoutMealPlanItemsInput>
+    create: XOR<RecipeCreateWithoutMealPlanItemsInput, RecipeUncheckedCreateWithoutMealPlanItemsInput>
     where?: RecipeWhereInput
   }
 
-  export type RecipeUpdateToOneWithWhereWithoutMealPlanRecipesInput = {
+  export type RecipeUpdateToOneWithWhereWithoutMealPlanItemsInput = {
     where?: RecipeWhereInput
-    data: XOR<RecipeUpdateWithoutMealPlanRecipesInput, RecipeUncheckedUpdateWithoutMealPlanRecipesInput>
+    data: XOR<RecipeUpdateWithoutMealPlanItemsInput, RecipeUncheckedUpdateWithoutMealPlanItemsInput>
   }
 
-  export type RecipeUpdateWithoutMealPlanRecipesInput = {
+  export type RecipeUpdateWithoutMealPlanItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    ingredients?: RecipeUpdateingredientsInput | string[]
-    instructions?: RecipeUpdateinstructionsInput | string[]
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    link?: NullableStringFieldUpdateOperationsInput | string | null
-    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     cuisine?: NullableStringFieldUpdateOperationsInput | string | null
     mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    embeddings?: RecipeEmbeddingUpdateManyWithoutRecipeNestedInput
+    ingredients?: RecipeIngredientUpdateManyWithoutRecipeNestedInput
+    createdBy?: UserUpdateOneWithoutRecipesNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutCachedRecipeNestedInput
   }
 
-  export type RecipeUncheckedUpdateWithoutMealPlanRecipesInput = {
+  export type RecipeUncheckedUpdateWithoutMealPlanItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    ingredients?: RecipeUpdateingredientsInput | string[]
-    instructions?: RecipeUpdateinstructionsInput | string[]
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    link?: NullableStringFieldUpdateOperationsInput | string | null
-    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
-    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     cuisine?: NullableStringFieldUpdateOperationsInput | string | null
     mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    embeddings?: RecipeEmbeddingUncheckedUpdateManyWithoutRecipeNestedInput
+    ingredients?: RecipeIngredientUncheckedUpdateManyWithoutRecipeNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutCachedRecipeNestedInput
   }
 
   export type UserCreateWithoutProgressInput = {
@@ -10896,6 +13823,8 @@ export namespace Prisma {
     height?: number | null
     diet_preference?: string | null
     mealPlans?: MealPlanCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutUserInput
+    recipes?: RecipeCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutProgressInput = {
@@ -10912,6 +13841,8 @@ export namespace Prisma {
     height?: number | null
     diet_preference?: string | null
     mealPlans?: MealPlanUncheckedCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutUserInput
+    recipes?: RecipeUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutProgressInput = {
@@ -10944,6 +13875,8 @@ export namespace Prisma {
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
     mealPlans?: MealPlanUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutUserNestedInput
+    recipes?: RecipeUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProgressInput = {
@@ -10960,6 +13893,376 @@ export namespace Prisma {
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
     mealPlans?: MealPlanUncheckedUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutUserNestedInput
+    recipes?: RecipeUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type RecipeIngredientCreateWithoutRecipeInput = {
+    id?: string
+    ingredientId: number
+    name: string
+    amount: number
+    unit: string
+    original: string
+    image?: string | null
+  }
+
+  export type RecipeIngredientUncheckedCreateWithoutRecipeInput = {
+    id?: string
+    ingredientId: number
+    name: string
+    amount: number
+    unit: string
+    original: string
+    image?: string | null
+  }
+
+  export type RecipeIngredientCreateOrConnectWithoutRecipeInput = {
+    where: RecipeIngredientWhereUniqueInput
+    create: XOR<RecipeIngredientCreateWithoutRecipeInput, RecipeIngredientUncheckedCreateWithoutRecipeInput>
+  }
+
+  export type RecipeIngredientCreateManyRecipeInputEnvelope = {
+    data: RecipeIngredientCreateManyRecipeInput | RecipeIngredientCreateManyRecipeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutRecipesInput = {
+    id?: string
+    clerkId: string
+    email: string
+    name?: string | null
+    age?: number | null
+    weight?: number | null
+    goals?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activityLevel?: string | null
+    height?: number | null
+    diet_preference?: string | null
+    mealPlans?: MealPlanCreateNestedManyWithoutUserInput
+    progress?: ProgressCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutRecipesInput = {
+    id?: string
+    clerkId: string
+    email: string
+    name?: string | null
+    age?: number | null
+    weight?: number | null
+    goals?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    activityLevel?: string | null
+    height?: number | null
+    diet_preference?: string | null
+    mealPlans?: MealPlanUncheckedCreateNestedManyWithoutUserInput
+    progress?: ProgressUncheckedCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutRecipesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRecipesInput, UserUncheckedCreateWithoutRecipesInput>
+  }
+
+  export type UserRecipeCreateWithoutCachedRecipeInput = {
+    id?: string
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+    user: UserCreateNestedOneWithoutUserRecipesInput
+  }
+
+  export type UserRecipeUncheckedCreateWithoutCachedRecipeInput = {
+    id?: string
+    userId: string
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+  }
+
+  export type UserRecipeCreateOrConnectWithoutCachedRecipeInput = {
+    where: UserRecipeWhereUniqueInput
+    create: XOR<UserRecipeCreateWithoutCachedRecipeInput, UserRecipeUncheckedCreateWithoutCachedRecipeInput>
+  }
+
+  export type UserRecipeCreateManyCachedRecipeInputEnvelope = {
+    data: UserRecipeCreateManyCachedRecipeInput | UserRecipeCreateManyCachedRecipeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MealPlanItemCreateWithoutCachedRecipeInput = {
+    id?: string
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+    mealPlan: MealPlanCreateNestedOneWithoutMealPlanItemsInput
+  }
+
+  export type MealPlanItemUncheckedCreateWithoutCachedRecipeInput = {
+    id?: string
+    mealPlanId: string
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+  }
+
+  export type MealPlanItemCreateOrConnectWithoutCachedRecipeInput = {
+    where: MealPlanItemWhereUniqueInput
+    create: XOR<MealPlanItemCreateWithoutCachedRecipeInput, MealPlanItemUncheckedCreateWithoutCachedRecipeInput>
+  }
+
+  export type MealPlanItemCreateManyCachedRecipeInputEnvelope = {
+    data: MealPlanItemCreateManyCachedRecipeInput | MealPlanItemCreateManyCachedRecipeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RecipeIngredientUpsertWithWhereUniqueWithoutRecipeInput = {
+    where: RecipeIngredientWhereUniqueInput
+    update: XOR<RecipeIngredientUpdateWithoutRecipeInput, RecipeIngredientUncheckedUpdateWithoutRecipeInput>
+    create: XOR<RecipeIngredientCreateWithoutRecipeInput, RecipeIngredientUncheckedCreateWithoutRecipeInput>
+  }
+
+  export type RecipeIngredientUpdateWithWhereUniqueWithoutRecipeInput = {
+    where: RecipeIngredientWhereUniqueInput
+    data: XOR<RecipeIngredientUpdateWithoutRecipeInput, RecipeIngredientUncheckedUpdateWithoutRecipeInput>
+  }
+
+  export type RecipeIngredientUpdateManyWithWhereWithoutRecipeInput = {
+    where: RecipeIngredientScalarWhereInput
+    data: XOR<RecipeIngredientUpdateManyMutationInput, RecipeIngredientUncheckedUpdateManyWithoutRecipeInput>
+  }
+
+  export type RecipeIngredientScalarWhereInput = {
+    AND?: RecipeIngredientScalarWhereInput | RecipeIngredientScalarWhereInput[]
+    OR?: RecipeIngredientScalarWhereInput[]
+    NOT?: RecipeIngredientScalarWhereInput | RecipeIngredientScalarWhereInput[]
+    id?: StringFilter<"RecipeIngredient"> | string
+    recipeId?: StringFilter<"RecipeIngredient"> | string
+    ingredientId?: IntFilter<"RecipeIngredient"> | number
+    name?: StringFilter<"RecipeIngredient"> | string
+    amount?: FloatFilter<"RecipeIngredient"> | number
+    unit?: StringFilter<"RecipeIngredient"> | string
+    original?: StringFilter<"RecipeIngredient"> | string
+    image?: StringNullableFilter<"RecipeIngredient"> | string | null
+  }
+
+  export type UserUpsertWithoutRecipesInput = {
+    update: XOR<UserUpdateWithoutRecipesInput, UserUncheckedUpdateWithoutRecipesInput>
+    create: XOR<UserCreateWithoutRecipesInput, UserUncheckedCreateWithoutRecipesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRecipesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRecipesInput, UserUncheckedUpdateWithoutRecipesInput>
+  }
+
+  export type UserUpdateWithoutRecipesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableIntFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activityLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
+    mealPlans?: MealPlanUpdateManyWithoutUserNestedInput
+    progress?: ProgressUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRecipesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableIntFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activityLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    diet_preference?: NullableStringFieldUpdateOperationsInput | string | null
+    mealPlans?: MealPlanUncheckedUpdateManyWithoutUserNestedInput
+    progress?: ProgressUncheckedUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserRecipeUpsertWithWhereUniqueWithoutCachedRecipeInput = {
+    where: UserRecipeWhereUniqueInput
+    update: XOR<UserRecipeUpdateWithoutCachedRecipeInput, UserRecipeUncheckedUpdateWithoutCachedRecipeInput>
+    create: XOR<UserRecipeCreateWithoutCachedRecipeInput, UserRecipeUncheckedCreateWithoutCachedRecipeInput>
+  }
+
+  export type UserRecipeUpdateWithWhereUniqueWithoutCachedRecipeInput = {
+    where: UserRecipeWhereUniqueInput
+    data: XOR<UserRecipeUpdateWithoutCachedRecipeInput, UserRecipeUncheckedUpdateWithoutCachedRecipeInput>
+  }
+
+  export type UserRecipeUpdateManyWithWhereWithoutCachedRecipeInput = {
+    where: UserRecipeScalarWhereInput
+    data: XOR<UserRecipeUpdateManyMutationInput, UserRecipeUncheckedUpdateManyWithoutCachedRecipeInput>
+  }
+
+  export type MealPlanItemUpsertWithWhereUniqueWithoutCachedRecipeInput = {
+    where: MealPlanItemWhereUniqueInput
+    update: XOR<MealPlanItemUpdateWithoutCachedRecipeInput, MealPlanItemUncheckedUpdateWithoutCachedRecipeInput>
+    create: XOR<MealPlanItemCreateWithoutCachedRecipeInput, MealPlanItemUncheckedCreateWithoutCachedRecipeInput>
+  }
+
+  export type MealPlanItemUpdateWithWhereUniqueWithoutCachedRecipeInput = {
+    where: MealPlanItemWhereUniqueInput
+    data: XOR<MealPlanItemUpdateWithoutCachedRecipeInput, MealPlanItemUncheckedUpdateWithoutCachedRecipeInput>
+  }
+
+  export type MealPlanItemUpdateManyWithWhereWithoutCachedRecipeInput = {
+    where: MealPlanItemScalarWhereInput
+    data: XOR<MealPlanItemUpdateManyMutationInput, MealPlanItemUncheckedUpdateManyWithoutCachedRecipeInput>
+  }
+
+  export type RecipeCreateWithoutIngredientsInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutRecipesInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutCachedRecipeInput
+    mealPlanItems?: MealPlanItemCreateNestedManyWithoutCachedRecipeInput
+  }
+
+  export type RecipeUncheckedCreateWithoutIngredientsInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutCachedRecipeInput
+    mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutCachedRecipeInput
+  }
+
+  export type RecipeCreateOrConnectWithoutIngredientsInput = {
+    where: RecipeWhereUniqueInput
+    create: XOR<RecipeCreateWithoutIngredientsInput, RecipeUncheckedCreateWithoutIngredientsInput>
+  }
+
+  export type RecipeUpsertWithoutIngredientsInput = {
+    update: XOR<RecipeUpdateWithoutIngredientsInput, RecipeUncheckedUpdateWithoutIngredientsInput>
+    create: XOR<RecipeCreateWithoutIngredientsInput, RecipeUncheckedCreateWithoutIngredientsInput>
+    where?: RecipeWhereInput
+  }
+
+  export type RecipeUpdateToOneWithWhereWithoutIngredientsInput = {
+    where?: RecipeWhereInput
+    data: XOR<RecipeUpdateWithoutIngredientsInput, RecipeUncheckedUpdateWithoutIngredientsInput>
+  }
+
+  export type RecipeUpdateWithoutIngredientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutRecipesNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutCachedRecipeNestedInput
+    mealPlanItems?: MealPlanItemUpdateManyWithoutCachedRecipeNestedInput
+  }
+
+  export type RecipeUncheckedUpdateWithoutIngredientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutCachedRecipeNestedInput
+    mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutCachedRecipeNestedInput
   }
 
   export type MealPlanCreateManyUserInput = {
@@ -10979,13 +14282,48 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type UserRecipeCreateManyUserInput = {
+    id?: string
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+    cachedRecipeId?: string | null
+  }
+
+  export type RecipeCreateManyCreatedByInput = {
+    id?: string
+    title: string
+    description?: string | null
+    imageUrl?: string | null
+    fallbackImageUrl?: string | null
+    sourceType: $Enums.RecipeSourceType
+    sourceId?: string | null
+    sourceUrl?: string | null
+    cuisine?: string | null
+    mealType?: string | null
+    difficulty?: $Enums.RecipeDifficulty | null
+    prepTime?: number | null
+    cookTime?: number | null
+    totalTime?: number | null
+    servings?: number | null
+    instructions?: RecipeCreateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeCreatetagsInput | string[]
+    namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    userRating?: number | null
+    savedCount?: number
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type MealPlanUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    recipes?: MealPlanRecipeUpdateManyWithoutMealPlanNestedInput
+    mealPlanItems?: MealPlanItemUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanUncheckedUpdateWithoutUserInput = {
@@ -10994,7 +14332,7 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    recipes?: MealPlanRecipeUncheckedUpdateManyWithoutMealPlanNestedInput
+    mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanUncheckedUpdateManyWithoutUserInput = {
@@ -11032,72 +14370,251 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type MealPlanRecipeCreateManyRecipeInput = {
-    mealPlanId: string
-    day: number
-    mealSlot: string
+  export type UserRecipeUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+    cachedRecipe?: RecipeUpdateOneWithoutUserRecipesNestedInput
   }
 
-  export type RecipeEmbeddingCreateManyRecipeInput = {
+  export type UserRecipeUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+    cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserRecipeUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+    cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RecipeUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ingredients?: RecipeIngredientUpdateManyWithoutRecipeNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutCachedRecipeNestedInput
+    mealPlanItems?: MealPlanItemUpdateManyWithoutCachedRecipeNestedInput
+  }
+
+  export type RecipeUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ingredients?: RecipeIngredientUncheckedUpdateManyWithoutRecipeNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutCachedRecipeNestedInput
+    mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutCachedRecipeNestedInput
+  }
+
+  export type RecipeUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fallbackImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceType?: EnumRecipeSourceTypeFieldUpdateOperationsInput | $Enums.RecipeSourceType
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    cuisine?: NullableStringFieldUpdateOperationsInput | string | null
+    mealType?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableEnumRecipeDifficultyFieldUpdateOperationsInput | $Enums.RecipeDifficulty | null
+    prepTime?: NullableIntFieldUpdateOperationsInput | number | null
+    cookTime?: NullableIntFieldUpdateOperationsInput | number | null
+    totalTime?: NullableIntFieldUpdateOperationsInput | number | null
+    servings?: NullableIntFieldUpdateOperationsInput | number | null
+    instructions?: RecipeUpdateinstructionsInput | string[]
+    nutrition?: NullableJsonNullValueInput | InputJsonValue
+    tags?: RecipeUpdatetagsInput | string[]
+    namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    userRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    savedCount?: IntFieldUpdateOperationsInput | number
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MealPlanItemCreateManyMealPlanInput = {
     id?: string
-    embedding?: RecipeEmbeddingCreateembeddingInput | number[]
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+    cachedRecipeId?: string | null
   }
 
-  export type MealPlanRecipeUpdateWithoutRecipeInput = {
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
-    mealPlan?: MealPlanUpdateOneRequiredWithoutRecipesNestedInput
+  export type MealPlanItemUpdateWithoutMealPlanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
+    cachedRecipe?: RecipeUpdateOneWithoutMealPlanItemsNestedInput
   }
 
-  export type MealPlanRecipeUncheckedUpdateWithoutRecipeInput = {
+  export type MealPlanItemUncheckedUpdateWithoutMealPlanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
+    cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MealPlanItemUncheckedUpdateManyWithoutMealPlanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
+    cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RecipeIngredientCreateManyRecipeInput = {
+    id?: string
+    ingredientId: number
+    name: string
+    amount: number
+    unit: string
+    original: string
+    image?: string | null
+  }
+
+  export type UserRecipeCreateManyCachedRecipeInput = {
+    id?: string
+    userId: string
+    sourceId?: string | null
+    status: string
+    dateAdded?: Date | string
+  }
+
+  export type MealPlanItemCreateManyCachedRecipeInput = {
+    id?: string
+    mealPlanId: string
+    sourceId?: string | null
+    dayOfWeek: number
+    mealType: string
+  }
+
+  export type RecipeIngredientUpdateWithoutRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ingredientId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RecipeIngredientUncheckedUpdateWithoutRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ingredientId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RecipeIngredientUncheckedUpdateManyWithoutRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ingredientId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserRecipeUpdateWithoutCachedRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutUserRecipesNestedInput
+  }
+
+  export type UserRecipeUncheckedUpdateWithoutCachedRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserRecipeUncheckedUpdateManyWithoutCachedRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dateAdded?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MealPlanItemUpdateWithoutCachedRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
+    mealPlan?: MealPlanUpdateOneRequiredWithoutMealPlanItemsNestedInput
+  }
+
+  export type MealPlanItemUncheckedUpdateWithoutCachedRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
     mealPlanId?: StringFieldUpdateOperationsInput | string
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
   }
 
-  export type MealPlanRecipeUncheckedUpdateManyWithoutRecipeInput = {
+  export type MealPlanItemUncheckedUpdateManyWithoutCachedRecipeInput = {
+    id?: StringFieldUpdateOperationsInput | string
     mealPlanId?: StringFieldUpdateOperationsInput | string
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type RecipeEmbeddingUpdateWithoutRecipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    embedding?: RecipeEmbeddingUpdateembeddingInput | number[]
-  }
-
-  export type RecipeEmbeddingUncheckedUpdateWithoutRecipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    embedding?: RecipeEmbeddingUpdateembeddingInput | number[]
-  }
-
-  export type RecipeEmbeddingUncheckedUpdateManyWithoutRecipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    embedding?: RecipeEmbeddingUpdateembeddingInput | number[]
-  }
-
-  export type MealPlanRecipeCreateManyMealPlanInput = {
-    recipeId: string
-    day: number
-    mealSlot: string
-  }
-
-  export type MealPlanRecipeUpdateWithoutMealPlanInput = {
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
-    recipe?: RecipeUpdateOneRequiredWithoutMealPlanRecipesNestedInput
-  }
-
-  export type MealPlanRecipeUncheckedUpdateWithoutMealPlanInput = {
-    recipeId?: StringFieldUpdateOperationsInput | string
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type MealPlanRecipeUncheckedUpdateManyWithoutMealPlanInput = {
-    recipeId?: StringFieldUpdateOperationsInput | string
-    day?: IntFieldUpdateOperationsInput | number
-    mealSlot?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    mealType?: StringFieldUpdateOperationsInput | string
   }
 
 

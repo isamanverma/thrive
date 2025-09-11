@@ -3,7 +3,7 @@
 
 import { DatabaseCircuitBreaker, isDatabaseConfigured, updateDatabaseStatus } from './database-status';
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../generated/prisma';
 import { UserData } from './api';
 
 // Create a global instance to avoid multiple connections in development

@@ -53,6 +53,22 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const getIngredientImageUrl = (ingredient: {
+    name: string;
+    image?: string;
+  }) => {
+    if (ingredient.image) {
+      if (ingredient.image.startsWith("http")) {
+        return ingredient.image;
+      }
+      return `https://spoonacular.com/cdn/ingredients_100x100/${ingredient.image}`;
+    }
+
+    const cleanName =
+      ingredient.name?.toLowerCase().replace(/[^a-z0-9]/g, "-") || "ingredient";
+    return `https://spoonacular.com/cdn/ingredients_100x100/${cleanName}.jpg`;
+  };
+
   useEffect(() => {
     if (!recipeId || !isOpen) return;
 
@@ -368,7 +384,9 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                       >
                                         <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center overflow-hidden">
                                           <Image
-                                            src={`https://spoonacular.com/cdn/ingredients_100x100/${ingredient.image}`}
+                                            src={getIngredientImageUrl(
+                                              ingredient
+                                            )}
                                             alt={ingredient.name}
                                             width={24}
                                             height={24}
@@ -376,7 +394,26 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                             onError={(e) => {
                                               const target =
                                                 e.target as HTMLImageElement;
-                                              target.style.display = "none";
+                                              if (
+                                                !target.src.includes(
+                                                  "placeholder"
+                                                )
+                                              ) {
+                                                const altName =
+                                                  ingredient.name
+                                                    ?.toLowerCase()
+                                                    .replace(/\s+/g, "-")
+                                                    .replace(
+                                                      /[^a-z0-9-]/g,
+                                                      ""
+                                                    ) || "ingredient";
+                                                target.src = `https://spoonacular.com/cdn/ingredients_100x100/${altName}.png`;
+
+                                                target.onerror = () => {
+                                                  target.src =
+                                                    "https://via.placeholder.com/32x32/f3f4f6/9ca3af?text=🥘";
+                                                };
+                                              }
                                             }}
                                           />
                                         </div>

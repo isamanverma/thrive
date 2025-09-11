@@ -28,6 +28,7 @@ export default function MealPlansPage() {
   const {
     viewMode,
     currentDate,
+    currentDayIndex, // Add currentDayIndex here
     weeklyMeals,
     draggedItem,
     activeDropZone,
@@ -210,6 +211,7 @@ export default function MealPlansPage() {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onRecipeClick={handleRecipeClick}
+            currentDayIndex={currentDayIndex}
           />
         </>
       ) : (

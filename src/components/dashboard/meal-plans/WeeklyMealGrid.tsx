@@ -29,6 +29,7 @@ interface WeeklyMealGridProps {
     mealType: string,
     dayIndex?: number
   ) => void;
+  currentDayIndex: number;
 }
 
 export function WeeklyMealGrid({
@@ -41,6 +42,7 @@ export function WeeklyMealGrid({
   onDragLeave,
   onDrop,
   onRecipeClick,
+  currentDayIndex,
 }: WeeklyMealGridProps) {
   const mealTypes: MealTypeCapitalized[] = [
     "Breakfast",
@@ -48,6 +50,9 @@ export function WeeklyMealGrid({
     "Snack",
     "Dinner",
   ];
+
+  // Ensure currentDayIndex is within the valid range (1-7)
+  const adjustedDayIndex = (currentDayIndex - 1 + 7) % 7; // Adjust for 0-based index and wrap around
 
   return (
     <motion.div
@@ -64,10 +69,14 @@ export function WeeklyMealGrid({
         }}
       >
         <div className="p-2 text-center text-xs font-medium text-gray-500"></div>
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
           <div
             key={day}
-            className="p-4 text-center font-semibold text-gray-700"
+            className={`p-4 text-center font-semibold ${
+              index === adjustedDayIndex
+                ? "bg-gradient-to-r from-green-200 to-green-400 text-green-900"
+                : "text-gray-700"
+            }`}
           >
             {day}
           </div>

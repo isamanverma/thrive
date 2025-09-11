@@ -1,20 +1,24 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { ChefHat, Search } from "lucide-react";
+import { ChefHat, Search, X } from "lucide-react";
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
+import { BlurFade } from "@/components/magicui/blur-fade";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { MealPlanItem } from "./MealPlanCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface MealSwapModalProps {
   isOpen: boolean;
@@ -102,184 +106,227 @@ export function MealSwapModal({
   isLoading = false,
 }: MealSwapModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [hoveredMeal, setHoveredMeal] = useState<number | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredMeals = useMemo(() => {
     if (!searchQuery.trim()) return availableMeals;
     return availableMeals.filter(
       (meal) =>
         meal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        meal.description.toLowerCase().includes(searchQuery.toLowerCase())
+        meal.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        generateIngredients(meal.name).some((ingredient) =>
+          ingredient.toLowerCase().includes(searchQuery.toLowerCase())
+        )
     );
   }, [availableMeals, searchQuery]);
 
+  // Focus search input when drawer opens
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 300);
+    }
+  }, [isOpen]);
+
+  // Handle keyboard navigation
+  const handleKeyDown = (event: React.KeyboardEvent, meal: MealPlanItem) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onMealSelect(meal);
+    }
+  };
+
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent className="max-h-[85vh] flex flex-col">
-        <DrawerHeader className="px-6 py-4 border-b bg-gradient-to-r from-gray-50 to-white shrink-0">
+      <DrawerContent
+        className="mx-auto max-w-7xl max-h-[90vh] flex flex-col bg-background"
+        aria-labelledby="swap-modal-title"
+        aria-describedby="swap-modal-description"
+      >
+        <DrawerHeader className="border-b px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Badge
                 variant="outline"
-                className={`${getMealTypeStyles(mealType)} font-medium`}
+                className={`${getMealTypeStyles(mealType)} font-semibold px-3 py-1`}
               >
+                <ChefHat className="w-4 h-4 mr-2" aria-hidden="true" />
                 {mealType}
               </Badge>
-              <DrawerTitle className="text-xl font-semibold text-gray-900">
-                Choose a replacement meal
+              <DrawerTitle id="swap-modal-title">
+                <VisuallyHidden>Swap Meal</VisuallyHidden>
               </DrawerTitle>
             </div>
+            <DrawerClose asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Close meal swap modal"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DrawerClose>
           </div>
 
-          {/* Search Input */}
-          <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder={`Search ${mealType.toLowerCase()} options...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-10"
-            />
+          <div className="mt-4">
+            <div className="relative">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                aria-hidden="true"
+              />
+              <Input
+                ref={searchInputRef}
+                placeholder={`Search ${mealType.toLowerCase()} options...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-10"
+                aria-label={`Search ${mealType.toLowerCase()} meal options`}
+                aria-describedby="swap-modal-description"
+              />
+            </div>
+            <p id="swap-modal-description" className="sr-only">
+              Search and select a {mealType.toLowerCase()} meal to replace the
+              current one
+            </p>
           </div>
         </DrawerHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 pb-6">
+        <div className="flex-1 overflow-y-auto p-6">
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {Array.from({ length: 8 }).map((_, index) => (
-                <Card key={index} className="overflow-hidden h-48">
-                  <CardContent className="p-0 h-full flex flex-col">
-                    <Skeleton className="w-full h-24 rounded-none flex-shrink-0" />
-                    <div className="p-3 flex-1 flex flex-col justify-between">
-                      <div>
-                        <Skeleton className="h-3 w-3/4 mb-2" />
-                        <Skeleton className="h-2 w-full mb-1" />
-                        <Skeleton className="h-2 w-2/3" />
+                <BlurFade key={index} delay={index * 0.1} inView>
+                  <Card className="overflow-hidden">
+                    <Skeleton className="w-full h-48 rounded-none" />
+                    <CardContent className="p-4">
+                      <Skeleton className="h-4 w-3/4 mb-2" />
+                      <Skeleton className="h-3 w-full mb-1" />
+                      <Skeleton className="h-3 w-2/3 mb-3" />
+                      <div className="flex justify-between items-center">
+                        <Skeleton className="h-3 w-16" />
+                        <Skeleton className="h-4 w-12" />
                       </div>
-                      <div className="flex justify-between items-center pt-2 mt-2 border-t border-gray-100">
-                        <Skeleton className="h-2 w-12" />
-                        <Skeleton className="h-3 w-8" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </BlurFade>
               ))}
             </div>
           ) : filteredMeals.length > 0 ? (
             <>
-              <div className="text-sm text-gray-600 pt-4 pb-2">
-                {filteredMeals.length} meal
-                {filteredMeals.length !== 1 ? "s" : ""} available
+              <div className="mb-4">
+                <p className="text-sm text-muted-foreground">
+                  {filteredMeals.length} meal
+                  {filteredMeals.length !== 1 ? "s" : ""} available
+                </p>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 pb-4">
-                {filteredMeals.map((meal) => (
-                  <div
-                    key={meal.id}
-                    className="group perspective-1000 cursor-pointer"
-                    onClick={() => onMealSelect(meal)}
-                  >
-                    <div className="relative w-full h-48 transition-transform duration-500 transform-style-preserve-3d group-hover:rotate-y-180">
-                      {/* Front Side */}
-                      <Card className="absolute inset-0 w-full h-full backface-hidden overflow-hidden border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
-                        <CardContent className="p-0 h-full flex flex-col">
-                          {/* Image */}
-                          <div className="relative w-full h-24 overflow-hidden flex-shrink-0">
-                            <Image
-                              src={meal.image || "/placeholder.svg"}
-                              alt={meal.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
 
-                          {/* Content */}
-                          <div className="p-3 flex-1 flex flex-col justify-between">
-                            <div>
-                              <h4 className="font-medium text-xs text-gray-900 line-clamp-2 leading-tight mb-1">
-                                {meal.name}
-                              </h4>
-                              <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
-                                {meal.description}
-                              </p>
-                            </div>
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                role="grid"
+                aria-label={`Available ${mealType.toLowerCase()} meals`}
+              >
+                {filteredMeals.map((meal, index) => (
+                  <BlurFade key={meal.id} delay={index * 0.05} inView>
+                    <Card
+                      className="h-full cursor-pointer group relative overflow-hidden hover:shadow-lg transition-all duration-200"
+                      role="gridcell"
+                      tabIndex={0}
+                      onClick={() => onMealSelect(meal)}
+                      onKeyDown={(e) => handleKeyDown(e, meal)}
+                      onMouseEnter={() => setHoveredMeal(meal.id)}
+                      onMouseLeave={() => setHoveredMeal(null)}
+                      aria-label={`Select ${meal.name}, ${meal.calories} calories`}
+                    >
+                      <div className="relative">
+                        <div className="w-full h-48 overflow-hidden">
+                          <Image
+                            src={meal.image || "/placeholder.svg"}
+                            alt={meal.name}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
 
-                            {/* Calories */}
-                            <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-100">
-                              <span className="text-xs text-gray-500 font-medium">
-                                Calories
-                              </span>
-                              <div className="flex items-baseline gap-1">
-                                <span className="text-sm font-bold text-gray-900">
-                                  {meal.calories}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  kcal
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Back Side - Ingredients */}
-                      <Card className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 overflow-hidden border-gray-200 bg-gradient-to-br from-gray-50 to-white shadow-md">
-                        <CardContent className="p-3 h-full flex flex-col">
-                          <div className="flex items-center justify-between mb-3">
-                            <h4 className="font-medium text-xs text-gray-900 line-clamp-1">
-                              {meal.name}
-                            </h4>
-                            <Badge
-                              variant="outline"
-                              className="text-xs px-2 py-0.5 bg-green-50 text-green-700 border-green-200"
-                            >
+                        {/* Ingredients overlay */}
+                        {hoveredMeal === meal.id && (
+                          <div className="absolute inset-0 bg-black/80 flex flex-col justify-center p-4">
+                            <h4 className="text-white font-semibold text-sm mb-2">
                               Ingredients
-                            </Badge>
-                          </div>
-
-                          <div className="flex-1 space-y-1">
-                            {generateIngredients(meal.name).map(
-                              (ingredient, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center gap-2 text-xs text-gray-700"
-                                >
-                                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full flex-shrink-0"></div>
-                                  <span className="line-clamp-1">
-                                    {ingredient}
-                                  </span>
-                                </div>
-                              )
-                            )}
-                          </div>
-
-                          <div className="pt-2 mt-2 border-t border-gray-100">
-                            <div className="text-center">
-                              <span className="text-xs text-gray-500">
-                                Click to select
-                              </span>
+                            </h4>
+                            <div className="space-y-1 max-h-32 overflow-y-auto">
+                              {generateIngredients(meal.name).map(
+                                (ingredient, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center gap-2 text-white/90 text-xs"
+                                  >
+                                    <div className="w-1 h-1 bg-green-400 rounded-full flex-shrink-0" />
+                                    <span>{ingredient}</span>
+                                  </div>
+                                )
+                              )}
                             </div>
                           </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
+                        )}
+                      </div>
+
+                      <CardContent className="p-4 flex-1 flex flex-col">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                            {meal.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                            {meal.description}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2 border-t">
+                          <span className="text-xs text-muted-foreground font-medium">
+                            Calories
+                          </span>
+                          <div className="flex items-baseline gap-1">
+                            <span className="font-bold text-foreground">
+                              {meal.calories}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              kcal
+                            </span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </BlurFade>
                 ))}
               </div>
             </>
           ) : (
-            <div className="text-center py-16">
-              <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <ChefHat className="w-8 h-8 text-gray-400" />
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                <ChefHat className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold mb-2">
                 {searchQuery
                   ? "No meals found"
                   : "No alternative meals available"}
               </h3>
-              <p className="text-gray-500 max-w-sm mx-auto">
+              <p className="text-muted-foreground max-w-md">
                 {searchQuery
                   ? `No ${mealType.toLowerCase()} options match "${searchQuery}". Try a different search term.`
                   : `There are currently no alternative ${mealType.toLowerCase()} options available.`}
               </p>
+              {searchQuery && (
+                <Button
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => setSearchQuery("")}
+                >
+                  Clear search
+                </Button>
+              )}
             </div>
           )}
         </div>
