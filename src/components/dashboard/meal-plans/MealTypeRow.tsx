@@ -16,6 +16,7 @@ interface MealTypeRowProps {
   weeklyMeals: WeeklyMeals;
   draggedItem: DraggedItem | null;
   activeDropZone: DropZone | null;
+  todayIndex: number;
   onDragStart: (
     e: React.DragEvent,
     meal: MealPlanItem,
@@ -74,6 +75,7 @@ export function MealTypeRow({
   weeklyMeals,
   draggedItem,
   activeDropZone,
+  todayIndex,
   onDragStart,
   onDragEnd,
   onDragOver,
@@ -118,6 +120,7 @@ export function MealTypeRow({
                   ? `bg-gradient-to-r ${styles.dropZone} ring-4 ring-opacity-60 shadow-lg`
                   : styles.hover
               }`}
+              data-today={index === todayIndex}
               onDragOver={(e) => onDragOver(e, mealType, index)}
               onDragLeave={onDragLeave}
               onDrop={(e) => onDrop(e, mealType, index)}

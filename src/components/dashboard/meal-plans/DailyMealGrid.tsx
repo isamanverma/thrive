@@ -55,7 +55,7 @@ export function DailyMealGrid({
   return (
     <div>
       <div className="mb-4 flex items-center gap-3">
-        <span className="inline-flex items-center rounded-full bg-green-100 text-green-800 px-3 py-1 text-sm font-medium">
+        <span className="inline-flex items-center rounded-full bg-green-50 text-green-700 px-3 py-1 text-sm font-medium">
           Today
         </span>
         <span className="text-sm text-gray-600">Showing meals for today</span>
@@ -79,7 +79,7 @@ export function DailyMealGrid({
                 className="group relative bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 h-full flex items-center justify-center text-gray-500 text-sm"
               >
                 <div className="flex flex-col items-center gap-2">
-                  <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-50 text-green-700">
+                  <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-25/--not-real text-green-700">
                     <Plus className="w-4 h-4" />
                   </div>
                   <span>Drop {type.toLowerCase()} here</span>

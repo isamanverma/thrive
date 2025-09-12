@@ -7,12 +7,13 @@ export interface MealPlanItem {
 }
 
 export interface WeeklyMeals {
-  [dayIndex: number]: {
+  // Each day index (0-6) maps to a partial set of meals — some slots may be empty
+  [dayIndex: number]: Partial<{
     breakfast: MealPlanItem;
     lunch: MealPlanItem;
     snack: MealPlanItem;
     dinner: MealPlanItem;
-  };
+  }>;
 }
 
 export interface WeeklyStats {

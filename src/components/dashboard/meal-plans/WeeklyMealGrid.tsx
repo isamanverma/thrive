@@ -76,11 +76,18 @@ export function WeeklyMealGrid({
             key={day}
             className={`p-4 text-center font-semibold ${
               index === adjustedDayIndex
-                ? "bg-gradient-to-r from-green-200 to-green-400 text-green-900"
+                ? "bg-green-200 rounded-md m-2 text-green-700"
                 : "text-gray-700"
             }`}
           >
-            {day}
+            <div className="flex items-center justify-center gap-2">
+              <span>{day}</span>
+              {index === adjustedDayIndex && (
+                <span className="text-xs bg-white/80 text-green-700 px-2 py-0.5 rounded-full font-semibold">
+                  Today
+                </span>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -100,6 +107,7 @@ export function WeeklyMealGrid({
           onDrop={onDrop}
           onRecipeClick={onRecipeClick}
           onEmptySlotClick={onEmptySlotClick}
+          todayIndex={adjustedDayIndex}
         />
       ))}
     </motion.div>
