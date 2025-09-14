@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { MealPlanItem } from "./MealPlanCard";
+import { useState } from "react";
 
 interface MealDetailModalProps {
   isOpen: boolean;
@@ -42,6 +43,19 @@ export function MealDetailModal({
   onSwapClick,
   onDelete,
 }: MealDetailModalProps) {
+  // Strip simple HTML tags and collapse whitespace for nicer display
+  const stripHtml = (input?: string) => {
+    if (!input) return "";
+    const noTags = input.replace(/<[^>]*>/g, "");
+    return noTags
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/\s+/g, " ")
+      .trim();
+  };
+
+  const [expanded, setExpanded] = useState(false);
+
   if (!meal) return null;
 
   const handleSwapClick = () => {
@@ -119,7 +133,22 @@ export function MealDetailModal({
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               About this meal
             </h3>
-            <p className="text-gray-700 leading-relaxed">{meal.description}</p>
+            <p
+              className={`text-gray-700 leading-relaxed ${expanded ? "" : "line-clamp-4"}`}
+            >
+              {stripHtml(meal.description)}
+            </p>
+            {stripHtml(meal.description).length > 240 && (
+              <div className="mt-2">
+                <button
+                  type="button"
+                  className="text-sm text-blue-600 hover:underline"
+                  onClick={() => setExpanded((s) => !s)}
+                >
+                  {expanded ? "Show less" : "Read more"}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Action buttons are placed in the DialogFooter so they stay

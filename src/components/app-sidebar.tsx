@@ -108,7 +108,7 @@ export function AppSidebar() {
             alt="Thrive Logo"
             width={40}
             height={40}
-            className="rounded-full"
+            className="rounded-lg"
           />
           <span className="text-xl font-bold text-gray-800">Thrive</span>
         </div>

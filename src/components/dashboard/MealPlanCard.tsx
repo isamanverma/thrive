@@ -4,6 +4,21 @@ import { GripVertical } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+// Remove simple HTML tags from external descriptions and collapse whitespace.
+const stripHtml = (input?: string) => {
+  if (!input) return "";
+  // Remove HTML tags
+  const noTags = input.replace(/<[^>]*>/g, "");
+  // Decode a few common HTML entities and collapse whitespace
+  return noTags
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
 export interface MealPlanItem {
   id: number;
   name: string;
@@ -85,9 +100,10 @@ export function MealPlanCard({
         scale: { duration: 0.3 },
         rotate: { duration: 0.3 },
       }}
+      className="w-full h-full"
     >
       <div
-        className={`bg-white rounded-xl border overflow-hidden cursor-pointer h-full transition-all duration-200 ${
+        className={`bg-white rounded-xl border overflow-hidden cursor-pointer transition-all duration-200 flex flex-col w-full h-full min-h-[140px] max-h-[160px] ${
           isDraggable ? "cursor-grab active:cursor-grabbing" : ""
         } ${
           isDragging
@@ -105,7 +121,7 @@ export function MealPlanCard({
       >
         {/* Header with meal type tag (conditional) */}
         {showMealTypeLabel && (
-          <div className="p-3 pb-2">
+          <div className="p-2 pb-1 flex-shrink-0">
             <div className="flex items-center justify-between">
               <span
                 className={`text-xs px-2 py-1 rounded-md font-medium border ${getMealTypeStyles(mealType)} whitespace-nowrap`}
@@ -121,14 +137,14 @@ export function MealPlanCard({
 
         {/* Drag handle for cards without labels */}
         {!showMealTypeLabel && isDraggable && (
-          <div className="p-3 pb-2 flex justify-end">
+          <div className="p-2 pb-1 flex justify-end flex-shrink-0">
             <GripVertical className="w-3 h-3 text-gray-400 flex-shrink-0" />
           </div>
         )}
 
         {/* Image */}
-        <div className={`px-3 ${!showMealTypeLabel ? "pt-2" : ""} pb-2`}>
-          <div className="relative w-full h-20 rounded-lg overflow-hidden">
+        <div className={`px-2 ${!showMealTypeLabel ? "pt-1" : ""} pb-1 flex-shrink-0`}>
+          <div className="relative w-full h-16 rounded-lg overflow-hidden">
             <Image
               src={meal.image || "/placeholder.svg"}
               alt={meal.name}
@@ -139,21 +155,31 @@ export function MealPlanCard({
         </div>
 
         {/* Content */}
-        <div className="px-3 pb-3">
-          <h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">
+        <div className="px-2 pb-2 flex-1 overflow-hidden min-h-0">
+          <h4 className="font-semibold text-xs text-gray-900 mb-1 line-clamp-1">
             {meal.name}
           </h4>
 
           {/* Calories display */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-1">
             <span className="text-xs text-gray-500">Calories</span>
             <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold text-gray-900">
-                {meal.calories}
+              <span className="text-sm font-bold text-gray-900">
+                {typeof meal.calories === "number" && meal.calories > 0
+                  ? meal.calories
+                  : "—"}
               </span>
-              <span className="text-xs text-gray-500">kcal</span>
+              {typeof meal.calories === "number" && meal.calories > 0 && (
+                <span className="text-xs text-gray-500">kcal</span>
+              )}
             </div>
           </div>
+          {/* Short description/snippet (cleaned and clamped) */}
+          {meal.description && (
+            <p className="text-xs text-gray-600 line-clamp-2 break-words overflow-hidden leading-tight">
+              {stripHtml(meal.description)}
+            </p>
+          )}
         </div>
       </div>
     </motion.div>

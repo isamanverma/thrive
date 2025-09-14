@@ -34,11 +34,13 @@ export default function MealPlansPage() {
     activeDropZone,
     sampleMeals,
     weeklyStats,
+    isLoading,
     setViewMode,
-    setWeeklyMeals,
     setDraggedItem,
     setActiveDropZone,
     navigateDate,
+    updateSingleMeal,
+    swapMeals,
   } = useMealPlanData();
 
   const [swapModalOpen, setSwapModalOpen] = useState(false);
@@ -72,22 +74,8 @@ export default function MealPlansPage() {
       return;
     }
 
-    setWeeklyMeals((prevWeeklyMeals) => {
-      try {
-        const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
-        const mealTypeKey = swapMealType.toLowerCase();
-
-        if (!newWeeklyMeals[swapDayIndex]) {
-          newWeeklyMeals[swapDayIndex] = {};
-        }
-
-        newWeeklyMeals[swapDayIndex][mealTypeKey] = recipe;
-        return newWeeklyMeals;
-      } catch (err) {
-        console.error("Failed to set weekly meals in handleRecipeSelect", err);
-        return prevWeeklyMeals;
-      }
-    });
+    // Use the new updateSingleMeal function for better persistence
+    updateSingleMeal(swapDayIndex, swapMealType, recipe);
     setSwapModalOpen(false);
   };
 
@@ -108,29 +96,8 @@ export default function MealPlansPage() {
     // remove the selectedRecipe from weeklyMeals using selectedMealType and swapDayIndex
     if (!selectedRecipe) return;
 
-    setWeeklyMeals((prevWeeklyMeals) => {
-      try {
-        const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
-        const dayIdx = swapDayIndex;
-        const mealKey = selectedMealType.toLowerCase();
-
-        // Ensure day object exists so daily view shows an explicit empty slot
-        if (!newWeeklyMeals[dayIdx]) {
-          newWeeklyMeals[dayIdx] = {} as Partial<Record<string, MealPlanItem>>;
-        }
-
-        if (
-          Object.prototype.hasOwnProperty.call(newWeeklyMeals[dayIdx], mealKey)
-        ) {
-          delete newWeeklyMeals[dayIdx][mealKey];
-        }
-
-        return newWeeklyMeals;
-      } catch (err) {
-        console.error("Failed to delete meal", err);
-        return prevWeeklyMeals;
-      }
-    });
+    // Use the new updateSingleMeal function to remove the meal
+    updateSingleMeal(swapDayIndex, selectedMealType, null);
 
     // close modal
     setRecipeDetailOpen(false);
@@ -214,93 +181,64 @@ export default function MealPlansPage() {
 
     const sourceDayIndex = draggedItem.dayIndex;
     const sourceMealType = draggedItem.mealType;
-    const sourceMeal = draggedItem.meal;
 
     setDraggedItem(null);
     setActiveDropZone(null);
 
-    setWeeklyMeals((prevWeeklyMeals) => {
-      try {
-        const newWeeklyMeals = JSON.parse(JSON.stringify(prevWeeklyMeals));
-        const sourceMealKey = sourceMealType.toLowerCase();
-        const targetMealKey = targetMealType.toLowerCase();
-
-        if (!newWeeklyMeals[sourceDayIndex]) {
-          newWeeklyMeals[sourceDayIndex] = {};
-        }
-        if (!newWeeklyMeals[targetDayIndex]) {
-          newWeeklyMeals[targetDayIndex] = {};
-        }
-
-        const targetMeal = newWeeklyMeals[targetDayIndex][targetMealKey];
-
-        if (targetMeal === undefined) {
-          // Moving into an empty slot: remove source and set target
-          if (
-            newWeeklyMeals[sourceDayIndex] &&
-            Object.prototype.hasOwnProperty.call(
-              newWeeklyMeals[sourceDayIndex],
-              sourceMealKey
-            )
-          ) {
-            delete newWeeklyMeals[sourceDayIndex][sourceMealKey];
-          }
-          newWeeklyMeals[targetDayIndex][targetMealKey] = sourceMeal;
-        } else {
-          // Swapping two existing meals
-          newWeeklyMeals[sourceDayIndex][sourceMealKey] = targetMeal;
-          newWeeklyMeals[targetDayIndex][targetMealKey] = sourceMeal;
-        }
-
-        return newWeeklyMeals;
-      } catch (err) {
-        console.error("Failed to perform drop swap/move", err);
-        return prevWeeklyMeals;
-      }
-    });
+    // Use the new swapMeals function for better persistence
+    swapMeals(sourceDayIndex, sourceMealType, targetDayIndex, targetMealType);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <MealPlanHeader
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        onRegenerate={handleRegenerate}
-      />
-
-      <DateNavigation
-        viewMode={viewMode}
-        currentDate={currentDate}
-        onNavigate={navigateDate}
-      />
-
-      {viewMode === "weekly" ? (
-        <>
-          <WeeklyStatsCard stats={weeklyStats} />
-          <WeeklyMealGrid
-            weeklyMeals={weeklyMeals}
-            draggedItem={draggedItem}
-            activeDropZone={activeDropZone}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onRecipeClick={handleRecipeClick}
-            currentDayIndex={currentDayIndex}
-            onEmptySlotClick={handleEmptySlotClick}
-          />
-        </>
+      {isLoading ? (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <span className="ml-3 text-gray-600">Loading your meal plan...</span>
+        </div>
       ) : (
         <>
-          <DailyStatsCard stats={dailyStats} />
-          <DailyMealGrid
-            sampleMeals={sampleMeals}
-            onRecipeClick={handleRecipeClick}
-            weeklyMeals={weeklyMeals}
-            onEmptySlotClick={handleEmptySlotClick}
-            currentDayIndex={currentDayIndex}
+          <MealPlanHeader
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            onRegenerate={handleRegenerate}
           />
+
+          <DateNavigation
+            viewMode={viewMode}
+            currentDate={currentDate}
+            onNavigate={navigateDate}
+          />
+
+          {viewMode === "weekly" ? (
+            <>
+              <WeeklyStatsCard stats={weeklyStats} />
+              <WeeklyMealGrid
+                weeklyMeals={weeklyMeals}
+                draggedItem={draggedItem}
+                activeDropZone={activeDropZone}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onRecipeClick={handleRecipeClick}
+                currentDayIndex={currentDayIndex}
+                onEmptySlotClick={handleEmptySlotClick}
+              />
+            </>
+          ) : (
+            <>
+              <DailyStatsCard stats={dailyStats} />
+              <DailyMealGrid
+                sampleMeals={sampleMeals}
+                onRecipeClick={handleRecipeClick}
+                weeklyMeals={weeklyMeals}
+                onEmptySlotClick={handleEmptySlotClick}
+                currentDayIndex={currentDayIndex}
+              />
+            </>
+          )}
         </>
       )}
 

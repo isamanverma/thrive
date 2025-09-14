@@ -150,7 +150,10 @@ exports.Prisma.MealPlanScalarFieldEnum = {
   startDate: 'startDate',
   endDate: 'endDate',
   constraints: 'constraints',
-  createdAt: 'createdAt'
+  gridJson: 'gridJson',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.MealPlanItemScalarFieldEnum = {
@@ -160,6 +163,16 @@ exports.Prisma.MealPlanItemScalarFieldEnum = {
   dayOfWeek: 'dayOfWeek',
   mealType: 'mealType',
   cachedRecipeId: 'cachedRecipeId'
+};
+
+exports.Prisma.MealPlanSwapScalarFieldEnum = {
+  id: 'id',
+  mealPlanId: 'mealPlanId',
+  userId: 'userId',
+  clientId: 'clientId',
+  before: 'before',
+  after: 'after',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.ProgressScalarFieldEnum = {
@@ -221,6 +234,10 @@ exports.Prisma.NullableJsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -254,6 +271,7 @@ exports.Prisma.ModelName = {
   UserRecipe: 'UserRecipe',
   MealPlan: 'MealPlan',
   MealPlanItem: 'MealPlanItem',
+  MealPlanSwap: 'MealPlanSwap',
   Progress: 'Progress',
   Recipe: 'Recipe',
   RecipeIngredient: 'RecipeIngredient'

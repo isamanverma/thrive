@@ -65,9 +65,9 @@ export function WeeklyMealGrid({
     >
       {/* Day headers */}
       <div
-        className="grid gap-0 bg-gray-50 border-b"
+        className="grid gap-2 bg-gray-50 border-b"
         style={{
-          gridTemplateColumns: "80px 1fr 1fr 1fr 1fr 1fr 1fr 1fr",
+          gridTemplateColumns: "80px repeat(7, 1fr)",
         }}
       >
         <div className="p-2 text-center text-xs font-medium text-gray-500"></div>

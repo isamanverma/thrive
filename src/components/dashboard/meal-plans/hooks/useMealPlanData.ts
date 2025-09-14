@@ -6,8 +6,7 @@ import type {
   WeeklyMeals,
   WeeklyStats
 } from "../types";
-
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const sampleMeals = {
   breakfast: [
@@ -234,6 +233,11 @@ export function useMealPlanData() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [draggedItem, setDraggedItem] = useState<DraggedItem | null>(null);
   const [activeDropZone, setActiveDropZone] = useState<DropZone | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [mealPlanId, setMealPlanId] = useState<string | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isLoadingRef = useRef(false); // Prevent multiple simultaneous API calls
+  const initialLoadRef = useRef(false); // Track if initial load has happened
 
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeals>(() => {
     const meals: WeeklyMeals = {};
@@ -247,6 +251,222 @@ export function useMealPlanData() {
     }
     return meals;
   });
+
+  // Load meal plan from database
+  const loadMealPlan = useCallback(async () => {
+    try {
+      // Prevent multiple simultaneous API calls
+      if (isLoadingRef.current) {
+        return;
+      }
+      
+      isLoadingRef.current = true;
+      setIsLoading(true);
+      const response = await fetch('/api/meal-plans/current');
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.weeklyMeals && Object.keys(data.weeklyMeals).length > 0) {
+          // If we have persisted data, use it
+          setWeeklyMeals(data.weeklyMeals);
+          setMealPlanId(data.mealPlanId);
+        }
+        // If no persisted data, keep the default sample meals
+      } else {
+        console.warn('Failed to load meal plan, using default sample meals');
+      }
+    } catch (error) {
+      console.error('Error loading meal plan:', error);
+      // Keep using sample meals on error
+    } finally {
+      isLoadingRef.current = false;
+      setIsLoading(false);
+      initialLoadRef.current = true;
+    }
+  }, []);
+
+  // Save meal plan to database
+  const saveMealPlan = useCallback(async (meals: WeeklyMeals) => {
+    try {
+      // Calculate start and end dates for current week using the state currentDate
+      const startOfWeek = new Date(currentDate);
+      // Get Monday as start of week
+      const mondayOffset = currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
+      startOfWeek.setDate(currentDate.getDate() + mondayOffset);
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      const response = await fetch('/api/meal-plans/current', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          weeklyMeals: meals,
+          startDate: startOfWeek.toISOString(),
+          endDate: endOfWeek.toISOString(),
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMealPlanId(data.mealPlanId);
+      } else {
+        console.error('Failed to save meal plan');
+      }
+    } catch (error) {
+      console.error('Error saving meal plan:', error);
+    }
+  }, [currentDate]);
+
+  // Update a single meal with optimistic updates
+  const updateSingleMeal = useCallback(async (
+    dayIndex: number, 
+    mealType: string, 
+    meal: MealPlanItem | null
+  ) => {
+    // Optimistically update the UI first
+    setWeeklyMeals((prevMeals) => {
+      const newMeals = JSON.parse(JSON.stringify(prevMeals));
+      const mealTypeKey = mealType.toLowerCase();
+
+      if (!newMeals[dayIndex]) {
+        newMeals[dayIndex] = {};
+      }
+
+      if (meal) {
+        newMeals[dayIndex][mealTypeKey] = meal;
+      } else {
+        delete newMeals[dayIndex][mealTypeKey];
+      }
+
+      return newMeals;
+    });
+
+    // Then persist to database
+    try {
+      const response = await fetch('/api/meal-plans/update-meal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          dayIndex,
+          mealType: mealType.toLowerCase(),
+          meal: meal,
+          action: meal ? 'set' : 'remove',
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to update meal in database, reverting...');
+        // Revert optimistic update on failure
+        loadMealPlan();
+      }
+    } catch (error) {
+      console.error('Error updating meal:', error);
+      // Revert optimistic update on failure
+      loadMealPlan();
+    }
+  }, [loadMealPlan]);
+
+  // Swap two meals with optimistic updates
+  const swapMeals = useCallback(async (
+    sourceDayIndex: number,
+    sourceMealType: string,
+    targetDayIndex: number,
+    targetMealType: string
+  ) => {
+    // Store original state for potential rollback
+    const originalMeals = JSON.parse(JSON.stringify(weeklyMeals));
+
+    // Optimistically update the UI first
+    setWeeklyMeals((prevMeals) => {
+      const newMeals = JSON.parse(JSON.stringify(prevMeals));
+      const sourceMealKey = sourceMealType.toLowerCase();
+      const targetMealKey = targetMealType.toLowerCase();
+
+      if (!newMeals[sourceDayIndex]) newMeals[sourceDayIndex] = {};
+      if (!newMeals[targetDayIndex]) newMeals[targetDayIndex] = {};
+
+      const sourceMeal = newMeals[sourceDayIndex][sourceMealKey];
+      const targetMeal = newMeals[targetDayIndex][targetMealKey];
+
+      // Perform the swap
+      if (sourceMeal && targetMeal) {
+        // Both exist - swap them
+        newMeals[sourceDayIndex][sourceMealKey] = targetMeal;
+        newMeals[targetDayIndex][targetMealKey] = sourceMeal;
+      } else if (sourceMeal && !targetMeal) {
+        // Only source exists - move to target
+        delete newMeals[sourceDayIndex][sourceMealKey];
+        newMeals[targetDayIndex][targetMealKey] = sourceMeal;
+      } else if (!sourceMeal && targetMeal) {
+        // Only target exists - move to source
+        delete newMeals[targetDayIndex][targetMealKey];
+        newMeals[sourceDayIndex][sourceMealKey] = targetMeal;
+      }
+
+      return newMeals;
+    });
+
+    // Then persist to database
+    try {
+      const response = await fetch('/api/meal-plans/swap-meals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sourceDayIndex,
+          sourceMealType: sourceMealType.toLowerCase(),
+          targetDayIndex,
+          targetMealType: targetMealType.toLowerCase(),
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to swap meals in database, reverting...');
+        // Revert to original state on failure
+        setWeeklyMeals(originalMeals);
+      }
+    } catch (error) {
+      console.error('Error swapping meals:', error);
+      // Revert to original state on failure
+      setWeeklyMeals(originalMeals);
+    }
+  }, [weeklyMeals]);
+
+  // Enhanced setWeeklyMeals that also saves to database with debouncing
+  const updateWeeklyMeals = useCallback((
+    mealsOrUpdater: WeeklyMeals | ((prev: WeeklyMeals) => WeeklyMeals)
+  ) => {
+    setWeeklyMeals((prevMeals) => {
+      const newMeals = typeof mealsOrUpdater === 'function' 
+        ? mealsOrUpdater(prevMeals) 
+        : mealsOrUpdater;
+      
+      // Clear previous timeout
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      // Debounce the save operation to avoid too many API calls
+      saveTimeoutRef.current = setTimeout(() => {
+        saveMealPlan(newMeals);
+      }, 1000); // Save after 1 second of inactivity
+      
+      return newMeals;
+    });
+  }, [saveMealPlan]);
+
+  // Load meal plan on component mount only
+  useEffect(() => {
+    loadMealPlan();
+  }, [loadMealPlan]);
 
   // Calculate total calories for a day
   const calculateDayCalories = (dayMeals: Record<string, MealPlanItem>) => {
@@ -292,10 +512,12 @@ export function useMealPlanData() {
     draggedItem,
     activeDropZone,
     sampleMeals,
+    isLoading,
+    mealPlanId,
     
     // Setters
     setViewMode,
-    setWeeklyMeals,
+    setWeeklyMeals: updateWeeklyMeals, // Use the enhanced version that saves to DB
     setDraggedItem,
     setActiveDropZone,
     
@@ -305,5 +527,9 @@ export function useMealPlanData() {
     // Functions
     navigateDate,
     calculateDayCalories,
+    loadMealPlan,
+    saveMealPlan,
+    updateSingleMeal,
+    swapMeals,
   };
 }

@@ -95,15 +95,20 @@ export function MealTypeRow({
       transition={{ duration: 0.4, delay: 0.1 }}
     >
       <div
-        className="grid gap-0"
+        className="grid gap-2"
         style={{
-          gridTemplateColumns: "80px 1fr 1fr 1fr 1fr 1fr 1fr 1fr",
+          gridTemplateColumns: "80px repeat(7, 1fr)",
+          minHeight: "180px",
+          maxHeight: "180px",
         }}
       >
         <div
-          className={`p-2 flex items-center justify-center ${styles.indicatorBg}`}
+          className={`p-3 flex items-center justify-center ${styles.indicatorBg}`}
         >
-          <div className={`w-3 h-3 ${styles.indicatorDot} rounded-full`}></div>
+          <div className="flex flex-col items-center gap-1">
+            <div className={`w-3 h-3 ${styles.indicatorDot} rounded-full`}></div>
+            <span className="text-xs font-medium text-gray-700">{mealType}</span>
+          </div>
         </div>
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => {
           const dayMeals = weeklyMeals[index];
@@ -115,7 +120,7 @@ export function MealTypeRow({
           return (
             <motion.div
               key={`${mealType.toLowerCase()}-${index}`}
-              className={`p-3 transition-all duration-300 rounded-lg relative ${
+              className={`p-2 transition-all duration-300 rounded-lg relative h-full flex items-stretch ${
                 isDropZone
                   ? `bg-gradient-to-r ${styles.dropZone} ring-4 ring-opacity-60 shadow-lg`
                   : styles.hover
@@ -128,7 +133,7 @@ export function MealTypeRow({
               animate={
                 isDropZone
                   ? {
-                      scale: 1.05,
+                      scale: 1.02,
                       boxShadow: styles.shadow,
                       transition: {
                         duration: 0.2,
@@ -142,38 +147,36 @@ export function MealTypeRow({
               }
             >
               {meal ? (
-                <MealPlanCard
-                  meal={meal}
-                  mealType={mealType}
-                  dayIndex={index}
-                  isDraggable={true}
-                  showMealTypeLabel={false}
-                  onCardClick={onRecipeClick}
-                  onDragStart={onDragStart}
-                  onDragEnd={onDragEnd}
-                  isDragging={
-                    draggedItem?.dayIndex === index &&
-                    draggedItem?.mealType === mealType
-                  }
-                />
+                <div className="w-full h-full">
+                  <MealPlanCard
+                    meal={meal}
+                    mealType={mealType}
+                    dayIndex={index}
+                    isDraggable={true}
+                    showMealTypeLabel={false}
+                    onCardClick={onRecipeClick}
+                    onDragStart={onDragStart}
+                    onDragEnd={onDragEnd}
+                    isDragging={
+                      draggedItem?.dayIndex === index &&
+                      draggedItem?.mealType === mealType
+                    }
+                  />
+                </div>
               ) : (
                 <button
                   type="button"
                   onClick={() =>
                     onEmptySlotClick && onEmptySlotClick(mealType, index)
                   }
-                  className="group w-full h-full bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-500 text-sm"
+                  className="group w-full h-full bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-500 text-sm hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <div className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-50 text-green-700">
-                      <Plus className="w-4 h-4" />
+                    <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-50 text-green-700">
+                      <Plus className="w-3 h-3" />
                     </div>
-                    <span>Drop {mealType.toLowerCase()} here</span>
+                    <span className="text-xs">Add {mealType.toLowerCase()}</span>
                   </div>
-
-                  <span className="pointer-events-none absolute -top-8 left-1/2 transform -translate-x-1/2 rounded-md bg-gray-900 text-white text-xs px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100">
-                    Add {mealType.toLowerCase()}
-                  </span>
                 </button>
               )}
             </motion.div>
