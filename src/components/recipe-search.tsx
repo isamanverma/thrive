@@ -108,12 +108,12 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            className="pl-10 pr-24 h-12 text-base border-2 focus:border-green-500 transition-colors"
+            className="pl-10 pr-24 h-12 text-base border-2 focus:border-purple-500 transition-colors"
           />
           <Button
             onClick={handleSearch}
             disabled={loading}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-600 hover:bg-green-700"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-purple-500 hover:bg-purple-700"
             size="sm"
           >
             {loading ? "Searching..." : "Search"}
@@ -155,7 +155,7 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
             </div>
 
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg line-clamp-2 group-hover:text-green-600 transition-colors">
+              <CardTitle className="text-lg line-clamp-2 group-hover:text-purple-500 transition-colors">
                 {recipe.title}
               </CardTitle>
               <CardDescription className="line-clamp-2 text-sm leading-relaxed">
@@ -180,7 +180,7 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
                 {recipe.diets?.slice(0, 2).map((diet) => (
                   <span
                     key={diet}
-                    className="px-2.5 py-1 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300 rounded-full text-xs font-medium"
+                    className="px-2.5 py-1 bg-green-50 text-purple-700 dark:bg-green-950 dark:text-green-300 rounded-full text-xs font-medium"
                   >
                     {diet}
                   </span>
@@ -201,7 +201,7 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => handleViewRecipe(recipe.id)}
-                    className="hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-colors"
+                    className="hover:bg-green-50 hover:border-green-200 hover:text-purple-700 transition-colors"
                   >
                     Quick View
                   </Button>
@@ -239,7 +239,7 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleCookRecipe(recipe.id)}
-                    className="p-2 hover:bg-green-50 hover:text-green-600 transition-colors"
+                    className="p-2 hover:bg-green-50 hover:text-purple-500 transition-colors"
                   >
                     <ChefHat className="w-4 h-4" />
                   </Button>

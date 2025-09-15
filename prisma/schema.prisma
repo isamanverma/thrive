@@ -46,6 +46,7 @@ model MealPlan {
   startDate     DateTime
   endDate       DateTime
   constraints   Json?
+  gridJson      Json?          // Added for meal plan grid persistence
   createdAt     DateTime       @default(now())
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   mealPlanItems MealPlanItem[]

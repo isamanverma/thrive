@@ -68,7 +68,7 @@ export function MealCard({
             size="sm"
             className={`p-2 rounded-full ${
               meal.completed
-                ? "bg-green-100 text-green-600 hover:bg-green-200"
+                ? "bg-purple-100 text-purple-600 hover:bg-purple-200"
                 : "hover:bg-gray-200"
             }`}
             onClick={() => onToggleComplete?.(meal.id)}

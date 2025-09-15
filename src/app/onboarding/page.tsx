@@ -239,7 +239,7 @@ export default function OnboardingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
           <p className="text-lg font-medium text-gray-700">
             Setting up your profile...
           </p>
@@ -253,7 +253,7 @@ export default function OnboardingPage() {
       {/* Navbar */}
       <nav className="flex justify-between items-center h-16">
         <div className="flex flex-row items-center">
-          <div className="m-2 rounded-md bg-green-600 p-1 shadow-md">
+          <div className="m-2 rounded-md bg-purple-500 p-1 shadow-md">
             <Citrus color="white" strokeWidth={1.5} />
           </div>
           <h1 className="text-xl font-semibold">Thrive AI</h1>
@@ -277,7 +277,7 @@ export default function OnboardingPage() {
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
-            className="bg-green-600 h-2 rounded-full transition-all duration-300"
+            className="bg-purple-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((step + 1) / questions.length) * 100}%` }}
           ></div>
         </div>
@@ -304,7 +304,7 @@ export default function OnboardingPage() {
                   ref={inputRef}
                   type="number"
                   min={1}
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-600 text-lg"
+                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg"
                   value={formData[currentQuestion.name] ?? ""}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -334,7 +334,7 @@ export default function OnboardingPage() {
                       }
                       className={`px-4 py-3 border rounded-lg cursor-pointer transition ${
                         formData[currentQuestion.name] === opt
-                          ? "bg-green-600 text-white border-green-600"
+                          ? "bg-purple-500 text-white border-purple-500"
                           : "border-gray-300 hover:bg-gray-50 hover:border-green-300"
                       }`}
                     >
@@ -370,7 +370,7 @@ export default function OnboardingPage() {
                         }
                         className={`px-4 py-3 border rounded-lg cursor-pointer transition ${
                           arr.includes(opt)
-                            ? "bg-green-600 text-white border-green-600"
+                            ? "bg-purple-500 text-white border-purple-500"
                             : "border-gray-300 hover:bg-gray-50 hover:border-green-300"
                         }`}
                       >
@@ -397,7 +397,7 @@ export default function OnboardingPage() {
                 <button
                   onClick={handleNext}
                   disabled={!isAnswered(currentQuestion)}
-                  className="px-6 py-2 rounded-lg bg-green-600 text-white disabled:opacity-50 hover:bg-green-700 font-medium"
+                  className="px-6 py-2 rounded-lg bg-purple-500 text-white disabled:opacity-50 hover:bg-green-700 font-medium"
                 >
                   {step === questions.length - 1 ? "Complete Setup" : "Next"}
                 </button>

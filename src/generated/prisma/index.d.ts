@@ -34,11 +34,6 @@ export type MealPlan = $Result.DefaultSelection<Prisma.$MealPlanPayload>
  */
 export type MealPlanItem = $Result.DefaultSelection<Prisma.$MealPlanItemPayload>
 /**
- * Model MealPlanSwap
- * 
- */
-export type MealPlanSwap = $Result.DefaultSelection<Prisma.$MealPlanSwapPayload>
-/**
  * Model Progress
  * 
  */
@@ -243,16 +238,6 @@ export class PrismaClient<
     * ```
     */
   get mealPlanItem(): Prisma.MealPlanItemDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.mealPlanSwap`: Exposes CRUD operations for the **MealPlanSwap** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more MealPlanSwaps
-    * const mealPlanSwaps = await prisma.mealPlanSwap.findMany()
-    * ```
-    */
-  get mealPlanSwap(): Prisma.MealPlanSwapDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.progress`: Exposes CRUD operations for the **Progress** model.
@@ -727,7 +712,6 @@ export namespace Prisma {
     UserRecipe: 'UserRecipe',
     MealPlan: 'MealPlan',
     MealPlanItem: 'MealPlanItem',
-    MealPlanSwap: 'MealPlanSwap',
     Progress: 'Progress',
     Recipe: 'Recipe',
     RecipeIngredient: 'RecipeIngredient'
@@ -749,7 +733,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "userRecipe" | "mealPlan" | "mealPlanItem" | "mealPlanSwap" | "progress" | "recipe" | "recipeIngredient"
+      modelProps: "user" | "userRecipe" | "mealPlan" | "mealPlanItem" | "progress" | "recipe" | "recipeIngredient"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1046,80 +1030,6 @@ export namespace Prisma {
           count: {
             args: Prisma.MealPlanItemCountArgs<ExtArgs>
             result: $Utils.Optional<MealPlanItemCountAggregateOutputType> | number
-          }
-        }
-      }
-      MealPlanSwap: {
-        payload: Prisma.$MealPlanSwapPayload<ExtArgs>
-        fields: Prisma.MealPlanSwapFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.MealPlanSwapFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.MealPlanSwapFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>
-          }
-          findFirst: {
-            args: Prisma.MealPlanSwapFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.MealPlanSwapFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>
-          }
-          findMany: {
-            args: Prisma.MealPlanSwapFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>[]
-          }
-          create: {
-            args: Prisma.MealPlanSwapCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>
-          }
-          createMany: {
-            args: Prisma.MealPlanSwapCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.MealPlanSwapCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>[]
-          }
-          delete: {
-            args: Prisma.MealPlanSwapDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>
-          }
-          update: {
-            args: Prisma.MealPlanSwapUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>
-          }
-          deleteMany: {
-            args: Prisma.MealPlanSwapDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.MealPlanSwapUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.MealPlanSwapUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>[]
-          }
-          upsert: {
-            args: Prisma.MealPlanSwapUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MealPlanSwapPayload>
-          }
-          aggregate: {
-            args: Prisma.MealPlanSwapAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateMealPlanSwap>
-          }
-          groupBy: {
-            args: Prisma.MealPlanSwapGroupByArgs<ExtArgs>
-            result: $Utils.Optional<MealPlanSwapGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.MealPlanSwapCountArgs<ExtArgs>
-            result: $Utils.Optional<MealPlanSwapCountAggregateOutputType> | number
           }
         }
       }
@@ -1441,7 +1351,6 @@ export namespace Prisma {
     userRecipe?: UserRecipeOmit
     mealPlan?: MealPlanOmit
     mealPlanItem?: MealPlanItemOmit
-    mealPlanSwap?: MealPlanSwapOmit
     progress?: ProgressOmit
     recipe?: RecipeOmit
     recipeIngredient?: RecipeIngredientOmit
@@ -1584,12 +1493,10 @@ export namespace Prisma {
 
   export type MealPlanCountOutputType = {
     mealPlanItems: number
-    swaps: number
   }
 
   export type MealPlanCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mealPlanItems?: boolean | MealPlanCountOutputTypeCountMealPlanItemsArgs
-    swaps?: boolean | MealPlanCountOutputTypeCountSwapsArgs
   }
 
   // Custom InputTypes
@@ -1608,13 +1515,6 @@ export namespace Prisma {
    */
   export type MealPlanCountOutputTypeCountMealPlanItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MealPlanItemWhereInput
-  }
-
-  /**
-   * MealPlanCountOutputType without action
-   */
-  export type MealPlanCountOutputTypeCountSwapsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MealPlanSwapWhereInput
   }
 
 
@@ -4062,18 +3962,8 @@ export namespace Prisma {
 
   export type AggregateMealPlan = {
     _count: MealPlanCountAggregateOutputType | null
-    _avg: MealPlanAvgAggregateOutputType | null
-    _sum: MealPlanSumAggregateOutputType | null
     _min: MealPlanMinAggregateOutputType | null
     _max: MealPlanMaxAggregateOutputType | null
-  }
-
-  export type MealPlanAvgAggregateOutputType = {
-    version: number | null
-  }
-
-  export type MealPlanSumAggregateOutputType = {
-    version: number | null
   }
 
   export type MealPlanMinAggregateOutputType = {
@@ -4081,9 +3971,7 @@ export namespace Prisma {
     userId: string | null
     startDate: Date | null
     endDate: Date | null
-    version: number | null
     createdAt: Date | null
-    updatedAt: Date | null
   }
 
   export type MealPlanMaxAggregateOutputType = {
@@ -4091,9 +3979,7 @@ export namespace Prisma {
     userId: string | null
     startDate: Date | null
     endDate: Date | null
-    version: number | null
     createdAt: Date | null
-    updatedAt: Date | null
   }
 
   export type MealPlanCountAggregateOutputType = {
@@ -4103,29 +3989,17 @@ export namespace Prisma {
     endDate: number
     constraints: number
     gridJson: number
-    version: number
     createdAt: number
-    updatedAt: number
     _all: number
   }
 
-
-  export type MealPlanAvgAggregateInputType = {
-    version?: true
-  }
-
-  export type MealPlanSumAggregateInputType = {
-    version?: true
-  }
 
   export type MealPlanMinAggregateInputType = {
     id?: true
     userId?: true
     startDate?: true
     endDate?: true
-    version?: true
     createdAt?: true
-    updatedAt?: true
   }
 
   export type MealPlanMaxAggregateInputType = {
@@ -4133,9 +4007,7 @@ export namespace Prisma {
     userId?: true
     startDate?: true
     endDate?: true
-    version?: true
     createdAt?: true
-    updatedAt?: true
   }
 
   export type MealPlanCountAggregateInputType = {
@@ -4145,9 +4017,7 @@ export namespace Prisma {
     endDate?: true
     constraints?: true
     gridJson?: true
-    version?: true
     createdAt?: true
-    updatedAt?: true
     _all?: true
   }
 
@@ -4189,18 +4059,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: MealPlanAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: MealPlanSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: MealPlanMinAggregateInputType
@@ -4231,8 +4089,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: MealPlanCountAggregateInputType | true
-    _avg?: MealPlanAvgAggregateInputType
-    _sum?: MealPlanSumAggregateInputType
     _min?: MealPlanMinAggregateInputType
     _max?: MealPlanMaxAggregateInputType
   }
@@ -4244,12 +4100,8 @@ export namespace Prisma {
     endDate: Date
     constraints: JsonValue | null
     gridJson: JsonValue | null
-    version: number
     createdAt: Date
-    updatedAt: Date
     _count: MealPlanCountAggregateOutputType | null
-    _avg: MealPlanAvgAggregateOutputType | null
-    _sum: MealPlanSumAggregateOutputType | null
     _min: MealPlanMinAggregateOutputType | null
     _max: MealPlanMaxAggregateOutputType | null
   }
@@ -4275,12 +4127,9 @@ export namespace Prisma {
     endDate?: boolean
     constraints?: boolean
     gridJson?: boolean
-    version?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     mealPlanItems?: boolean | MealPlan$mealPlanItemsArgs<ExtArgs>
-    swaps?: boolean | MealPlan$swapsArgs<ExtArgs>
     _count?: boolean | MealPlanCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["mealPlan"]>
 
@@ -4291,9 +4140,7 @@ export namespace Prisma {
     endDate?: boolean
     constraints?: boolean
     gridJson?: boolean
-    version?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["mealPlan"]>
 
@@ -4304,9 +4151,7 @@ export namespace Prisma {
     endDate?: boolean
     constraints?: boolean
     gridJson?: boolean
-    version?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["mealPlan"]>
 
@@ -4317,16 +4162,13 @@ export namespace Prisma {
     endDate?: boolean
     constraints?: boolean
     gridJson?: boolean
-    version?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
   }
 
-  export type MealPlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "startDate" | "endDate" | "constraints" | "gridJson" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["mealPlan"]>
+  export type MealPlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "startDate" | "endDate" | "constraints" | "gridJson" | "createdAt", ExtArgs["result"]["mealPlan"]>
   export type MealPlanInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     mealPlanItems?: boolean | MealPlan$mealPlanItemsArgs<ExtArgs>
-    swaps?: boolean | MealPlan$swapsArgs<ExtArgs>
     _count?: boolean | MealPlanCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MealPlanIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4341,7 +4183,6 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       mealPlanItems: Prisma.$MealPlanItemPayload<ExtArgs>[]
-      swaps: Prisma.$MealPlanSwapPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4350,9 +4191,7 @@ export namespace Prisma {
       endDate: Date
       constraints: Prisma.JsonValue | null
       gridJson: Prisma.JsonValue | null
-      version: number
       createdAt: Date
-      updatedAt: Date
     }, ExtArgs["result"]["mealPlan"]>
     composites: {}
   }
@@ -4749,7 +4588,6 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     mealPlanItems<T extends MealPlan$mealPlanItemsArgs<ExtArgs> = {}>(args?: Subset<T, MealPlan$mealPlanItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    swaps<T extends MealPlan$swapsArgs<ExtArgs> = {}>(args?: Subset<T, MealPlan$swapsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4785,9 +4623,7 @@ export namespace Prisma {
     readonly endDate: FieldRef<"MealPlan", 'DateTime'>
     readonly constraints: FieldRef<"MealPlan", 'Json'>
     readonly gridJson: FieldRef<"MealPlan", 'Json'>
-    readonly version: FieldRef<"MealPlan", 'Int'>
     readonly createdAt: FieldRef<"MealPlan", 'DateTime'>
-    readonly updatedAt: FieldRef<"MealPlan", 'DateTime'>
   }
     
 
@@ -5205,30 +5041,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MealPlanItemScalarFieldEnum | MealPlanItemScalarFieldEnum[]
-  }
-
-  /**
-   * MealPlan.swaps
-   */
-  export type MealPlan$swapsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    where?: MealPlanSwapWhereInput
-    orderBy?: MealPlanSwapOrderByWithRelationInput | MealPlanSwapOrderByWithRelationInput[]
-    cursor?: MealPlanSwapWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: MealPlanSwapScalarFieldEnum | MealPlanSwapScalarFieldEnum[]
   }
 
   /**
@@ -6379,1082 +6191,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MealPlanItemInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model MealPlanSwap
-   */
-
-  export type AggregateMealPlanSwap = {
-    _count: MealPlanSwapCountAggregateOutputType | null
-    _min: MealPlanSwapMinAggregateOutputType | null
-    _max: MealPlanSwapMaxAggregateOutputType | null
-  }
-
-  export type MealPlanSwapMinAggregateOutputType = {
-    id: string | null
-    mealPlanId: string | null
-    userId: string | null
-    clientId: string | null
-    createdAt: Date | null
-  }
-
-  export type MealPlanSwapMaxAggregateOutputType = {
-    id: string | null
-    mealPlanId: string | null
-    userId: string | null
-    clientId: string | null
-    createdAt: Date | null
-  }
-
-  export type MealPlanSwapCountAggregateOutputType = {
-    id: number
-    mealPlanId: number
-    userId: number
-    clientId: number
-    before: number
-    after: number
-    createdAt: number
-    _all: number
-  }
-
-
-  export type MealPlanSwapMinAggregateInputType = {
-    id?: true
-    mealPlanId?: true
-    userId?: true
-    clientId?: true
-    createdAt?: true
-  }
-
-  export type MealPlanSwapMaxAggregateInputType = {
-    id?: true
-    mealPlanId?: true
-    userId?: true
-    clientId?: true
-    createdAt?: true
-  }
-
-  export type MealPlanSwapCountAggregateInputType = {
-    id?: true
-    mealPlanId?: true
-    userId?: true
-    clientId?: true
-    before?: true
-    after?: true
-    createdAt?: true
-    _all?: true
-  }
-
-  export type MealPlanSwapAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which MealPlanSwap to aggregate.
-     */
-    where?: MealPlanSwapWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MealPlanSwaps to fetch.
-     */
-    orderBy?: MealPlanSwapOrderByWithRelationInput | MealPlanSwapOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: MealPlanSwapWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MealPlanSwaps from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MealPlanSwaps.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned MealPlanSwaps
-    **/
-    _count?: true | MealPlanSwapCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: MealPlanSwapMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: MealPlanSwapMaxAggregateInputType
-  }
-
-  export type GetMealPlanSwapAggregateType<T extends MealPlanSwapAggregateArgs> = {
-        [P in keyof T & keyof AggregateMealPlanSwap]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateMealPlanSwap[P]>
-      : GetScalarType<T[P], AggregateMealPlanSwap[P]>
-  }
-
-
-
-
-  export type MealPlanSwapGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MealPlanSwapWhereInput
-    orderBy?: MealPlanSwapOrderByWithAggregationInput | MealPlanSwapOrderByWithAggregationInput[]
-    by: MealPlanSwapScalarFieldEnum[] | MealPlanSwapScalarFieldEnum
-    having?: MealPlanSwapScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: MealPlanSwapCountAggregateInputType | true
-    _min?: MealPlanSwapMinAggregateInputType
-    _max?: MealPlanSwapMaxAggregateInputType
-  }
-
-  export type MealPlanSwapGroupByOutputType = {
-    id: string
-    mealPlanId: string
-    userId: string
-    clientId: string | null
-    before: JsonValue
-    after: JsonValue
-    createdAt: Date
-    _count: MealPlanSwapCountAggregateOutputType | null
-    _min: MealPlanSwapMinAggregateOutputType | null
-    _max: MealPlanSwapMaxAggregateOutputType | null
-  }
-
-  type GetMealPlanSwapGroupByPayload<T extends MealPlanSwapGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<MealPlanSwapGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof MealPlanSwapGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], MealPlanSwapGroupByOutputType[P]>
-            : GetScalarType<T[P], MealPlanSwapGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type MealPlanSwapSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    mealPlanId?: boolean
-    userId?: boolean
-    clientId?: boolean
-    before?: boolean
-    after?: boolean
-    createdAt?: boolean
-    mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["mealPlanSwap"]>
-
-  export type MealPlanSwapSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    mealPlanId?: boolean
-    userId?: boolean
-    clientId?: boolean
-    before?: boolean
-    after?: boolean
-    createdAt?: boolean
-    mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["mealPlanSwap"]>
-
-  export type MealPlanSwapSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    mealPlanId?: boolean
-    userId?: boolean
-    clientId?: boolean
-    before?: boolean
-    after?: boolean
-    createdAt?: boolean
-    mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["mealPlanSwap"]>
-
-  export type MealPlanSwapSelectScalar = {
-    id?: boolean
-    mealPlanId?: boolean
-    userId?: boolean
-    clientId?: boolean
-    before?: boolean
-    after?: boolean
-    createdAt?: boolean
-  }
-
-  export type MealPlanSwapOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mealPlanId" | "userId" | "clientId" | "before" | "after" | "createdAt", ExtArgs["result"]["mealPlanSwap"]>
-  export type MealPlanSwapInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-  }
-  export type MealPlanSwapIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-  }
-  export type MealPlanSwapIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    mealPlan?: boolean | MealPlanDefaultArgs<ExtArgs>
-  }
-
-  export type $MealPlanSwapPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "MealPlanSwap"
-    objects: {
-      mealPlan: Prisma.$MealPlanPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      mealPlanId: string
-      userId: string
-      clientId: string | null
-      before: Prisma.JsonValue
-      after: Prisma.JsonValue
-      createdAt: Date
-    }, ExtArgs["result"]["mealPlanSwap"]>
-    composites: {}
-  }
-
-  type MealPlanSwapGetPayload<S extends boolean | null | undefined | MealPlanSwapDefaultArgs> = $Result.GetResult<Prisma.$MealPlanSwapPayload, S>
-
-  type MealPlanSwapCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<MealPlanSwapFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: MealPlanSwapCountAggregateInputType | true
-    }
-
-  export interface MealPlanSwapDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MealPlanSwap'], meta: { name: 'MealPlanSwap' } }
-    /**
-     * Find zero or one MealPlanSwap that matches the filter.
-     * @param {MealPlanSwapFindUniqueArgs} args - Arguments to find a MealPlanSwap
-     * @example
-     * // Get one MealPlanSwap
-     * const mealPlanSwap = await prisma.mealPlanSwap.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends MealPlanSwapFindUniqueArgs>(args: SelectSubset<T, MealPlanSwapFindUniqueArgs<ExtArgs>>): Prisma__MealPlanSwapClient<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one MealPlanSwap that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {MealPlanSwapFindUniqueOrThrowArgs} args - Arguments to find a MealPlanSwap
-     * @example
-     * // Get one MealPlanSwap
-     * const mealPlanSwap = await prisma.mealPlanSwap.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends MealPlanSwapFindUniqueOrThrowArgs>(args: SelectSubset<T, MealPlanSwapFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MealPlanSwapClient<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first MealPlanSwap that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanSwapFindFirstArgs} args - Arguments to find a MealPlanSwap
-     * @example
-     * // Get one MealPlanSwap
-     * const mealPlanSwap = await prisma.mealPlanSwap.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends MealPlanSwapFindFirstArgs>(args?: SelectSubset<T, MealPlanSwapFindFirstArgs<ExtArgs>>): Prisma__MealPlanSwapClient<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first MealPlanSwap that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanSwapFindFirstOrThrowArgs} args - Arguments to find a MealPlanSwap
-     * @example
-     * // Get one MealPlanSwap
-     * const mealPlanSwap = await prisma.mealPlanSwap.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends MealPlanSwapFindFirstOrThrowArgs>(args?: SelectSubset<T, MealPlanSwapFindFirstOrThrowArgs<ExtArgs>>): Prisma__MealPlanSwapClient<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more MealPlanSwaps that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanSwapFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all MealPlanSwaps
-     * const mealPlanSwaps = await prisma.mealPlanSwap.findMany()
-     * 
-     * // Get first 10 MealPlanSwaps
-     * const mealPlanSwaps = await prisma.mealPlanSwap.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const mealPlanSwapWithIdOnly = await prisma.mealPlanSwap.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends MealPlanSwapFindManyArgs>(args?: SelectSubset<T, MealPlanSwapFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a MealPlanSwap.
-     * @param {MealPlanSwapCreateArgs} args - Arguments to create a MealPlanSwap.
-     * @example
-     * // Create one MealPlanSwap
-     * const MealPlanSwap = await prisma.mealPlanSwap.create({
-     *   data: {
-     *     // ... data to create a MealPlanSwap
-     *   }
-     * })
-     * 
-     */
-    create<T extends MealPlanSwapCreateArgs>(args: SelectSubset<T, MealPlanSwapCreateArgs<ExtArgs>>): Prisma__MealPlanSwapClient<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many MealPlanSwaps.
-     * @param {MealPlanSwapCreateManyArgs} args - Arguments to create many MealPlanSwaps.
-     * @example
-     * // Create many MealPlanSwaps
-     * const mealPlanSwap = await prisma.mealPlanSwap.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends MealPlanSwapCreateManyArgs>(args?: SelectSubset<T, MealPlanSwapCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many MealPlanSwaps and returns the data saved in the database.
-     * @param {MealPlanSwapCreateManyAndReturnArgs} args - Arguments to create many MealPlanSwaps.
-     * @example
-     * // Create many MealPlanSwaps
-     * const mealPlanSwap = await prisma.mealPlanSwap.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many MealPlanSwaps and only return the `id`
-     * const mealPlanSwapWithIdOnly = await prisma.mealPlanSwap.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends MealPlanSwapCreateManyAndReturnArgs>(args?: SelectSubset<T, MealPlanSwapCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a MealPlanSwap.
-     * @param {MealPlanSwapDeleteArgs} args - Arguments to delete one MealPlanSwap.
-     * @example
-     * // Delete one MealPlanSwap
-     * const MealPlanSwap = await prisma.mealPlanSwap.delete({
-     *   where: {
-     *     // ... filter to delete one MealPlanSwap
-     *   }
-     * })
-     * 
-     */
-    delete<T extends MealPlanSwapDeleteArgs>(args: SelectSubset<T, MealPlanSwapDeleteArgs<ExtArgs>>): Prisma__MealPlanSwapClient<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one MealPlanSwap.
-     * @param {MealPlanSwapUpdateArgs} args - Arguments to update one MealPlanSwap.
-     * @example
-     * // Update one MealPlanSwap
-     * const mealPlanSwap = await prisma.mealPlanSwap.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends MealPlanSwapUpdateArgs>(args: SelectSubset<T, MealPlanSwapUpdateArgs<ExtArgs>>): Prisma__MealPlanSwapClient<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more MealPlanSwaps.
-     * @param {MealPlanSwapDeleteManyArgs} args - Arguments to filter MealPlanSwaps to delete.
-     * @example
-     * // Delete a few MealPlanSwaps
-     * const { count } = await prisma.mealPlanSwap.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends MealPlanSwapDeleteManyArgs>(args?: SelectSubset<T, MealPlanSwapDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more MealPlanSwaps.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanSwapUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many MealPlanSwaps
-     * const mealPlanSwap = await prisma.mealPlanSwap.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends MealPlanSwapUpdateManyArgs>(args: SelectSubset<T, MealPlanSwapUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more MealPlanSwaps and returns the data updated in the database.
-     * @param {MealPlanSwapUpdateManyAndReturnArgs} args - Arguments to update many MealPlanSwaps.
-     * @example
-     * // Update many MealPlanSwaps
-     * const mealPlanSwap = await prisma.mealPlanSwap.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more MealPlanSwaps and only return the `id`
-     * const mealPlanSwapWithIdOnly = await prisma.mealPlanSwap.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends MealPlanSwapUpdateManyAndReturnArgs>(args: SelectSubset<T, MealPlanSwapUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one MealPlanSwap.
-     * @param {MealPlanSwapUpsertArgs} args - Arguments to update or create a MealPlanSwap.
-     * @example
-     * // Update or create a MealPlanSwap
-     * const mealPlanSwap = await prisma.mealPlanSwap.upsert({
-     *   create: {
-     *     // ... data to create a MealPlanSwap
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the MealPlanSwap we want to update
-     *   }
-     * })
-     */
-    upsert<T extends MealPlanSwapUpsertArgs>(args: SelectSubset<T, MealPlanSwapUpsertArgs<ExtArgs>>): Prisma__MealPlanSwapClient<$Result.GetResult<Prisma.$MealPlanSwapPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of MealPlanSwaps.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanSwapCountArgs} args - Arguments to filter MealPlanSwaps to count.
-     * @example
-     * // Count the number of MealPlanSwaps
-     * const count = await prisma.mealPlanSwap.count({
-     *   where: {
-     *     // ... the filter for the MealPlanSwaps we want to count
-     *   }
-     * })
-    **/
-    count<T extends MealPlanSwapCountArgs>(
-      args?: Subset<T, MealPlanSwapCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], MealPlanSwapCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a MealPlanSwap.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanSwapAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends MealPlanSwapAggregateArgs>(args: Subset<T, MealPlanSwapAggregateArgs>): Prisma.PrismaPromise<GetMealPlanSwapAggregateType<T>>
-
-    /**
-     * Group by MealPlanSwap.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MealPlanSwapGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends MealPlanSwapGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: MealPlanSwapGroupByArgs['orderBy'] }
-        : { orderBy?: MealPlanSwapGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, MealPlanSwapGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMealPlanSwapGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the MealPlanSwap model
-   */
-  readonly fields: MealPlanSwapFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for MealPlanSwap.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__MealPlanSwapClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    mealPlan<T extends MealPlanDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MealPlanDefaultArgs<ExtArgs>>): Prisma__MealPlanClient<$Result.GetResult<Prisma.$MealPlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the MealPlanSwap model
-   */
-  interface MealPlanSwapFieldRefs {
-    readonly id: FieldRef<"MealPlanSwap", 'String'>
-    readonly mealPlanId: FieldRef<"MealPlanSwap", 'String'>
-    readonly userId: FieldRef<"MealPlanSwap", 'String'>
-    readonly clientId: FieldRef<"MealPlanSwap", 'String'>
-    readonly before: FieldRef<"MealPlanSwap", 'Json'>
-    readonly after: FieldRef<"MealPlanSwap", 'Json'>
-    readonly createdAt: FieldRef<"MealPlanSwap", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * MealPlanSwap findUnique
-   */
-  export type MealPlanSwapFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * Filter, which MealPlanSwap to fetch.
-     */
-    where: MealPlanSwapWhereUniqueInput
-  }
-
-  /**
-   * MealPlanSwap findUniqueOrThrow
-   */
-  export type MealPlanSwapFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * Filter, which MealPlanSwap to fetch.
-     */
-    where: MealPlanSwapWhereUniqueInput
-  }
-
-  /**
-   * MealPlanSwap findFirst
-   */
-  export type MealPlanSwapFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * Filter, which MealPlanSwap to fetch.
-     */
-    where?: MealPlanSwapWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MealPlanSwaps to fetch.
-     */
-    orderBy?: MealPlanSwapOrderByWithRelationInput | MealPlanSwapOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for MealPlanSwaps.
-     */
-    cursor?: MealPlanSwapWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MealPlanSwaps from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MealPlanSwaps.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MealPlanSwaps.
-     */
-    distinct?: MealPlanSwapScalarFieldEnum | MealPlanSwapScalarFieldEnum[]
-  }
-
-  /**
-   * MealPlanSwap findFirstOrThrow
-   */
-  export type MealPlanSwapFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * Filter, which MealPlanSwap to fetch.
-     */
-    where?: MealPlanSwapWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MealPlanSwaps to fetch.
-     */
-    orderBy?: MealPlanSwapOrderByWithRelationInput | MealPlanSwapOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for MealPlanSwaps.
-     */
-    cursor?: MealPlanSwapWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MealPlanSwaps from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MealPlanSwaps.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MealPlanSwaps.
-     */
-    distinct?: MealPlanSwapScalarFieldEnum | MealPlanSwapScalarFieldEnum[]
-  }
-
-  /**
-   * MealPlanSwap findMany
-   */
-  export type MealPlanSwapFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * Filter, which MealPlanSwaps to fetch.
-     */
-    where?: MealPlanSwapWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MealPlanSwaps to fetch.
-     */
-    orderBy?: MealPlanSwapOrderByWithRelationInput | MealPlanSwapOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing MealPlanSwaps.
-     */
-    cursor?: MealPlanSwapWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MealPlanSwaps from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MealPlanSwaps.
-     */
-    skip?: number
-    distinct?: MealPlanSwapScalarFieldEnum | MealPlanSwapScalarFieldEnum[]
-  }
-
-  /**
-   * MealPlanSwap create
-   */
-  export type MealPlanSwapCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * The data needed to create a MealPlanSwap.
-     */
-    data: XOR<MealPlanSwapCreateInput, MealPlanSwapUncheckedCreateInput>
-  }
-
-  /**
-   * MealPlanSwap createMany
-   */
-  export type MealPlanSwapCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many MealPlanSwaps.
-     */
-    data: MealPlanSwapCreateManyInput | MealPlanSwapCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * MealPlanSwap createManyAndReturn
-   */
-  export type MealPlanSwapCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * The data used to create many MealPlanSwaps.
-     */
-    data: MealPlanSwapCreateManyInput | MealPlanSwapCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * MealPlanSwap update
-   */
-  export type MealPlanSwapUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * The data needed to update a MealPlanSwap.
-     */
-    data: XOR<MealPlanSwapUpdateInput, MealPlanSwapUncheckedUpdateInput>
-    /**
-     * Choose, which MealPlanSwap to update.
-     */
-    where: MealPlanSwapWhereUniqueInput
-  }
-
-  /**
-   * MealPlanSwap updateMany
-   */
-  export type MealPlanSwapUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update MealPlanSwaps.
-     */
-    data: XOR<MealPlanSwapUpdateManyMutationInput, MealPlanSwapUncheckedUpdateManyInput>
-    /**
-     * Filter which MealPlanSwaps to update
-     */
-    where?: MealPlanSwapWhereInput
-    /**
-     * Limit how many MealPlanSwaps to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * MealPlanSwap updateManyAndReturn
-   */
-  export type MealPlanSwapUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * The data used to update MealPlanSwaps.
-     */
-    data: XOR<MealPlanSwapUpdateManyMutationInput, MealPlanSwapUncheckedUpdateManyInput>
-    /**
-     * Filter which MealPlanSwaps to update
-     */
-    where?: MealPlanSwapWhereInput
-    /**
-     * Limit how many MealPlanSwaps to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * MealPlanSwap upsert
-   */
-  export type MealPlanSwapUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * The filter to search for the MealPlanSwap to update in case it exists.
-     */
-    where: MealPlanSwapWhereUniqueInput
-    /**
-     * In case the MealPlanSwap found by the `where` argument doesn't exist, create a new MealPlanSwap with this data.
-     */
-    create: XOR<MealPlanSwapCreateInput, MealPlanSwapUncheckedCreateInput>
-    /**
-     * In case the MealPlanSwap was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<MealPlanSwapUpdateInput, MealPlanSwapUncheckedUpdateInput>
-  }
-
-  /**
-   * MealPlanSwap delete
-   */
-  export type MealPlanSwapDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
-    /**
-     * Filter which MealPlanSwap to delete.
-     */
-    where: MealPlanSwapWhereUniqueInput
-  }
-
-  /**
-   * MealPlanSwap deleteMany
-   */
-  export type MealPlanSwapDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which MealPlanSwaps to delete
-     */
-    where?: MealPlanSwapWhereInput
-    /**
-     * Limit how many MealPlanSwaps to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * MealPlanSwap without action
-   */
-  export type MealPlanSwapDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MealPlanSwap
-     */
-    select?: MealPlanSwapSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MealPlanSwap
-     */
-    omit?: MealPlanSwapOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MealPlanSwapInclude<ExtArgs> | null
   }
 
 
@@ -11227,9 +9963,7 @@ export namespace Prisma {
     endDate: 'endDate',
     constraints: 'constraints',
     gridJson: 'gridJson',
-    version: 'version',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    createdAt: 'createdAt'
   };
 
   export type MealPlanScalarFieldEnum = (typeof MealPlanScalarFieldEnum)[keyof typeof MealPlanScalarFieldEnum]
@@ -11245,19 +9979,6 @@ export namespace Prisma {
   };
 
   export type MealPlanItemScalarFieldEnum = (typeof MealPlanItemScalarFieldEnum)[keyof typeof MealPlanItemScalarFieldEnum]
-
-
-  export const MealPlanSwapScalarFieldEnum: {
-    id: 'id',
-    mealPlanId: 'mealPlanId',
-    userId: 'userId',
-    clientId: 'clientId',
-    before: 'before',
-    after: 'after',
-    createdAt: 'createdAt'
-  };
-
-  export type MealPlanSwapScalarFieldEnum = (typeof MealPlanSwapScalarFieldEnum)[keyof typeof MealPlanSwapScalarFieldEnum]
 
 
   export const ProgressScalarFieldEnum: {
@@ -11332,13 +10053,6 @@ export namespace Prisma {
   };
 
   export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-  export const JsonNullValueInput: {
-    JsonNull: typeof JsonNull
-  };
-
-  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -11654,12 +10368,9 @@ export namespace Prisma {
     endDate?: DateTimeFilter<"MealPlan"> | Date | string
     constraints?: JsonNullableFilter<"MealPlan">
     gridJson?: JsonNullableFilter<"MealPlan">
-    version?: IntFilter<"MealPlan"> | number
     createdAt?: DateTimeFilter<"MealPlan"> | Date | string
-    updatedAt?: DateTimeFilter<"MealPlan"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     mealPlanItems?: MealPlanItemListRelationFilter
-    swaps?: MealPlanSwapListRelationFilter
   }
 
   export type MealPlanOrderByWithRelationInput = {
@@ -11669,12 +10380,9 @@ export namespace Prisma {
     endDate?: SortOrder
     constraints?: SortOrderInput | SortOrder
     gridJson?: SortOrderInput | SortOrder
-    version?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     mealPlanItems?: MealPlanItemOrderByRelationAggregateInput
-    swaps?: MealPlanSwapOrderByRelationAggregateInput
   }
 
   export type MealPlanWhereUniqueInput = Prisma.AtLeast<{
@@ -11687,12 +10395,9 @@ export namespace Prisma {
     endDate?: DateTimeFilter<"MealPlan"> | Date | string
     constraints?: JsonNullableFilter<"MealPlan">
     gridJson?: JsonNullableFilter<"MealPlan">
-    version?: IntFilter<"MealPlan"> | number
     createdAt?: DateTimeFilter<"MealPlan"> | Date | string
-    updatedAt?: DateTimeFilter<"MealPlan"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     mealPlanItems?: MealPlanItemListRelationFilter
-    swaps?: MealPlanSwapListRelationFilter
   }, "id">
 
   export type MealPlanOrderByWithAggregationInput = {
@@ -11702,14 +10407,10 @@ export namespace Prisma {
     endDate?: SortOrder
     constraints?: SortOrderInput | SortOrder
     gridJson?: SortOrderInput | SortOrder
-    version?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
     _count?: MealPlanCountOrderByAggregateInput
-    _avg?: MealPlanAvgOrderByAggregateInput
     _max?: MealPlanMaxOrderByAggregateInput
     _min?: MealPlanMinOrderByAggregateInput
-    _sum?: MealPlanSumOrderByAggregateInput
   }
 
   export type MealPlanScalarWhereWithAggregatesInput = {
@@ -11722,9 +10423,7 @@ export namespace Prisma {
     endDate?: DateTimeWithAggregatesFilter<"MealPlan"> | Date | string
     constraints?: JsonNullableWithAggregatesFilter<"MealPlan">
     gridJson?: JsonNullableWithAggregatesFilter<"MealPlan">
-    version?: IntWithAggregatesFilter<"MealPlan"> | number
     createdAt?: DateTimeWithAggregatesFilter<"MealPlan"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"MealPlan"> | Date | string
   }
 
   export type MealPlanItemWhereInput = {
@@ -11791,71 +10490,6 @@ export namespace Prisma {
     dayOfWeek?: IntWithAggregatesFilter<"MealPlanItem"> | number
     mealType?: StringWithAggregatesFilter<"MealPlanItem"> | string
     cachedRecipeId?: StringNullableWithAggregatesFilter<"MealPlanItem"> | string | null
-  }
-
-  export type MealPlanSwapWhereInput = {
-    AND?: MealPlanSwapWhereInput | MealPlanSwapWhereInput[]
-    OR?: MealPlanSwapWhereInput[]
-    NOT?: MealPlanSwapWhereInput | MealPlanSwapWhereInput[]
-    id?: StringFilter<"MealPlanSwap"> | string
-    mealPlanId?: StringFilter<"MealPlanSwap"> | string
-    userId?: StringFilter<"MealPlanSwap"> | string
-    clientId?: StringNullableFilter<"MealPlanSwap"> | string | null
-    before?: JsonFilter<"MealPlanSwap">
-    after?: JsonFilter<"MealPlanSwap">
-    createdAt?: DateTimeFilter<"MealPlanSwap"> | Date | string
-    mealPlan?: XOR<MealPlanScalarRelationFilter, MealPlanWhereInput>
-  }
-
-  export type MealPlanSwapOrderByWithRelationInput = {
-    id?: SortOrder
-    mealPlanId?: SortOrder
-    userId?: SortOrder
-    clientId?: SortOrderInput | SortOrder
-    before?: SortOrder
-    after?: SortOrder
-    createdAt?: SortOrder
-    mealPlan?: MealPlanOrderByWithRelationInput
-  }
-
-  export type MealPlanSwapWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: MealPlanSwapWhereInput | MealPlanSwapWhereInput[]
-    OR?: MealPlanSwapWhereInput[]
-    NOT?: MealPlanSwapWhereInput | MealPlanSwapWhereInput[]
-    mealPlanId?: StringFilter<"MealPlanSwap"> | string
-    userId?: StringFilter<"MealPlanSwap"> | string
-    clientId?: StringNullableFilter<"MealPlanSwap"> | string | null
-    before?: JsonFilter<"MealPlanSwap">
-    after?: JsonFilter<"MealPlanSwap">
-    createdAt?: DateTimeFilter<"MealPlanSwap"> | Date | string
-    mealPlan?: XOR<MealPlanScalarRelationFilter, MealPlanWhereInput>
-  }, "id">
-
-  export type MealPlanSwapOrderByWithAggregationInput = {
-    id?: SortOrder
-    mealPlanId?: SortOrder
-    userId?: SortOrder
-    clientId?: SortOrderInput | SortOrder
-    before?: SortOrder
-    after?: SortOrder
-    createdAt?: SortOrder
-    _count?: MealPlanSwapCountOrderByAggregateInput
-    _max?: MealPlanSwapMaxOrderByAggregateInput
-    _min?: MealPlanSwapMinOrderByAggregateInput
-  }
-
-  export type MealPlanSwapScalarWhereWithAggregatesInput = {
-    AND?: MealPlanSwapScalarWhereWithAggregatesInput | MealPlanSwapScalarWhereWithAggregatesInput[]
-    OR?: MealPlanSwapScalarWhereWithAggregatesInput[]
-    NOT?: MealPlanSwapScalarWhereWithAggregatesInput | MealPlanSwapScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"MealPlanSwap"> | string
-    mealPlanId?: StringWithAggregatesFilter<"MealPlanSwap"> | string
-    userId?: StringWithAggregatesFilter<"MealPlanSwap"> | string
-    clientId?: StringNullableWithAggregatesFilter<"MealPlanSwap"> | string | null
-    before?: JsonWithAggregatesFilter<"MealPlanSwap">
-    after?: JsonWithAggregatesFilter<"MealPlanSwap">
-    createdAt?: DateTimeWithAggregatesFilter<"MealPlanSwap"> | Date | string
   }
 
   export type ProgressWhereInput = {
@@ -12351,12 +10985,9 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
     createdAt?: Date | string
-    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutMealPlansInput
     mealPlanItems?: MealPlanItemCreateNestedManyWithoutMealPlanInput
-    swaps?: MealPlanSwapCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanUncheckedCreateInput = {
@@ -12366,11 +10997,8 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
     createdAt?: Date | string
-    updatedAt?: Date | string
     mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutMealPlanInput
-    swaps?: MealPlanSwapUncheckedCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanUpdateInput = {
@@ -12379,12 +11007,9 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutMealPlansNestedInput
     mealPlanItems?: MealPlanItemUpdateManyWithoutMealPlanNestedInput
-    swaps?: MealPlanSwapUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanUncheckedUpdateInput = {
@@ -12394,11 +11019,8 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutMealPlanNestedInput
-    swaps?: MealPlanSwapUncheckedUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanCreateManyInput = {
@@ -12408,9 +11030,7 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type MealPlanUpdateManyMutationInput = {
@@ -12419,9 +11039,7 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MealPlanUncheckedUpdateManyInput = {
@@ -12431,9 +11049,7 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MealPlanItemCreateInput = {
@@ -12495,75 +11111,6 @@ export namespace Prisma {
     dayOfWeek?: IntFieldUpdateOperationsInput | number
     mealType?: StringFieldUpdateOperationsInput | string
     cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type MealPlanSwapCreateInput = {
-    id?: string
-    userId: string
-    clientId?: string | null
-    before: JsonNullValueInput | InputJsonValue
-    after: JsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    mealPlan: MealPlanCreateNestedOneWithoutSwapsInput
-  }
-
-  export type MealPlanSwapUncheckedCreateInput = {
-    id?: string
-    mealPlanId: string
-    userId: string
-    clientId?: string | null
-    before: JsonNullValueInput | InputJsonValue
-    after: JsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
-  export type MealPlanSwapUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-    before?: JsonNullValueInput | InputJsonValue
-    after?: JsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mealPlan?: MealPlanUpdateOneRequiredWithoutSwapsNestedInput
-  }
-
-  export type MealPlanSwapUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    mealPlanId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-    before?: JsonNullValueInput | InputJsonValue
-    after?: JsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MealPlanSwapCreateManyInput = {
-    id?: string
-    mealPlanId: string
-    userId: string
-    clientId?: string | null
-    before: JsonNullValueInput | InputJsonValue
-    after: JsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
-  export type MealPlanSwapUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-    before?: JsonNullValueInput | InputJsonValue
-    after?: JsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MealPlanSwapUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    mealPlanId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-    before?: JsonNullValueInput | InputJsonValue
-    after?: JsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProgressCreateInput = {
@@ -13231,34 +11778,13 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type MealPlanItemListRelationFilter = {
     every?: MealPlanItemWhereInput
     some?: MealPlanItemWhereInput
     none?: MealPlanItemWhereInput
   }
 
-  export type MealPlanSwapListRelationFilter = {
-    every?: MealPlanSwapWhereInput
-    some?: MealPlanSwapWhereInput
-    none?: MealPlanSwapWhereInput
-  }
-
   export type MealPlanItemOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type MealPlanSwapOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13269,13 +11795,7 @@ export namespace Prisma {
     endDate?: SortOrder
     constraints?: SortOrder
     gridJson?: SortOrder
-    version?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type MealPlanAvgOrderByAggregateInput = {
-    version?: SortOrder
   }
 
   export type MealPlanMaxOrderByAggregateInput = {
@@ -13283,9 +11803,7 @@ export namespace Prisma {
     userId?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
-    version?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type MealPlanMinOrderByAggregateInput = {
@@ -13293,13 +11811,7 @@ export namespace Prisma {
     userId?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
-    version?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type MealPlanSumOrderByAggregateInput = {
-    version?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -13328,7 +11840,7 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+  export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
     notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -13336,12 +11848,7 @@ export namespace Prisma {
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type MealPlanScalarRelationFilter = {
@@ -13389,80 +11896,21 @@ export namespace Prisma {
   export type MealPlanItemSumOrderByAggregateInput = {
     dayOfWeek?: SortOrder
   }
-  export type JsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type MealPlanSwapCountOrderByAggregateInput = {
-    id?: SortOrder
-    mealPlanId?: SortOrder
-    userId?: SortOrder
-    clientId?: SortOrder
-    before?: SortOrder
-    after?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type MealPlanSwapMaxOrderByAggregateInput = {
-    id?: SortOrder
-    mealPlanId?: SortOrder
-    userId?: SortOrder
-    clientId?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type MealPlanSwapMinOrderByAggregateInput = {
-    id?: SortOrder
-    mealPlanId?: SortOrder
-    userId?: SortOrder
-    clientId?: SortOrder
-    createdAt?: SortOrder
-  }
-  export type JsonWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedJsonFilter<$PrismaModel>
-    _max?: NestedJsonFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type ProgressCountOrderByAggregateInput = {
@@ -13983,33 +12431,11 @@ export namespace Prisma {
     connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
   }
 
-  export type MealPlanSwapCreateNestedManyWithoutMealPlanInput = {
-    create?: XOR<MealPlanSwapCreateWithoutMealPlanInput, MealPlanSwapUncheckedCreateWithoutMealPlanInput> | MealPlanSwapCreateWithoutMealPlanInput[] | MealPlanSwapUncheckedCreateWithoutMealPlanInput[]
-    connectOrCreate?: MealPlanSwapCreateOrConnectWithoutMealPlanInput | MealPlanSwapCreateOrConnectWithoutMealPlanInput[]
-    createMany?: MealPlanSwapCreateManyMealPlanInputEnvelope
-    connect?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-  }
-
   export type MealPlanItemUncheckedCreateNestedManyWithoutMealPlanInput = {
     create?: XOR<MealPlanItemCreateWithoutMealPlanInput, MealPlanItemUncheckedCreateWithoutMealPlanInput> | MealPlanItemCreateWithoutMealPlanInput[] | MealPlanItemUncheckedCreateWithoutMealPlanInput[]
     connectOrCreate?: MealPlanItemCreateOrConnectWithoutMealPlanInput | MealPlanItemCreateOrConnectWithoutMealPlanInput[]
     createMany?: MealPlanItemCreateManyMealPlanInputEnvelope
     connect?: MealPlanItemWhereUniqueInput | MealPlanItemWhereUniqueInput[]
-  }
-
-  export type MealPlanSwapUncheckedCreateNestedManyWithoutMealPlanInput = {
-    create?: XOR<MealPlanSwapCreateWithoutMealPlanInput, MealPlanSwapUncheckedCreateWithoutMealPlanInput> | MealPlanSwapCreateWithoutMealPlanInput[] | MealPlanSwapUncheckedCreateWithoutMealPlanInput[]
-    connectOrCreate?: MealPlanSwapCreateOrConnectWithoutMealPlanInput | MealPlanSwapCreateOrConnectWithoutMealPlanInput[]
-    createMany?: MealPlanSwapCreateManyMealPlanInputEnvelope
-    connect?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type UserUpdateOneRequiredWithoutMealPlansNestedInput = {
@@ -14034,20 +12460,6 @@ export namespace Prisma {
     deleteMany?: MealPlanItemScalarWhereInput | MealPlanItemScalarWhereInput[]
   }
 
-  export type MealPlanSwapUpdateManyWithoutMealPlanNestedInput = {
-    create?: XOR<MealPlanSwapCreateWithoutMealPlanInput, MealPlanSwapUncheckedCreateWithoutMealPlanInput> | MealPlanSwapCreateWithoutMealPlanInput[] | MealPlanSwapUncheckedCreateWithoutMealPlanInput[]
-    connectOrCreate?: MealPlanSwapCreateOrConnectWithoutMealPlanInput | MealPlanSwapCreateOrConnectWithoutMealPlanInput[]
-    upsert?: MealPlanSwapUpsertWithWhereUniqueWithoutMealPlanInput | MealPlanSwapUpsertWithWhereUniqueWithoutMealPlanInput[]
-    createMany?: MealPlanSwapCreateManyMealPlanInputEnvelope
-    set?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-    disconnect?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-    delete?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-    connect?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-    update?: MealPlanSwapUpdateWithWhereUniqueWithoutMealPlanInput | MealPlanSwapUpdateWithWhereUniqueWithoutMealPlanInput[]
-    updateMany?: MealPlanSwapUpdateManyWithWhereWithoutMealPlanInput | MealPlanSwapUpdateManyWithWhereWithoutMealPlanInput[]
-    deleteMany?: MealPlanSwapScalarWhereInput | MealPlanSwapScalarWhereInput[]
-  }
-
   export type MealPlanItemUncheckedUpdateManyWithoutMealPlanNestedInput = {
     create?: XOR<MealPlanItemCreateWithoutMealPlanInput, MealPlanItemUncheckedCreateWithoutMealPlanInput> | MealPlanItemCreateWithoutMealPlanInput[] | MealPlanItemUncheckedCreateWithoutMealPlanInput[]
     connectOrCreate?: MealPlanItemCreateOrConnectWithoutMealPlanInput | MealPlanItemCreateOrConnectWithoutMealPlanInput[]
@@ -14062,20 +12474,6 @@ export namespace Prisma {
     deleteMany?: MealPlanItemScalarWhereInput | MealPlanItemScalarWhereInput[]
   }
 
-  export type MealPlanSwapUncheckedUpdateManyWithoutMealPlanNestedInput = {
-    create?: XOR<MealPlanSwapCreateWithoutMealPlanInput, MealPlanSwapUncheckedCreateWithoutMealPlanInput> | MealPlanSwapCreateWithoutMealPlanInput[] | MealPlanSwapUncheckedCreateWithoutMealPlanInput[]
-    connectOrCreate?: MealPlanSwapCreateOrConnectWithoutMealPlanInput | MealPlanSwapCreateOrConnectWithoutMealPlanInput[]
-    upsert?: MealPlanSwapUpsertWithWhereUniqueWithoutMealPlanInput | MealPlanSwapUpsertWithWhereUniqueWithoutMealPlanInput[]
-    createMany?: MealPlanSwapCreateManyMealPlanInputEnvelope
-    set?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-    disconnect?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-    delete?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-    connect?: MealPlanSwapWhereUniqueInput | MealPlanSwapWhereUniqueInput[]
-    update?: MealPlanSwapUpdateWithWhereUniqueWithoutMealPlanInput | MealPlanSwapUpdateWithWhereUniqueWithoutMealPlanInput[]
-    updateMany?: MealPlanSwapUpdateManyWithWhereWithoutMealPlanInput | MealPlanSwapUpdateManyWithWhereWithoutMealPlanInput[]
-    deleteMany?: MealPlanSwapScalarWhereInput | MealPlanSwapScalarWhereInput[]
-  }
-
   export type MealPlanCreateNestedOneWithoutMealPlanItemsInput = {
     create?: XOR<MealPlanCreateWithoutMealPlanItemsInput, MealPlanUncheckedCreateWithoutMealPlanItemsInput>
     connectOrCreate?: MealPlanCreateOrConnectWithoutMealPlanItemsInput
@@ -14086,6 +12484,14 @@ export namespace Prisma {
     create?: XOR<RecipeCreateWithoutMealPlanItemsInput, RecipeUncheckedCreateWithoutMealPlanItemsInput>
     connectOrCreate?: RecipeCreateOrConnectWithoutMealPlanItemsInput
     connect?: RecipeWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type MealPlanUpdateOneRequiredWithoutMealPlanItemsNestedInput = {
@@ -14104,20 +12510,6 @@ export namespace Prisma {
     delete?: RecipeWhereInput | boolean
     connect?: RecipeWhereUniqueInput
     update?: XOR<XOR<RecipeUpdateToOneWithWhereWithoutMealPlanItemsInput, RecipeUpdateWithoutMealPlanItemsInput>, RecipeUncheckedUpdateWithoutMealPlanItemsInput>
-  }
-
-  export type MealPlanCreateNestedOneWithoutSwapsInput = {
-    create?: XOR<MealPlanCreateWithoutSwapsInput, MealPlanUncheckedCreateWithoutSwapsInput>
-    connectOrCreate?: MealPlanCreateOrConnectWithoutSwapsInput
-    connect?: MealPlanWhereUniqueInput
-  }
-
-  export type MealPlanUpdateOneRequiredWithoutSwapsNestedInput = {
-    create?: XOR<MealPlanCreateWithoutSwapsInput, MealPlanUncheckedCreateWithoutSwapsInput>
-    connectOrCreate?: MealPlanCreateOrConnectWithoutSwapsInput
-    upsert?: MealPlanUpsertWithoutSwapsInput
-    connect?: MealPlanWhereUniqueInput
-    update?: XOR<XOR<MealPlanUpdateToOneWithWhereWithoutSwapsInput, MealPlanUpdateWithoutSwapsInput>, MealPlanUncheckedUpdateWithoutSwapsInput>
   }
 
   export type UserCreateNestedOneWithoutProgressInput = {
@@ -14538,29 +12930,6 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
   }
-  export type NestedJsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type NestedEnumRecipeSourceTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.RecipeSourceType | EnumRecipeSourceTypeFieldRefInput<$PrismaModel>
@@ -14631,11 +13000,8 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
     createdAt?: Date | string
-    updatedAt?: Date | string
     mealPlanItems?: MealPlanItemCreateNestedManyWithoutMealPlanInput
-    swaps?: MealPlanSwapCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanUncheckedCreateWithoutUserInput = {
@@ -14644,11 +13010,8 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
     createdAt?: Date | string
-    updatedAt?: Date | string
     mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutMealPlanInput
-    swaps?: MealPlanSwapUncheckedCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanCreateOrConnectWithoutUserInput = {
@@ -14811,9 +13174,7 @@ export namespace Prisma {
     endDate?: DateTimeFilter<"MealPlan"> | Date | string
     constraints?: JsonNullableFilter<"MealPlan">
     gridJson?: JsonNullableFilter<"MealPlan">
-    version?: IntFilter<"MealPlan"> | number
     createdAt?: DateTimeFilter<"MealPlan"> | Date | string
-    updatedAt?: DateTimeFilter<"MealPlan"> | Date | string
   }
 
   export type ProgressUpsertWithWhereUniqueWithoutUserInput = {
@@ -15211,34 +13572,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type MealPlanSwapCreateWithoutMealPlanInput = {
-    id?: string
-    userId: string
-    clientId?: string | null
-    before: JsonNullValueInput | InputJsonValue
-    after: JsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
-  export type MealPlanSwapUncheckedCreateWithoutMealPlanInput = {
-    id?: string
-    userId: string
-    clientId?: string | null
-    before: JsonNullValueInput | InputJsonValue
-    after: JsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
-  export type MealPlanSwapCreateOrConnectWithoutMealPlanInput = {
-    where: MealPlanSwapWhereUniqueInput
-    create: XOR<MealPlanSwapCreateWithoutMealPlanInput, MealPlanSwapUncheckedCreateWithoutMealPlanInput>
-  }
-
-  export type MealPlanSwapCreateManyMealPlanInputEnvelope = {
-    data: MealPlanSwapCreateManyMealPlanInput | MealPlanSwapCreateManyMealPlanInput[]
-    skipDuplicates?: boolean
-  }
-
   export type UserUpsertWithoutMealPlansInput = {
     update: XOR<UserUpdateWithoutMealPlansInput, UserUncheckedUpdateWithoutMealPlansInput>
     create: XOR<UserCreateWithoutMealPlansInput, UserUncheckedCreateWithoutMealPlansInput>
@@ -15314,46 +13647,14 @@ export namespace Prisma {
     cachedRecipeId?: StringNullableFilter<"MealPlanItem"> | string | null
   }
 
-  export type MealPlanSwapUpsertWithWhereUniqueWithoutMealPlanInput = {
-    where: MealPlanSwapWhereUniqueInput
-    update: XOR<MealPlanSwapUpdateWithoutMealPlanInput, MealPlanSwapUncheckedUpdateWithoutMealPlanInput>
-    create: XOR<MealPlanSwapCreateWithoutMealPlanInput, MealPlanSwapUncheckedCreateWithoutMealPlanInput>
-  }
-
-  export type MealPlanSwapUpdateWithWhereUniqueWithoutMealPlanInput = {
-    where: MealPlanSwapWhereUniqueInput
-    data: XOR<MealPlanSwapUpdateWithoutMealPlanInput, MealPlanSwapUncheckedUpdateWithoutMealPlanInput>
-  }
-
-  export type MealPlanSwapUpdateManyWithWhereWithoutMealPlanInput = {
-    where: MealPlanSwapScalarWhereInput
-    data: XOR<MealPlanSwapUpdateManyMutationInput, MealPlanSwapUncheckedUpdateManyWithoutMealPlanInput>
-  }
-
-  export type MealPlanSwapScalarWhereInput = {
-    AND?: MealPlanSwapScalarWhereInput | MealPlanSwapScalarWhereInput[]
-    OR?: MealPlanSwapScalarWhereInput[]
-    NOT?: MealPlanSwapScalarWhereInput | MealPlanSwapScalarWhereInput[]
-    id?: StringFilter<"MealPlanSwap"> | string
-    mealPlanId?: StringFilter<"MealPlanSwap"> | string
-    userId?: StringFilter<"MealPlanSwap"> | string
-    clientId?: StringNullableFilter<"MealPlanSwap"> | string | null
-    before?: JsonFilter<"MealPlanSwap">
-    after?: JsonFilter<"MealPlanSwap">
-    createdAt?: DateTimeFilter<"MealPlanSwap"> | Date | string
-  }
-
   export type MealPlanCreateWithoutMealPlanItemsInput = {
     id?: string
     startDate: Date | string
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
     createdAt?: Date | string
-    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutMealPlansInput
-    swaps?: MealPlanSwapCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanUncheckedCreateWithoutMealPlanItemsInput = {
@@ -15363,10 +13664,7 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
     createdAt?: Date | string
-    updatedAt?: Date | string
-    swaps?: MealPlanSwapUncheckedCreateNestedManyWithoutMealPlanInput
   }
 
   export type MealPlanCreateOrConnectWithoutMealPlanItemsInput = {
@@ -15456,11 +13754,8 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutMealPlansNestedInput
-    swaps?: MealPlanSwapUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanUncheckedUpdateWithoutMealPlanItemsInput = {
@@ -15470,10 +13765,7 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    swaps?: MealPlanSwapUncheckedUpdateManyWithoutMealPlanNestedInput
   }
 
   export type RecipeUpsertWithoutMealPlanItemsInput = {
@@ -15545,74 +13837,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ingredients?: RecipeIngredientUncheckedUpdateManyWithoutRecipeNestedInput
     userRecipes?: UserRecipeUncheckedUpdateManyWithoutCachedRecipeNestedInput
-  }
-
-  export type MealPlanCreateWithoutSwapsInput = {
-    id?: string
-    startDate: Date | string
-    endDate: Date | string
-    constraints?: NullableJsonNullValueInput | InputJsonValue
-    gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutMealPlansInput
-    mealPlanItems?: MealPlanItemCreateNestedManyWithoutMealPlanInput
-  }
-
-  export type MealPlanUncheckedCreateWithoutSwapsInput = {
-    id?: string
-    userId: string
-    startDate: Date | string
-    endDate: Date | string
-    constraints?: NullableJsonNullValueInput | InputJsonValue
-    gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    mealPlanItems?: MealPlanItemUncheckedCreateNestedManyWithoutMealPlanInput
-  }
-
-  export type MealPlanCreateOrConnectWithoutSwapsInput = {
-    where: MealPlanWhereUniqueInput
-    create: XOR<MealPlanCreateWithoutSwapsInput, MealPlanUncheckedCreateWithoutSwapsInput>
-  }
-
-  export type MealPlanUpsertWithoutSwapsInput = {
-    update: XOR<MealPlanUpdateWithoutSwapsInput, MealPlanUncheckedUpdateWithoutSwapsInput>
-    create: XOR<MealPlanCreateWithoutSwapsInput, MealPlanUncheckedCreateWithoutSwapsInput>
-    where?: MealPlanWhereInput
-  }
-
-  export type MealPlanUpdateToOneWithWhereWithoutSwapsInput = {
-    where?: MealPlanWhereInput
-    data: XOR<MealPlanUpdateWithoutSwapsInput, MealPlanUncheckedUpdateWithoutSwapsInput>
-  }
-
-  export type MealPlanUpdateWithoutSwapsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    constraints?: NullableJsonNullValueInput | InputJsonValue
-    gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMealPlansNestedInput
-    mealPlanItems?: MealPlanItemUpdateManyWithoutMealPlanNestedInput
-  }
-
-  export type MealPlanUncheckedUpdateWithoutSwapsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    constraints?: NullableJsonNullValueInput | InputJsonValue
-    gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutMealPlanNestedInput
   }
 
   export type UserCreateWithoutProgressInput = {
@@ -16077,9 +14301,7 @@ export namespace Prisma {
     endDate: Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: number
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type ProgressCreateManyUserInput = {
@@ -16132,11 +14354,8 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mealPlanItems?: MealPlanItemUpdateManyWithoutMealPlanNestedInput
-    swaps?: MealPlanSwapUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanUncheckedUpdateWithoutUserInput = {
@@ -16145,11 +14364,8 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mealPlanItems?: MealPlanItemUncheckedUpdateManyWithoutMealPlanNestedInput
-    swaps?: MealPlanSwapUncheckedUpdateManyWithoutMealPlanNestedInput
   }
 
   export type MealPlanUncheckedUpdateManyWithoutUserInput = {
@@ -16158,9 +14374,7 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     constraints?: NullableJsonNullValueInput | InputJsonValue
     gridJson?: NullableJsonNullValueInput | InputJsonValue
-    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProgressUpdateWithoutUserInput = {
@@ -16309,15 +14523,6 @@ export namespace Prisma {
     cachedRecipeId?: string | null
   }
 
-  export type MealPlanSwapCreateManyMealPlanInput = {
-    id?: string
-    userId: string
-    clientId?: string | null
-    before: JsonNullValueInput | InputJsonValue
-    after: JsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
   export type MealPlanItemUpdateWithoutMealPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
     sourceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16340,33 +14545,6 @@ export namespace Prisma {
     dayOfWeek?: IntFieldUpdateOperationsInput | number
     mealType?: StringFieldUpdateOperationsInput | string
     cachedRecipeId?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type MealPlanSwapUpdateWithoutMealPlanInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-    before?: JsonNullValueInput | InputJsonValue
-    after?: JsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MealPlanSwapUncheckedUpdateWithoutMealPlanInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-    before?: JsonNullValueInput | InputJsonValue
-    after?: JsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MealPlanSwapUncheckedUpdateManyWithoutMealPlanInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-    before?: JsonNullValueInput | InputJsonValue
-    after?: JsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RecipeIngredientCreateManyRecipeInput = {

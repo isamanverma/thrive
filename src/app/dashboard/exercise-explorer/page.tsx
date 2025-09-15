@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Search, Filter, Heart, Play, Clock, Zap } from "lucide-react";
+import { Clock, Filter, Heart, Play, Search, Zap } from "lucide-react";
 
 export default function ExerciseExplorerPage() {
   return (
@@ -35,7 +35,7 @@ export default function ExerciseExplorerPage() {
 
       {/* Category tabs */}
       <div className="flex space-x-4 border-b overflow-x-auto">
-        <button className="px-4 py-2 border-b-2 border-green-500 text-green-600 font-medium whitespace-nowrap">
+        <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium whitespace-nowrap">
           All Exercises
         </button>
         <button className="px-4 py-2 text-gray-500 hover:text-gray-700 whitespace-nowrap">
@@ -158,7 +158,7 @@ export default function ExerciseExplorerPage() {
                     <Heart className="w-5 h-5 text-gray-400 hover:text-red-500" />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <Play className="w-5 h-5 text-green-600" />
+                    <Play className="w-5 h-5 text-purple-500" />
                   </button>
                 </div>
               </div>
@@ -207,10 +207,10 @@ export default function ExerciseExplorerPage() {
                   </div>
                 </div>
                 <div className="flex space-x-2 pt-2">
-                  <button className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors text-sm">
+                  <button className="flex-1 bg-purple-500 text-white py-2 rounded-md hover:bg-green-700 transition-colors text-sm">
                     Start Exercise
                   </button>
-                  <button className="px-4 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 transition-colors text-sm">
+                  <button className="px-4 py-2 border border-purple-500 text-purple-500 rounded-md hover:bg-green-50 transition-colors text-sm">
                     Add to Plan
                   </button>
                 </div>

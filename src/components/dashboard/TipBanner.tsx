@@ -21,17 +21,17 @@ export function TipBanner({ tip, onDismiss }: TipBannerProps) {
   if (!isVisible) return null;
 
   return (
-    <div className="bg-green-100 border border-green-200 rounded-2xl p-4 flex items-center justify-between mb-8 shadow-sm">
+    <div className="bg-purple-100 border border-purple-200 rounded-2xl p-4 flex items-center justify-between mb-8 shadow-sm">
       <div className="flex items-center gap-4">
-        <Lightbulb className="text-green-600 h-5 w-5" />
-        <p className="text-green-800 text-sm">
+        <Lightbulb className="text-purple-600 h-5 w-5" />
+        <p className="text-purple-800 text-sm">
           <strong>Tip:</strong> {tip}
         </p>
       </div>
       <Button
         variant="ghost"
         size="sm"
-        className="text-green-600 hover:text-green-800 h-auto p-1"
+        className="text-purple-600 hover:text-purple-800 h-auto p-1"
         onClick={handleDismiss}
       >
         <X className="h-5 w-5" />

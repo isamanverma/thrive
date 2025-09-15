@@ -181,7 +181,7 @@ export default function DashboardPage() {
                 />
                 <div className="flex items-center justify-center gap-6 mt-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-600"></div>
+                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
                     <span className="text-sm text-muted-foreground">Meals</span>
                   </div>
                   <div className="flex items-center gap-2">

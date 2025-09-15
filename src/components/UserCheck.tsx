@@ -147,7 +147,7 @@ export default function UserCheck({ children }: UserCheckProps) {
               setIsCheckingUser(true);
               setRetryCount(0);
             }}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors"
+            className="bg-purple-500 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
             Try Again
           </button>
@@ -161,7 +161,7 @@ export default function UserCheck({ children }: UserCheckProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
           <p className="text-lg font-medium text-gray-700">Loading...</p>
         </div>
       </div>

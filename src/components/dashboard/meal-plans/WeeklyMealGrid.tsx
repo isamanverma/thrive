@@ -76,14 +76,14 @@ export function WeeklyMealGrid({
             key={day}
             className={`px-2 py-3 text-center font-semibold ${
               index === adjustedDayIndex
-                ? "bg-green-200 text-green-700"
+                ? "bg-purple-200 text-purple-700"
                 : "text-gray-700"
             }`}
           >
             <div className="flex items-center justify-center gap-1">
               <span>{day}</span>
               {index === adjustedDayIndex && (
-                <span className="text-xs bg-white/80 text-green-700 px-2 py-0.5 rounded-full font-semibold">
+                <span className="text-xs bg-white/80 text-purple-700 px-2 py-0.5 rounded-full font-semibold">
                   Today
                 </span>
               )}

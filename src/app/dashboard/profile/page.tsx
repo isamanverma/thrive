@@ -1,13 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  User,
-  Edit,
-  Camera,
-  Mail,
-  Phone,
-  MapPin,
   Calendar,
+  Camera,
+  Edit,
+  Mail,
+  MapPin,
+  Phone,
+  User,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ProfilePage() {
   return (
@@ -30,7 +30,7 @@ export default function ProfilePage() {
               <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <User className="w-16 h-16 text-gray-400" />
               </div>
-              <button className="absolute bottom-0 right-0 p-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors">
+              <button className="absolute bottom-0 right-0 p-2 bg-purple-500 text-white rounded-full hover:bg-green-700 transition-colors">
                 <Camera className="w-4 h-4" />
               </button>
             </div>
@@ -44,7 +44,7 @@ export default function ProfilePage() {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>Personal Information</CardTitle>
-              <button className="flex items-center space-x-1 text-green-600 hover:text-green-700">
+              <button className="flex items-center space-x-1 text-purple-500 hover:text-green-700">
                 <Edit className="w-4 h-4" />
                 <span>Edit</span>
               </button>
@@ -94,7 +94,7 @@ export default function ProfilePage() {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>Health Information</CardTitle>
-              <button className="flex items-center space-x-1 text-green-600 hover:text-green-700">
+              <button className="flex items-center space-x-1 text-purple-500 hover:text-green-700">
                 <Edit className="w-4 h-4" />
                 <span>Edit</span>
               </button>
@@ -125,7 +125,7 @@ export default function ProfilePage() {
 
             <div>
               <p className="text-sm font-medium text-gray-700">BMI</p>
-              <p className="text-lg font-semibold text-green-600">
+              <p className="text-lg font-semibold text-purple-500">
                 22.4 (Normal)
               </p>
             </div>
@@ -137,7 +137,7 @@ export default function ProfilePage() {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>Fitness Goals</CardTitle>
-              <button className="flex items-center space-x-1 text-green-600 hover:text-green-700">
+              <button className="flex items-center space-x-1 text-purple-500 hover:text-green-700">
                 <Edit className="w-4 h-4" />
                 <span>Edit</span>
               </button>
@@ -176,7 +176,7 @@ export default function ProfilePage() {
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle>Dietary Preferences</CardTitle>
-            <button className="flex items-center space-x-1 text-green-600 hover:text-green-700">
+            <button className="flex items-center space-x-1 text-purple-500 hover:text-green-700">
               <Edit className="w-4 h-4" />
               <span>Edit</span>
             </button>
@@ -248,7 +248,7 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+            <button className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
               Update Profile
             </button>
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">

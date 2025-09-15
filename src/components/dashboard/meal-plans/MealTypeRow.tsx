@@ -176,7 +176,7 @@ export function MealTypeRow({
                   className="group w-full h-full bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-500 text-sm hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-50 text-green-700">
+                    <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-50 text-purple-700">
                       <Plus className="w-3 h-3" />
                     </div>
                     <span className="text-xs">

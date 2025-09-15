@@ -1,15 +1,15 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { RecipeDetailsHeader } from "@/components/recipe/RecipeDetailsHeader";
 import { RecipeIngredients } from "@/components/recipe/RecipeIngredients";
 import { RecipeInstructions } from "@/components/recipe/RecipeInstructions";
 import { RecipeVideoSection } from "@/components/recipe/RecipeVideoSection";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface RecipeDetails {
   id: number;
@@ -130,7 +130,7 @@ export default function RecipePage() {
           </p>
           <Button
             onClick={() => router.back()}
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-purple-500 hover:bg-green-700"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Go Back

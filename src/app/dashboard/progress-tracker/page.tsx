@@ -1,3 +1,4 @@
+import { Award, Calendar, Target, TrendingUp } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -5,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TrendingUp, Target, Calendar, Award } from "lucide-react";
 
 export default function ProgressTrackerPage() {
   return (
@@ -96,7 +96,7 @@ export default function ProgressTrackerPage() {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-green-600 h-2 rounded-full"
+                    className="bg-purple-500 h-2 rounded-full"
                     style={{ width: "92.5%" }}
                   ></div>
                 </div>
@@ -160,7 +160,7 @@ export default function ProgressTrackerPage() {
                   <p className="text-sm text-gray-500">Target: Dec 2025</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-medium text-green-600">75%</div>
+                  <div className="text-sm font-medium text-purple-500">75%</div>
                   <div className="text-xs text-gray-500">2.5kg left</div>
                 </div>
               </div>
@@ -198,7 +198,7 @@ export default function ProgressTrackerPage() {
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-                <Award className="w-8 h-8 text-green-600" />
+                <Award className="w-8 h-8 text-purple-500" />
                 <div>
                   <h4 className="font-medium">7-Day Streak</h4>
                   <p className="text-sm text-gray-500">

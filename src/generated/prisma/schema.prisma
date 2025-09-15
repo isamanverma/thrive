@@ -46,13 +46,10 @@ model MealPlan {
   startDate     DateTime
   endDate       DateTime
   constraints   Json?
-  gridJson      Json? // canonical 7x4 grid JSON (optional - used for fast loads)
-  version       Int            @default(1)
+  gridJson      Json? // Added for meal plan grid persistence
   createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @default(now()) @updatedAt
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   mealPlanItems MealPlanItem[]
-  swaps         MealPlanSwap[] // append-only swap log
 }
 
 model MealPlanItem {
@@ -66,21 +63,6 @@ model MealPlanItem {
   cachedRecipeId String?
 
   @@unique([mealPlanId, dayOfWeek, mealType])
-}
-
-model MealPlanSwap {
-  id         String   @id @default(cuid())
-  mealPlanId String
-  userId     String
-  clientId   String? // optional client id for idempotency
-  before     Json
-  after      Json
-  createdAt  DateTime @default(now())
-
-  mealPlan MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
-
-  @@index([mealPlanId])
-  @@index([clientId])
 }
 
 model Progress {

@@ -222,7 +222,7 @@ export function MealDetailModal({
           <div className="flex w-full flex-col sm:flex-row gap-3">
             <Button
               variant="outline"
-              className="flex-1 bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300"
+              className="flex-1 bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100 hover:border-purple-300"
               onClick={handleSwapClick}
             >
               <ArrowUpDown className="w-4 h-4 mr-2" />

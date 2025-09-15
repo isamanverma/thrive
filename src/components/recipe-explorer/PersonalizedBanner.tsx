@@ -1,7 +1,7 @@
 "use client";
 
-import { RefreshCw } from "lucide-react";
 import { BlurFade } from "@/components/magicui/blur-fade";
+import { RefreshCw } from "lucide-react";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +26,7 @@ export function PersonalizedBanner({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <p className="text-sm text-foreground">
-              <span className="font-semibold text-green-700 dark:text-green-400">
+              <span className="font-semibold text-purple-700 dark:text-green-400">
                 Just for you!
               </span>{" "}
               We&apos;ve tailored these recipes based on your preferences.
@@ -45,11 +45,11 @@ export function PersonalizedBanner({
             >
               <RefreshCw
                 className={cn(
-                  "h-3 w-3 text-green-600 dark:text-green-400",
+                  "h-3 w-3 text-purple-500 dark:text-green-400",
                   loading && "animate-spin"
                 )}
               />
-              <span className="text-green-700 dark:text-green-300">
+              <span className="text-purple-700 dark:text-green-300">
                 {loading ? "Regenerating..." : "Regenerate"}
               </span>
             </ShimmerButton>

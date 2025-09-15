@@ -1,3 +1,4 @@
+import { Calendar, Clock, Dumbbell } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -5,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dumbbell, Clock, Calendar } from "lucide-react";
 
 export default function ExercisePlansPage() {
   return (
@@ -19,7 +19,7 @@ export default function ExercisePlansPage() {
 
       {/* Filter tabs */}
       <div className="flex space-x-4 border-b">
-        <button className="px-4 py-2 border-b-2 border-green-500 text-green-600 font-medium">
+        <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium">
           Active Plans
         </button>
         <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
@@ -98,7 +98,7 @@ export default function ExercisePlansPage() {
                   <CardTitle className="text-lg">{plan.name}</CardTitle>
                   <CardDescription>{plan.type}</CardDescription>
                 </div>
-                <Dumbbell className="w-6 h-6 text-green-600" />
+                <Dumbbell className="w-6 h-6 text-purple-500" />
               </div>
             </CardHeader>
             <CardContent>
@@ -130,18 +130,18 @@ export default function ExercisePlansPage() {
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Progress:</span>
-                    <span className="text-green-600 font-medium">
+                    <span className="text-purple-500 font-medium">
                       {plan.progress}
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-purple-500 h-2 rounded-full transition-all duration-300"
                       style={{ width: plan.progress }}
                     ></div>
                   </div>
                 </div>
-                <button className="w-full mt-4 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors">
+                <button className="w-full mt-4 bg-purple-500 text-white py-2 rounded-md hover:bg-green-700 transition-colors">
                   Continue Plan
                 </button>
               </div>
@@ -152,7 +152,7 @@ export default function ExercisePlansPage() {
 
       {/* Create new plan button */}
       <div className="flex justify-center mt-8">
-        <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2">
+        <button className="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2">
           <Dumbbell className="w-5 h-5" />
           <span>Create New Exercise Plan</span>
         </button>

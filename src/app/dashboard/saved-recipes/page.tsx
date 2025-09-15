@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Heart, Clock, Users } from "lucide-react";
+import { Clock, Heart, Users } from "lucide-react";
 
 export default function SavedRecipesPage() {
   return (
@@ -19,7 +19,7 @@ export default function SavedRecipesPage() {
 
       {/* Filter tabs */}
       <div className="flex space-x-4 border-b">
-        <button className="px-4 py-2 border-b-2 border-green-500 text-green-600 font-medium">
+        <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium">
           All Recipes
         </button>
         <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
@@ -128,7 +128,7 @@ export default function SavedRecipesPage() {
               </div>
 
               <div className="flex space-x-2">
-                <button className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
+                <button className="flex-1 bg-purple-500 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
                   View Recipe
                 </button>
                 <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm">
@@ -145,7 +145,7 @@ export default function SavedRecipesPage() {
         <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">No saved recipes yet</h3>
         <p className="text-gray-500 mb-4">Start exploring recipes and save your favorites!</p>
-        <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+        <button className="bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
           Explore Recipes
         </button>
       </div> */}

@@ -45,7 +45,7 @@ export function CategoryFilters({
                 className={cn(
                   "rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
                   activeCategory === category.id
-                    ? "bg-green-600 text-white hover:bg-green-700 shadow-md ring-2 ring-green-500/20"
+                    ? "bg-purple-500 text-white hover:bg-purple-700 shadow-md ring-2 ring-purple-500/20"
                     : "bg-background border-border hover:bg-accent hover:text-accent-foreground"
                 )}
               >
@@ -63,7 +63,7 @@ export function CategoryFilters({
               onChange={(e) => onSortChange(e.target.value)}
               className={cn(
                 "w-full appearance-none rounded-lg border border-border bg-background px-3 py-1.5 pr-8 text-xs font-medium transition-all duration-200",
-                "focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20",
+                "focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20",
                 "hover:bg-accent cursor-pointer"
               )}
             >

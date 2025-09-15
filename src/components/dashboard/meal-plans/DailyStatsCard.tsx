@@ -10,14 +10,14 @@ export function DailyStatsCard({ stats }: DailyStatsCardProps) {
       <div className="grid grid-cols-5 gap-6">
         <div className="text-center">
           <p className="text-sm text-gray-500 mb-1">Total Calories</p>
-          <p className="text-3xl font-bold text-green-600">
+          <p className="text-3xl font-bold text-purple-600">
             {stats.totalCalories}
           </p>
           <p className="text-xs text-gray-500">Goal: {stats.goal} kcal</p>
         </div>
         <div className="text-center">
           <p className="text-sm text-gray-500 mb-1">Calories Left</p>
-          <p className="text-3xl font-bold text-green-600">
+          <p className="text-3xl font-bold text-purple-600">
             {stats.caloriesLeft}
           </p>
         </div>

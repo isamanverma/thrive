@@ -1,3 +1,4 @@
+import { Calendar, Clock, Heart, Play, Trash2, Zap } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -5,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Heart, Clock, Trash2, Play, Zap, Calendar } from "lucide-react";
 
 export default function SavedExercisesPage() {
   return (
@@ -19,7 +19,7 @@ export default function SavedExercisesPage() {
 
       {/* Filter tabs */}
       <div className="flex space-x-4 border-b overflow-x-auto">
-        <button className="px-4 py-2 border-b-2 border-green-500 text-green-600 font-medium whitespace-nowrap">
+        <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium whitespace-nowrap">
           All Exercises
         </button>
         <button className="px-4 py-2 text-gray-500 hover:text-gray-700 whitespace-nowrap">
@@ -183,10 +183,10 @@ export default function SavedExercisesPage() {
                   </div>
                 </div>
                 <div className="flex space-x-2 pt-2">
-                  <button className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors text-sm">
+                  <button className="flex-1 bg-purple-500 text-white py-2 rounded-md hover:bg-green-700 transition-colors text-sm">
                     Start Exercise
                   </button>
-                  <button className="px-4 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 transition-colors text-sm">
+                  <button className="px-4 py-2 border border-purple-500 text-purple-500 rounded-md hover:bg-green-50 transition-colors text-sm">
                     Add to Plan
                   </button>
                 </div>
@@ -206,7 +206,7 @@ export default function SavedExercisesPage() {
           <p className="text-gray-500 mb-6">
             Start exploring exercises and save your favorites to see them here.
           </p>
-          <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+          <button className="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
             Explore Exercises
           </button>
         </div>
@@ -220,7 +220,7 @@ export default function SavedExercisesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <button className="flex items-center space-x-3 p-4 bg-white rounded-lg hover:shadow-md transition-shadow text-left">
             <div className="bg-green-100 p-2 rounded-lg">
-              <Play className="w-5 h-5 text-green-600" />
+              <Play className="w-5 h-5 text-purple-500" />
             </div>
             <div>
               <h4 className="font-medium text-gray-900">Create Workout</h4>

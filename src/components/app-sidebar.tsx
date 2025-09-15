@@ -84,11 +84,11 @@ const ProfileButton = () => {
     <SidebarMenuButton
       asChild
       className={`hover:bg-gray-100 rounded-lg p-3 ${
-        isActive ? "bg-gray-100 text-green-600" : ""
+        isActive ? "bg-gray-100 text-purple-500" : ""
       }`}
     >
       <a href="#" onClick={handleClick} className="flex items-center space-x-3">
-        <User className="w-5 h-5 text-green-600" />
+        <User className="w-5 h-5 text-purple-500" />
         <span className="text-lg font-medium text-gray-700">Profile</span>
         <UserButton
           appearance={{
@@ -170,7 +170,7 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       asChild
                       className={`hover:bg-gray-100 rounded-lg p-3 ${
-                        isActive ? "bg-gray-100 text-green-600" : ""
+                        isActive ? "bg-gray-100 text-purple-500" : ""
                       }`}
                     >
                       <Link
@@ -178,10 +178,10 @@ export function AppSidebar() {
                         className="flex items-center space-x-3"
                       >
                         <item.icon
-                          className={`w-5 h-5 ${isActive ? "text-green-600" : "text-green-600"}`}
+                          className={`w-5 h-5 ${isActive ? "text-purple-500" : "text-purple-500"}`}
                         />
                         <span
-                          className={`text-lg font-medium ${isActive ? "text-green-600" : "text-gray-700"}`}
+                          className={`text-lg font-medium ${isActive ? "text-purple-500" : "text-gray-700"}`}
                         >
                           {item.title}
                         </span>
@@ -200,7 +200,7 @@ export function AppSidebar() {
             asChild
             className={`hover:bg-gray-100 rounded-lg p-3 ${
               pathname === "/dashboard/notifications"
-                ? "bg-gray-100 text-green-600"
+                ? "bg-gray-100 text-purple-500"
                 : ""
             }`}
           >
@@ -208,11 +208,11 @@ export function AppSidebar() {
               href="/dashboard/notifications"
               className="flex items-center space-x-3"
             >
-              <Bell className="w-5 h-5 text-green-600" />
+              <Bell className="w-5 h-5 text-purple-500" />
               <span
                 className={`text-lg font-medium ${
                   pathname === "/dashboard/notifications"
-                    ? "text-green-600"
+                    ? "text-purple-500"
                     : "text-gray-700"
                 }`}
               >
@@ -224,7 +224,7 @@ export function AppSidebar() {
             asChild
             className={`hover:bg-gray-100 rounded-lg p-3 ${
               pathname === "/dashboard/settings"
-                ? "bg-gray-100 text-green-600"
+                ? "bg-gray-100 text-purple-500"
                 : ""
             }`}
           >
@@ -232,11 +232,11 @@ export function AppSidebar() {
               href="/dashboard/settings"
               className="flex items-center space-x-3"
             >
-              <Settings className="w-5 h-5 text-green-600" />
+              <Settings className="w-5 h-5 text-purple-500" />
               <span
                 className={`text-lg font-medium ${
                   pathname === "/dashboard/settings"
-                    ? "text-green-600"
+                    ? "text-purple-500"
                     : "text-gray-700"
                 }`}
               >

@@ -11,7 +11,7 @@ export function WeeklyStatsCard({ stats }: WeeklyStatsCardProps) {
       <div className="grid grid-cols-4 gap-6">
         <div className="text-center">
           <p className="text-sm text-gray-500 mb-1">Avg. Daily Calories</p>
-          <p className="text-2xl font-bold text-green-600">
+          <p className="text-2xl font-bold text-purple-600">
             {stats.avgCalories}
           </p>
         </div>

@@ -146,7 +146,7 @@ export default function RecipePage() {
             </p>
             <Button
               onClick={() => router.back()}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-purple-500 hover:bg-green-700"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Go Back
@@ -169,7 +169,7 @@ export default function RecipePage() {
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2 text-gray-900">
               <svg
-                className="h-8 w-8 text-green-600"
+                className="h-8 w-8 text-purple-500"
                 fill="none"
                 viewBox="0 0 48 48"
                 xmlns="http://www.w3.org/2000/svg"
@@ -184,19 +184,19 @@ export default function RecipePage() {
             <nav className="hidden md:flex items-center gap-6">
               <Link
                 href="/recipe-explorer"
-                className="text-sm font-medium text-gray-600 hover:text-green-600"
+                className="text-sm font-medium text-gray-600 hover:text-purple-500"
               >
                 Recipes
               </Link>
               <Link
                 href="/meal-plans"
-                className="text-sm font-medium text-gray-600 hover:text-green-600"
+                className="text-sm font-medium text-gray-600 hover:text-purple-500"
               >
                 Meal Plans
               </Link>
               <Link
                 href="#"
-                className="text-sm font-medium text-gray-600 hover:text-green-600"
+                className="text-sm font-medium text-gray-600 hover:text-purple-500"
               >
                 Community
               </Link>
@@ -220,12 +220,12 @@ export default function RecipePage() {
                 </svg>
               </div>
               <input
-                className="block w-full rounded-md border-gray-300 bg-gray-50 pl-10 pr-3 py-2 text-sm text-gray-900 focus:border-green-600 focus:ring-green-600"
+                className="block w-full rounded-md border-gray-300 bg-gray-50 pl-10 pr-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-purple-500"
                 placeholder="Search"
                 type="text"
               />
             </div>
-            <button className="rounded-full p-2 text-gray-600 hover:bg-green-100 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2">
+            <button className="rounded-full p-2 text-gray-600 hover:bg-green-100 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -353,14 +353,14 @@ export default function RecipePage() {
                 <div className="space-y-4">
                   <button
                     onClick={handleSaveToFavorites}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-green-700 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-purple-500 px-5 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-green-700 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-purple-500"
                   >
                     <Heart className="w-5 h-5" />
                     Save to Favorites
                   </button>
                   <button
                     onClick={handleAddToMealPlan}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-green-600 bg-green-50 px-5 py-3 text-base font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-100 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-purple-500 bg-green-50 px-5 py-3 text-base font-semibold text-purple-500 shadow-sm transition-colors hover:bg-green-100 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-purple-500"
                   >
                     <CalendarPlus className="w-5 h-5" />
                     Add to Meal Plan
@@ -437,7 +437,7 @@ export default function RecipePage() {
                       <Link
                         href={recipe.sourceUrl}
                         target="_blank"
-                        className="text-green-600 hover:text-green-700 underline mt-2 inline-block"
+                        className="text-purple-500 hover:text-green-700 underline mt-2 inline-block"
                       >
                         View original recipe
                       </Link>

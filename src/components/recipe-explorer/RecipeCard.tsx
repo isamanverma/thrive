@@ -1,12 +1,13 @@
 "use client";
 
-import { Bookmark, Eye, Clock, Users } from "lucide-react";
-import { MagicCard } from "@/components/magicui/magic-card";
+import { Bookmark, Clock, Eye, Users } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { MagicCard } from "@/components/magicui/magic-card";
+import { cn } from "@/lib/utils";
 
 interface Recipe {
   id: number;
@@ -42,7 +43,7 @@ export function RecipeCard({
           "transition-all duration-300 hover:shadow-xl hover:-translate-y-1",
           "rounded-xl"
         )}
-        gradientColor="#22c55e20"
+        gradientTo="#a78bfa20"
       >
         {/* Recipe Image */}
         <div className="relative w-full aspect-video overflow-hidden">
@@ -85,7 +86,7 @@ export function RecipeCard({
           <h3
             className={cn(
               "text-sm font-bold text-foreground line-clamp-2 mb-2",
-              "group-hover:text-green-600 transition-colors duration-200"
+              "group-hover:text-purple-500 transition-colors duration-200"
             )}
           >
             {recipe.title}
@@ -141,8 +142,8 @@ export function RecipeCard({
               className={cn(
                 "h-7 w-7 p-0 rounded-full transition-all duration-200",
                 isSaved
-                  ? "bg-green-100 text-green-600 hover:bg-green-200"
-                  : "bg-gray-100 text-muted-foreground hover:bg-gray-200 hover:text-green-600"
+                  ? "bg-green-100 text-purple-500 hover:bg-green-200"
+                  : "bg-gray-100 text-muted-foreground hover:bg-gray-200 hover:text-purple-500"
               )}
             >
               <Bookmark className={cn("h-3 w-3", isSaved && "fill-current")} />
@@ -154,7 +155,7 @@ export function RecipeCard({
                 e.stopPropagation();
                 onView(recipe.id);
               }}
-              className="h-7 w-7 p-0 rounded-full bg-gray-100 text-muted-foreground hover:bg-gray-200 hover:text-green-600 transition-all duration-200"
+              className="h-7 w-7 p-0 rounded-full bg-gray-100 text-muted-foreground hover:bg-gray-200 hover:text-purple-500 transition-all duration-200"
             >
               <Eye className="h-3 w-3" />
             </Button>

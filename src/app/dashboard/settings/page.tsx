@@ -1,3 +1,4 @@
+import { Bell, Globe, HelpCircle, Palette, Shield, User } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -5,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Bell, Shield, User, Palette, Globe, HelpCircle } from "lucide-react";
 
 export default function SettingsPage() {
   return (
@@ -52,7 +52,7 @@ export default function SettingsPage() {
                 defaultValue="john.doe@example.com"
               />
             </div>
-            <button className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+            <button className="w-full bg-purple-500 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
               Save Profile
             </button>
           </CardContent>
