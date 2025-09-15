@@ -20,6 +20,12 @@ const isProtectedRoute = createRouteMatcher([
   '/api/generateMealPlan(.*)',
 ]);
 
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+]);
+
 export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl;
   
@@ -53,9 +59,24 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
+  // Handle authentication
   if (isProtectedRoute(req)) {
-    await auth.protect();
+    const { userId } = await auth();
+    
+    if (!userId) {
+      // Redirect to sign-in with the original URL as a redirect parameter
+      const signInUrl = new URL('/sign-in', req.url);
+      signInUrl.searchParams.set('redirect_url', req.url);
+      return NextResponse.redirect(signInUrl);
+    }
   }
+
+  // Allow public routes
+  if (isPublicRoute(req)) {
+    return NextResponse.next();
+  }
+
+  return NextResponse.next();
 });
 
 export const config = {

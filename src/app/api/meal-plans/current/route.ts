@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { PrismaClient } from "@/generated/prisma";
 import { auth } from "@clerk/nextjs/server";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 interface MealItem {
   id: number;

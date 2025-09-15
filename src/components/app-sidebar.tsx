@@ -22,16 +22,63 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { UserButton, useUser } from "@clerk/nextjs";
+import { usePathname, useRouter } from "next/navigation";
 
 import Image from "next/image";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
+import type { MouseEvent } from "react";
+import { getPendingUserData } from "@/lib/user-sync";
 
 // Profile button component
 const ProfileButton = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, isLoaded } = useUser();
   const isActive = pathname === "/dashboard/profile";
+
+  const handleClick = async (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    // If user not loaded or not authenticated, send to sign-in (Clerk will redirect back)
+    if (!isLoaded || !user) {
+      router.push(`/sign-in?redirect_url=${encodeURIComponent("/onboarding")}`);
+      return;
+    }
+
+    // If there is pending local onboarding data, consider user ready for dashboard
+    const pending = getPendingUserData();
+    if (pending) {
+      router.push("/dashboard");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/users?clerkId=${encodeURIComponent(user.id)}`);
+      if (res.ok) {
+        const data = await res.json();
+
+        // If user exists and has required onboarding fields, go to dashboard
+        if (data.exists && data.user) {
+          const u = data.user;
+          const hasOnboarding =
+            u.age && u.weight && u.height && (u.activityLevel || u.goals || u.diet_preference);
+
+          if (hasOnboarding) {
+            router.push("/dashboard");
+            return;
+          }
+        }
+      }
+
+      // Otherwise, take user through onboarding
+      router.push("/onboarding");
+    } catch (err) {
+      console.error("Error checking user onboarding status:", err);
+      // On error, fall back to onboarding so user can complete profile (and onboarding saves locally if DB is down)
+      router.push("/onboarding");
+    }
+  };
 
   return (
     <SidebarMenuButton
@@ -40,19 +87,18 @@ const ProfileButton = () => {
         isActive ? "bg-gray-100 text-green-600" : ""
       }`}
     >
-      <Link href="/dashboard/profile" className="flex items-center space-x-3">
+      <a href="#" onClick={handleClick} className="flex items-center space-x-3">
         <User className="w-5 h-5 text-green-600" />
         <span className="text-lg font-medium text-gray-700">Profile</span>
         <UserButton
           appearance={{
             elements: {
-              userButtonTrigger:
-                "bg-transparent border-none shadow-none p-0 ml-auto",
+              userButtonTrigger: "bg-transparent border-none shadow-none p-0 ml-auto",
               userButtonAvatarBox: "w-5 h-5",
             },
           }}
         />
-      </Link>
+      </a>
     </SidebarMenuButton>
   );
 };

@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== 'production') {
 const circuitBreaker = DatabaseCircuitBreaker.getInstance();
 
 // Database connection health check with retry logic
-export async function checkDatabaseConnection(retries = 3): Promise<boolean> {
+export async function checkDatabaseConnection(retries = 1, timeoutMs = 2000): Promise<boolean> {
   // Check if database is configured
   if (!isDatabaseConfigured()) {
     console.error('DATABASE_URL is not configured');
@@ -42,21 +42,27 @@ export async function checkDatabaseConnection(retries = 3): Promise<boolean> {
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      await prisma.$queryRaw`SELECT 1`;
+      // Run health query with a short timeout so requests don't block for long when DB is unreachable.
+      const queryPromise = prisma.$queryRaw`SELECT 1`;
+      await Promise.race([
+        queryPromise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('DB check timed out')), timeoutMs))
+      ]);
+
       circuitBreaker.onSuccess();
       updateDatabaseStatus(true);
       return true;
     } catch (error) {
       console.error(`Database connection attempt ${attempt} failed:`, error);
-      
+
       if (attempt === retries) {
         circuitBreaker.onFailure();
         updateDatabaseStatus(false);
         return false;
       }
-      
-      // Wait before retrying (exponential backoff)
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+
+      // Short fixed wait before retrying
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }
   return false;
@@ -112,48 +118,57 @@ export async function createOrUpdateUserServer(userData: UserData) {
     try {
       console.log('Checking for existing user with clerkId:', userData.clerkId);
       
-      // Check if user already exists
-      const existingUser = await prisma.user.findUnique({
-        where: { clerkId: userData.clerkId }
+      // Use transaction to ensure data consistency
+      const result = await prisma.$transaction(async (tx) => {
+        // Check if user already exists
+        const existingUser = await tx.user.findUnique({
+          where: { clerkId: userData.clerkId }
+        });
+
+        if (existingUser) {
+          console.log('Updating existing user:', existingUser.id);
+          // Update existing user
+          const updatedUser = await tx.user.update({
+            where: { clerkId: userData.clerkId },
+            data: {
+              email: userData.email,
+              name: userData.name,
+              age: userData.age,
+              weight: userData.weight,
+              goals: userData.goals,
+              activityLevel: userData.activityLevel,
+              height: userData.height,
+              diet_preference: userData.diet_preference,
+              updatedAt: new Date(),
+            }
+          });
+          console.log('User updated successfully:', updatedUser.id);
+          return updatedUser;
+        } else {
+          console.log('Creating new user...');
+          // Create new user
+          const newUser = await tx.user.create({
+            data: {
+              clerkId: userData.clerkId,
+              email: userData.email,
+              name: userData.name,
+              age: userData.age,
+              weight: userData.weight,
+              goals: userData.goals,
+              activityLevel: userData.activityLevel,
+              height: userData.height,
+              diet_preference: userData.diet_preference,
+            }
+          });
+          console.log('New user created successfully:', newUser.id);
+          return newUser;
+        }
+      }, {
+        maxWait: 5000, // Wait for up to 5 seconds for the transaction to start
+        timeout: 10000, // Transaction timeout of 10 seconds
       });
 
-      if (existingUser) {
-        console.log('Updating existing user:', existingUser.id);
-        // Update existing user
-        const updatedUser = await prisma.user.update({
-          where: { clerkId: userData.clerkId },
-          data: {
-            email: userData.email,
-            name: userData.name,
-            age: userData.age,
-            weight: userData.weight,
-            goals: userData.goals,
-            activityLevel: userData.activityLevel,
-            height: userData.height,
-            diet_preference: userData.diet_preference,
-          }
-        });
-        console.log('User updated successfully:', updatedUser.id);
-        return updatedUser;
-      } else {
-        console.log('Creating new user...');
-        // Create new user
-        const newUser = await prisma.user.create({
-          data: {
-            clerkId: userData.clerkId,
-            email: userData.email,
-            name: userData.name,
-            age: userData.age,
-            weight: userData.weight,
-            goals: userData.goals,
-            activityLevel: userData.activityLevel,
-            height: userData.height,
-            diet_preference: userData.diet_preference,
-          }
-        });
-        console.log('New user created successfully:', newUser.id);
-        return newUser;
-      }
+      return result;
     } catch (error) {
       console.error('Error in createOrUpdateUserServer:', error);
       console.error('Prisma error details:', {

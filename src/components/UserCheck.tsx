@@ -1,5 +1,6 @@
 "use client";
 
+import { attemptUserDataSync, clearPendingUserData, getPendingUserData } from "@/lib/user-sync";
 import { useEffect, useState } from "react";
 
 import { getUserByClerkId } from "@/lib/api";
@@ -27,14 +28,43 @@ export default function UserCheck({ children }: UserCheckProps) {
 
       try {
         setError(null);
+        
+        // Check for pending user data from onboarding
+        const pendingData = getPendingUserData();
+        
+        if (pendingData) {
+          console.log("Found pending user data, allowing dashboard access");
+          setUserExists(true);
+          setIsCheckingUser(false);
+          
+          // Attempt to sync in the background
+          attemptUserDataSync().then((success) => {
+            if (success) {
+              console.log("Background sync successful");
+            }
+          });
+          
+          return;
+        }
+
         const existingUser = await getUserByClerkId(user.id);
 
         if (!existingUser) {
+          // Check if we're already on onboarding page to prevent loops
+          if (window.location.pathname === "/onboarding") {
+            setIsCheckingUser(false);
+            return;
+          }
+          
           // User doesn't exist in DB, redirect to onboarding
+          console.log("User not found in database, redirecting to onboarding");
           router.push("/onboarding");
           return;
         }
 
+        // Clear any pending data if user exists in DB
+        clearPendingUserData();
+        
         setUserExists(true);
         setRetryCount(0); // Reset retry count on success
       } catch (error) {
@@ -60,12 +90,21 @@ export default function UserCheck({ children }: UserCheckProps) {
             return;
           }
         } else if (errorMessage.includes("Database temporarily unavailable")) {
+          // Check for pending user data during DB issues
+          const pendingData = getPendingUserData();
+          if (pendingData) {
+            console.log("Database unavailable but found pending user data, allowing access");
+            setUserExists(true);
+            setIsCheckingUser(false);
+            return;
+          }
+          
           setError(
             "Service temporarily unavailable. Please try again in a moment."
           );
         } else {
-          // For other errors, assume user needs onboarding
-          if (typeof window !== "undefined") {
+          // For other errors, check if we're already on onboarding to prevent loops
+          if (typeof window !== "undefined" && window.location.pathname !== "/onboarding") {
             router.push("/onboarding");
             return;
           }

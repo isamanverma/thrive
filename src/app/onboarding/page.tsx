@@ -1,11 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { clearPendingUserData, storePendingUserData } from "@/lib/user-sync";
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import { Citrus } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 type QuestionType = "number" | "single-choice" | "multi-choice";
 
@@ -98,7 +100,7 @@ export default function OnboardingPage() {
         age: formData.age,
         weight: formData.weight,
         goals: formData.fitnessGoal,
-        allergies: [formData.dietType || "Non-Vegetarian"],
+        diet_preference: formData.dietType || "Non-Vegetarian",
         activityLevel: formData.activityLevel,
         height: formData.height,
       };
@@ -112,13 +114,28 @@ export default function OnboardingPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to save user data");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to save user data");
       }
 
-      const savedUser = await response.json();
-      console.log("User saved successfully:", savedUser);
+      const result = await response.json();
+      console.log("User save response:", result);
 
-      // Redirect to dashboard after successful save
+      // Handle fallback scenario when database is temporarily unavailable
+      if (result.fallback) {
+        console.log("Database temporarily unavailable, storing data locally");
+        // Store user data locally for retry later using the sync utility
+        storePendingUserData(userData);
+        
+        // Show a more user-friendly notification
+        console.log("Your profile has been temporarily saved and will be synchronized when the service is available.");
+      } else {
+        console.log("User saved successfully:", result.id);
+        // Clear any pending data on successful save
+        clearPendingUserData();
+      }
+
+      // Redirect to dashboard after successful save or fallback
       router.push("/dashboard");
     } catch (error) {
       console.error("Failed to save user:", error);

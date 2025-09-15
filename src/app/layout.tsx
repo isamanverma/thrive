@@ -1,6 +1,7 @@
 import { type Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import UserSyncProvider from "@/components/UserSyncProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,14 +31,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider afterSignInUrl="/dashboard" afterSignUpUrl="/dashboard">
+    <ClerkProvider
+      afterSignInUrl={process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || "/dashboard"}
+      afterSignUpUrl={process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || "/onboarding"}
+    >
       <html lang="en">
         <link rel="icon" href="/favicon.ico" />
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${plusJakartaSans.variable} antialiased`}
         >
-          {/* Clerk auth buttons removed from root layout header */}
-          {children}
+          <UserSyncProvider>
+            {children}
+          </UserSyncProvider>
         </body>
       </html>
     </ClerkProvider>
