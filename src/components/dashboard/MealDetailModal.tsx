@@ -58,6 +58,45 @@ export function MealDetailModal({
 
   if (!meal) return null;
 
+  // Extract macros (protein, carbs, fat) from possible nutrition shapes
+  const getMacro = (name: string): { amount: number; unit?: string } | null => {
+    const nut = (meal as unknown as { nutrition?: unknown })
+      .nutrition as unknown;
+    if (!nut || typeof nut !== "object") return null;
+    // Check normalized calories style: { calories: number }
+    // Also support nutrients array: [{ name: 'Protein', amount: 10, unit: 'g' }, ...]
+    if (Array.isArray((nut as { nutrients?: unknown }).nutrients)) {
+      const nutrients = (nut as { nutrients?: unknown }).nutrients as unknown[];
+      for (const n of nutrients) {
+        if (!n || typeof n !== "object") continue;
+        const obj = n as { name?: unknown; amount?: unknown; unit?: unknown };
+        if (
+          typeof obj.name === "string" &&
+          obj.name.toLowerCase() === name.toLowerCase() &&
+          typeof obj.amount === "number"
+        ) {
+          return {
+            amount: obj.amount,
+            unit: typeof obj.unit === "string" ? obj.unit : undefined,
+          };
+        }
+      }
+    }
+
+    // If meal has a flattened nutrition like { protein: 10, carbs: 20, fat: 5 }
+    const lower = name.toLowerCase();
+    const maybe = nut as { [k: string]: unknown };
+    if (typeof maybe[lower] === "number")
+      return { amount: maybe[lower] as number };
+
+    return null;
+  };
+
+  const protein = getMacro("Protein");
+  const carbs =
+    getMacro("Carbohydrates") || getMacro("Carb") || getMacro("Carbs");
+  const fat = getMacro("Fat");
+
   const handleSwapClick = () => {
     onSwapClick(mealType, dayIndex);
     onClose();
@@ -114,6 +153,30 @@ export function MealDetailModal({
                   </span>
                   <span className="text-sm text-gray-500">kcal</span>
                 </div>
+              </div>
+              {/* Macro chips: show only if value exists */}
+              <div className="flex items-center gap-2 ml-4">
+                {protein && (
+                  <span className="inline-flex items-center text-xs font-medium text-green-800 bg-green-50 border border-green-100 px-2 py-1 rounded-full">
+                    <span className="font-semibold mr-1">Protein</span>
+                    {Math.round(protein.amount)}
+                    {protein.unit ? ` ${protein.unit}` : ""}
+                  </span>
+                )}
+                {carbs && (
+                  <span className="inline-flex items-center text-xs font-medium text-blue-800 bg-blue-50 border border-blue-100 px-2 py-1 rounded-full">
+                    <span className="font-semibold mr-1">Carbs</span>
+                    {Math.round(carbs.amount)}
+                    {carbs.unit ? ` ${carbs.unit}` : ""}
+                  </span>
+                )}
+                {fat && (
+                  <span className="inline-flex items-center text-xs font-medium text-amber-800 bg-amber-50 border border-amber-100 px-2 py-1 rounded-full">
+                    <span className="font-semibold mr-1">Fat</span>
+                    {Math.round(fat.amount)}
+                    {fat.unit ? ` ${fat.unit}` : ""}
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center">

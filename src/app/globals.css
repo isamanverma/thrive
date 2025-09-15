@@ -249,3 +249,49 @@ body {
 .group:hover .group-hover\:rotate-y-180 {
   transform: rotateY(180deg);
 }
+/* Meal Plans — minimal Kanban card styles */
+.meal-card {
+  @apply bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-200;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Image container enforces a consistent aspect ratio (4:3) and lets the img fill */
+.meal-card__image {
+  position: relative;
+  width: 100%;
+  /* padding-top used where components set inline style for aspect ratio; keep this as safety fallback */
+  padding-top: 75%;
+  overflow: hidden;
+}
+.meal-card__image > .relative { /* inner wrapper used by components */
+  position: absolute;
+  inset: 0;
+}
+
+/* Name and calories */
+.meal-card__name {
+  @apply font-semibold text-sm text-gray-900;
+}
+.meal-card__calories {
+  @apply text-2xl sm:text-3xl font-extrabold text-gray-900;
+  line-height: 1;
+}
+
+/* Modal tweaks for minimal look */
+.meal-modal {
+  @apply bg-white rounded-lg shadow-lg p-4;
+}
+
+/* Macro tags (small minimalist pills) */
+.macro-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+.macro-tag {
+  @apply inline-flex items-center text-sm text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200;
+  white-space: nowrap;
+}

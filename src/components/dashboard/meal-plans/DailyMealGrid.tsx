@@ -62,8 +62,8 @@ export function DailyMealGrid({
       </div>
 
       <div
-        className="grid grid-cols-4 gap-6"
-        style={{ gridAutoRows: "minmax(12rem, auto)" }}
+        className="grid grid-cols-4 gap-3"
+        style={{ gridAutoRows: "minmax(14rem, auto)" }}
       >
         {mealTypes.map((type) => {
           const meal = getMealForType(type);

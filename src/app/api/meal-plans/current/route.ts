@@ -11,9 +11,10 @@ interface MealItem {
   calories: number;
   image?: string;
   description?: string;
+  nutrition?: unknown;
 }
 
-type WeeklyMeals = Record<number, Record<string, MealItem>>;
+type _WeeklyMeals = Record<number, Record<string, MealItem>>;
 
 // GET: Load current user's active meal plan
 export async function GET() {
@@ -98,13 +99,34 @@ export async function GET() {
       const mealType = item.mealType.toLowerCase();
       
       if (item.cachedRecipe && dayIndex >= 0 && dayIndex < 7) {
-        const nutrition = item.cachedRecipe.nutrition as { calories?: number } | null;
+  const rawNutrition = item.cachedRecipe.nutrition as unknown | null;
+
+        // Resolve calories from various nutrition shapes:
+        // - { calories: number }
+        // - { nutrients: [{ name: 'Calories', amount: number, unit: 'kcal' }, ...] }
+        let calories = 0;
+        if (rawNutrition && typeof rawNutrition === "object") {
+          const rn = rawNutrition as { [k: string]: unknown };
+          if (typeof rn.calories === "number") {
+            calories = rn.calories as number;
+          } else if (Array.isArray(rn.nutrients)) {
+            const nutrients = rn.nutrients as unknown[];
+            const found = nutrients.find((n) => {
+              if (!n || typeof n !== "object") return false;
+              const obj = n as { name?: unknown; amount?: unknown };
+              return typeof obj.name === "string" && (obj.name as string).toLowerCase().includes("calorie") && typeof obj.amount === "number";
+            });
+            if (found) calories = (found as { amount: number }).amount;
+          }
+        }
+
         weeklyMeals[dayIndex][mealType] = {
           id: parseInt(item.cachedRecipe.sourceId || item.cachedRecipe.id),
           name: item.cachedRecipe.title,
-          calories: nutrition?.calories || 0,
+          calories: Math.round(calories) || 0,
           image: item.cachedRecipe.imageUrl || item.cachedRecipe.fallbackImageUrl || "",
           description: item.cachedRecipe.description || "",
+          nutrition: item.cachedRecipe.nutrition || undefined,
         };
       }
     });

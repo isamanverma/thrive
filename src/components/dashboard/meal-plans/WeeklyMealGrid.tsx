@@ -65,22 +65,22 @@ export function WeeklyMealGrid({
     >
       {/* Day headers */}
       <div
-        className="grid gap-2 bg-gray-50 border-b"
+        className="grid gap-1 bg-gray-50 border-b"
         style={{
-          gridTemplateColumns: "80px repeat(7, 1fr)",
+          gridTemplateColumns: "70px repeat(7, 1fr)",
         }}
       >
-        <div className="p-2 text-center text-xs font-medium text-gray-500"></div>
+        <div className="p-1 text-center text-xs font-medium text-gray-500"></div>
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
           <div
             key={day}
-            className={`p-4 text-center font-semibold ${
+            className={`px-2 py-3 text-center font-semibold ${
               index === adjustedDayIndex
-                ? "bg-green-200 rounded-md m-2 text-green-700"
+                ? "bg-green-200 text-green-700"
                 : "text-gray-700"
             }`}
           >
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-1">
               <span>{day}</span>
               {index === adjustedDayIndex && (
                 <span className="text-xs bg-white/80 text-green-700 px-2 py-0.5 rounded-full font-semibold">

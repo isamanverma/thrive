@@ -240,14 +240,11 @@ export function useMealPlanData() {
   const initialLoadRef = useRef(false); // Track if initial load has happened
 
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeals>(() => {
+    // Start with an empty week so the UI renders a neutral skeleton on hard refresh.
+    // Persisted data (if any) will replace this after the initial fetch completes.
     const meals: WeeklyMeals = {};
     for (let i = 0; i < 7; i++) {
-      meals[i] = {
-        breakfast: sampleMeals.breakfast[i % sampleMeals.breakfast.length],
-        lunch: sampleMeals.lunch[i % sampleMeals.lunch.length],
-        snack: sampleMeals.snack[i % sampleMeals.snack.length],
-        dinner: sampleMeals.dinner[i % sampleMeals.dinner.length],
-      };
+      meals[i] = {};
     }
     return meals;
   });
@@ -259,25 +256,48 @@ export function useMealPlanData() {
       if (isLoadingRef.current) {
         return;
       }
-      
+
       isLoadingRef.current = true;
       setIsLoading(true);
+
       const response = await fetch('/api/meal-plans/current');
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.weeklyMeals && Object.keys(data.weeklyMeals).length > 0) {
-          // If we have persisted data, use it
-          setWeeklyMeals(data.weeklyMeals);
-          setMealPlanId(data.mealPlanId);
-        }
-        // If no persisted data, keep the default sample meals
+
+      if (!response.ok) {
+        // Ensure UI shows an empty week rather than sample data on failure
+        console.warn('Failed to load meal plan, rendering empty week');
+        const emptyMeals: WeeklyMeals = {};
+        for (let i = 0; i < 7; i++) emptyMeals[i] = {};
+        setWeeklyMeals(emptyMeals);
+        setMealPlanId(null);
+        return;
+      }
+
+      const data = await response.json();
+
+      // Normalize server response into a complete 0-6 mapping to avoid shape changes
+      const meals: WeeklyMeals = {};
+      for (let i = 0; i < 7; i++) meals[i] = {};
+
+      if (data && typeof data.weeklyMeals === 'object' && Object.keys(data.weeklyMeals).length > 0) {
+        Object.entries(data.weeklyMeals).forEach(([k, v]) => {
+          const idx = parseInt(k, 10);
+          if (!Number.isNaN(idx) && idx >= 0 && idx < 7) {
+            meals[idx] = v as WeeklyMeals[number];
+          }
+        });
+        setWeeklyMeals(meals);
+        setMealPlanId(data.mealPlanId || null);
       } else {
-        console.warn('Failed to load meal plan, using default sample meals');
+        // No persisted items -> keep empty week (neutral skeleton)
+        setWeeklyMeals(meals);
+        setMealPlanId(data?.mealPlanId || null);
       }
     } catch (error) {
       console.error('Error loading meal plan:', error);
-      // Keep using sample meals on error
+      const meals: WeeklyMeals = {};
+      for (let i = 0; i < 7; i++) meals[i] = {};
+      setWeeklyMeals(meals);
+      setMealPlanId(null);
     } finally {
       isLoadingRef.current = false;
       setIsLoading(false);
@@ -471,7 +491,7 @@ export function useMealPlanData() {
   // Calculate total calories for a day
   const calculateDayCalories = (dayMeals: Record<string, MealPlanItem>) => {
     return Object.values(dayMeals).reduce(
-      (total, meal) => total + meal.calories,
+      (total, meal) => total + (meal.calories ?? 0),
       0
     );
   };

@@ -95,19 +95,23 @@ export function MealTypeRow({
       transition={{ duration: 0.4, delay: 0.1 }}
     >
       <div
-        className="grid gap-2"
+        className="grid gap-1"
         style={{
-          gridTemplateColumns: "80px repeat(7, 1fr)",
-          minHeight: "180px",
-          maxHeight: "180px",
+          gridTemplateColumns: "70px repeat(7, 1fr)",
+          minHeight: "200px",
+          maxHeight: "200px",
         }}
       >
         <div
-          className={`p-3 flex items-center justify-center ${styles.indicatorBg}`}
+          className={`p-2 flex items-center justify-center ${styles.indicatorBg}`}
         >
           <div className="flex flex-col items-center gap-1">
-            <div className={`w-3 h-3 ${styles.indicatorDot} rounded-full`}></div>
-            <span className="text-xs font-medium text-gray-700">{mealType}</span>
+            <div
+              className={`w-3 h-3 ${styles.indicatorDot} rounded-full`}
+            ></div>
+            <span className="text-xs font-medium text-gray-700">
+              {mealType}
+            </span>
           </div>
         </div>
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => {
@@ -120,7 +124,7 @@ export function MealTypeRow({
           return (
             <motion.div
               key={`${mealType.toLowerCase()}-${index}`}
-              className={`p-2 transition-all duration-300 rounded-lg relative h-full flex items-stretch ${
+              className={`p-1 transition-all duration-300 rounded-lg relative h-full flex items-stretch ${
                 isDropZone
                   ? `bg-gradient-to-r ${styles.dropZone} ring-4 ring-opacity-60 shadow-lg`
                   : styles.hover
@@ -175,7 +179,9 @@ export function MealTypeRow({
                     <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-50 text-green-700">
                       <Plus className="w-3 h-3" />
                     </div>
-                    <span className="text-xs">Add {mealType.toLowerCase()}</span>
+                    <span className="text-xs">
+                      Add {mealType.toLowerCase()}
+                    </span>
                   </div>
                 </button>
               )}

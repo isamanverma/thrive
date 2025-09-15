@@ -4,27 +4,17 @@ import { GripVertical } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-// Remove simple HTML tags from external descriptions and collapse whitespace.
-const stripHtml = (input?: string) => {
-  if (!input) return "";
-  // Remove HTML tags
-  const noTags = input.replace(/<[^>]*>/g, "");
-  // Decode a few common HTML entities and collapse whitespace
-  return noTags
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/\s+/g, " ")
-    .trim();
-};
-
 export interface MealPlanItem {
   id: number;
   name: string;
-  calories: number;
-  image: string;
-  description: string;
+  calories?: number;
+  image?: string;
+  description?: string;
+  // nutrition may be either a normalized { calories: number } or the Spoonacular Nutrition object
+  nutrition?:
+    | { calories?: number }
+    | { nutrients?: Array<{ name: string; amount: number; unit: string }> }
+    | Record<string, unknown>;
 }
 
 interface MealPlanCardProps {
@@ -69,6 +59,43 @@ export function MealPlanCard({
   onDragEnd,
   isDragging = false,
 }: MealPlanCardProps) {
+  // Resolve calories from several possible shapes:
+  // - meal.calories (normalized)
+  // - meal.nutrition.calories
+  // - meal.nutrition.nutrients.find(n => n.name === 'Calories')?.amount
+  const resolveCalories = (m: MealPlanItem): number | null => {
+    if (!m) return null;
+    if (typeof m.calories === "number" && m.calories > 0) return m.calories;
+    const nut = m.nutrition;
+    if (!nut) return null;
+    if (
+      typeof (nut as { calories?: number }).calories === "number" &&
+      (nut as { calories?: number }).calories! > 0
+    ) {
+      return (nut as { calories?: number }).calories!;
+    }
+
+    // Spoonacular style: nutrients array with name 'Calories'
+    const maybeNutrients = (nut as { nutrients?: Array<unknown> }).nutrients;
+    if (Array.isArray(maybeNutrients)) {
+      for (const n of maybeNutrients) {
+        if (n && typeof n === "object") {
+          const obj = n as { name?: unknown; amount?: unknown };
+          if (
+            typeof obj.name === "string" &&
+            obj.name.toLowerCase() === "calories" &&
+            typeof obj.amount === "number"
+          ) {
+            return obj.amount;
+          }
+        }
+      }
+    }
+
+    return null;
+  };
+
+  const caloriesValue = resolveCalories(meal);
   const handleCardClick = (e: React.MouseEvent) => {
     e.preventDefault();
     onCardClick(meal, mealType, dayIndex);
@@ -103,7 +130,7 @@ export function MealPlanCard({
       className="w-full h-full"
     >
       <div
-        className={`bg-white rounded-xl border overflow-hidden cursor-pointer transition-all duration-200 flex flex-col w-full h-full min-h-[140px] max-h-[160px] ${
+        className={`bg-white rounded-xl border overflow-hidden cursor-pointer transition-all duration-200 flex flex-col w-full h-full min-h-[180px] max-h-[260px] ${
           isDraggable ? "cursor-grab active:cursor-grabbing" : ""
         } ${
           isDragging
@@ -142,9 +169,11 @@ export function MealPlanCard({
           </div>
         )}
 
-        {/* Image */}
-        <div className={`px-2 ${!showMealTypeLabel ? "pt-1" : ""} pb-1 flex-shrink-0`}>
-          <div className="relative w-full h-16 rounded-lg overflow-hidden">
+        {/* Image (larger) */}
+        <div
+          className={`px-2 ${!showMealTypeLabel ? "pt-1" : ""} pb-1 flex-shrink-0`}
+        >
+          <div className="relative w-full h-24 sm:h-28 rounded-md overflow-hidden">
             <Image
               src={meal.image || "/placeholder.svg"}
               alt={meal.name}
@@ -155,31 +184,25 @@ export function MealPlanCard({
         </div>
 
         {/* Content */}
-        <div className="px-2 pb-2 flex-1 overflow-hidden min-h-0">
-          <h4 className="font-semibold text-xs text-gray-900 mb-1 line-clamp-1">
+        <div className="px-2 pb-2 flex-1 overflow-hidden min-h-0 flex flex-col justify-between">
+          <h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">
             {meal.name}
           </h4>
 
-          {/* Calories display */}
-          <div className="flex items-center justify-between mb-1">
+          {/* Calories display (only) */}
+          <div className="flex items-center justify-start gap-2">
             <span className="text-xs text-gray-500">Calories</span>
             <div className="flex items-baseline gap-1">
               <span className="text-sm font-bold text-gray-900">
-                {typeof meal.calories === "number" && meal.calories > 0
-                  ? meal.calories
+                {typeof caloriesValue === "number" && caloriesValue > 0
+                  ? caloriesValue
                   : "—"}
               </span>
-              {typeof meal.calories === "number" && meal.calories > 0 && (
+              {typeof caloriesValue === "number" && caloriesValue > 0 && (
                 <span className="text-xs text-gray-500">kcal</span>
               )}
             </div>
           </div>
-          {/* Short description/snippet (cleaned and clamped) */}
-          {meal.description && (
-            <p className="text-xs text-gray-600 line-clamp-2 break-words overflow-hidden leading-tight">
-              {stripHtml(meal.description)}
-            </p>
-          )}
         </div>
       </div>
     </motion.div>

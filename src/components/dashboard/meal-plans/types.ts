@@ -1,9 +1,9 @@
 export interface MealPlanItem {
   id: number;
   name: string;
-  calories: number;
-  image: string;
-  description: string;
+  calories?: number;
+  image?: string;
+  description?: string;
 }
 
 export interface WeeklyMeals {
