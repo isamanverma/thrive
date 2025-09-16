@@ -43,7 +43,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <link rel="icon" href="/favicon.ico" />
         <body
-          className={`${geistSans.variable} ${geistMono.variable} ${plusJakartaSans.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${plusJakartaSans.variable} antialiased bg-background text-foreground`}
         >
           <ThemeProvider
             attribute="class"

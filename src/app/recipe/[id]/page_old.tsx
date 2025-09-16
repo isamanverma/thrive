@@ -135,13 +135,13 @@ export default function RecipePage() {
 
   if (error || !recipe) {
     return (
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-screen flex-col bg-card">
         <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            <h1 className="text-2xl font-bold text-foreground mb-4">
               Recipe Not Found
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               {error || "The recipe you're looking for doesn't exist."}
             </p>
             <Button
@@ -162,12 +162,12 @@ export default function RecipePage() {
   const carbs = getNutrient("Carbohydrates");
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-card">
       {/* Header */}
-      <header className="sticky top-0 z-20 w-full border-b border-gray-200 bg-white">
+      <header className="sticky top-0 z-20 w-full border-b border-border bg-card">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2 text-gray-900">
+            <Link href="/" className="flex items-center gap-2 text-foreground">
               <svg
                 className="h-8 w-8 text-purple-500"
                 fill="none"
@@ -184,19 +184,19 @@ export default function RecipePage() {
             <nav className="hidden md:flex items-center gap-6">
               <Link
                 href="/recipe-explorer"
-                className="text-sm font-medium text-gray-600 hover:text-purple-500"
+                className="text-sm font-medium text-muted-foreground hover:text-purple-500"
               >
                 Recipes
               </Link>
               <Link
                 href="/meal-plans"
-                className="text-sm font-medium text-gray-600 hover:text-purple-500"
+                className="text-sm font-medium text-muted-foreground hover:text-purple-500"
               >
                 Meal Plans
               </Link>
               <Link
                 href="#"
-                className="text-sm font-medium text-gray-600 hover:text-purple-500"
+                className="text-sm font-medium text-muted-foreground hover:text-purple-500"
               >
                 Community
               </Link>
@@ -207,7 +207,7 @@ export default function RecipePage() {
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
                   aria-hidden="true"
-                  className="h-5 w-5 text-gray-400"
+                  className="h-5 w-5 text-muted-foreground"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -220,12 +220,12 @@ export default function RecipePage() {
                 </svg>
               </div>
               <input
-                className="block w-full rounded-md border-gray-300 bg-gray-50 pl-10 pr-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-purple-500"
+                className="block w-full rounded-md border-border bg-muted pl-10 pr-3 py-2 text-sm text-foreground focus:border-purple-500 focus:ring-purple-500"
                 placeholder="Search"
                 type="text"
               />
             </div>
-            <button className="rounded-full p-2 text-gray-600 hover:bg-green-100 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+            <button className="rounded-full p-2 text-muted-foreground hover:bg-green-100 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -241,7 +241,7 @@ export default function RecipePage() {
                 ></path>
               </svg>
             </button>
-            <div className="h-10 w-10 rounded-full bg-cover bg-center bg-gray-300"></div>
+            <div className="h-10 w-10 rounded-full bg-cover bg-center bg-input"></div>
           </div>
         </div>
       </header>
@@ -254,7 +254,7 @@ export default function RecipePage() {
               <li>
                 <Link
                   href="/recipe-explorer"
-                  className="font-medium text-gray-600 hover:text-gray-900"
+                  className="font-medium text-muted-foreground hover:text-foreground"
                 >
                   Recipes
                 </Link>
@@ -262,7 +262,7 @@ export default function RecipePage() {
               <li>
                 <svg
                   aria-hidden="true"
-                  className="h-5 w-5 flex-shrink-0 text-gray-300"
+                  className="h-5 w-5 flex-shrink-0 text-muted-foreground"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -271,7 +271,7 @@ export default function RecipePage() {
                 </svg>
               </li>
               <li>
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-foreground">
                   {recipe.title}
                 </span>
               </li>
@@ -283,12 +283,12 @@ export default function RecipePage() {
           {/* Left Column - Recipe Info */}
           <div className="lg:col-span-2">
             <div className="sticky top-28">
-              <h2 className="mb-2 text-4xl font-extrabold tracking-tight text-gray-900">
+              <h2 className="mb-2 text-4xl font-extrabold tracking-tight text-foreground">
                 {recipe.title}
               </h2>
 
               {/* Recipe Summary */}
-              <p className="mb-6 text-lg text-gray-600">
+              <p className="mb-6 text-lg text-muted-foreground">
                 {recipe.summary?.replace(/<[^>]*>/g, "").slice(0, 200) +
                   "..." ||
                   "A refreshing and healthy recipe packed with flavor, perfect for a light meal or side dish."}
@@ -346,8 +346,8 @@ export default function RecipePage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
-                <h3 className="mb-4 text-2xl font-bold text-gray-900">
+              <div className="mt-8 rounded-xl border border-border bg-card p-6 shadow-lg">
+                <h3 className="mb-4 text-2xl font-bold text-foreground">
                   Actions
                 </h3>
                 <div className="space-y-4">
@@ -374,7 +374,7 @@ export default function RecipePage() {
           <div className="lg:col-span-3">
             {/* Ingredients */}
             <div className="mb-12">
-              <h3 className="mb-6 text-3xl font-bold text-gray-900">
+              <h3 className="mb-6 text-3xl font-bold text-foreground">
                 Ingredients
               </h3>
               <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
@@ -385,7 +385,7 @@ export default function RecipePage() {
                       key={ingredient.id}
                       className="flex flex-col items-center text-center"
                     >
-                      <div className="mb-2 h-24 w-24 rounded-full bg-gray-100 p-2">
+                      <div className="mb-2 h-24 w-24 rounded-full bg-muted p-2">
                         <Image
                           src={`https://spoonacular.com/cdn/ingredients_100x100/${ingredient.image}`}
                           alt={ingredient.name}
@@ -394,14 +394,14 @@ export default function RecipePage() {
                           className="h-full w-full object-contain"
                         />
                       </div>
-                      <span className="font-medium text-sm text-gray-600">
+                      <span className="font-medium text-sm text-muted-foreground">
                         {ingredient.original}
                       </span>
                     </div>
                   ))
                 ) : (
                   <div className="col-span-4 text-center py-8">
-                    <p className="text-gray-500">
+                    <p className="text-muted-foreground">
                       No ingredients available for this recipe.
                     </p>
                   </div>
@@ -411,17 +411,17 @@ export default function RecipePage() {
 
             {/* Instructions */}
             <div className="mb-12">
-              <h3 className="mb-6 text-3xl font-bold text-gray-900">
+              <h3 className="mb-6 text-3xl font-bold text-foreground">
                 Preparation
               </h3>
-              <div className="prose prose-lg max-w-none text-gray-600">
+              <div className="prose prose-lg max-w-none text-muted-foreground">
                 {recipe.analyzedInstructions &&
                 recipe.analyzedInstructions.length > 0 &&
                 recipe.analyzedInstructions[0]?.steps ? (
                   <ol className="list-decimal space-y-6 pl-6">
                     {recipe.analyzedInstructions[0].steps.map((step) => (
                       <li key={step.number} className="leading-relaxed">
-                        <strong className="text-gray-900">
+                        <strong className="text-foreground">
                           {step.step.split(":")[0]}:
                         </strong>{" "}
                         {step.step.split(":").slice(1).join(":") || step.step}
@@ -430,7 +430,7 @@ export default function RecipePage() {
                   </ol>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500">
+                    <p className="text-muted-foreground">
                       No detailed instructions available for this recipe.
                     </p>
                     {recipe.sourceUrl && (
@@ -450,7 +450,7 @@ export default function RecipePage() {
             {/* Recipe Videos */}
             {videos.length > 0 && (
               <div className="mt-12">
-                <h3 className="mb-6 text-3xl font-bold text-gray-900">
+                <h3 className="mb-6 text-3xl font-bold text-foreground">
                   Watch Recipe Video
                 </h3>
                 <div className="aspect-video overflow-hidden rounded-xl">
@@ -472,37 +472,37 @@ export default function RecipePage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-16 bg-gray-50 py-12">
+      <footer className="mt-16 bg-muted py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-start">
               <Link
                 href="#"
-                className="text-base text-gray-600 hover:text-gray-900"
+                className="text-base text-muted-foreground hover:text-foreground"
               >
                 About
               </Link>
               <Link
                 href="#"
-                className="text-base text-gray-600 hover:text-gray-900"
+                className="text-base text-muted-foreground hover:text-foreground"
               >
                 Contact
               </Link>
               <Link
                 href="#"
-                className="text-base text-gray-600 hover:text-gray-900"
+                className="text-base text-muted-foreground hover:text-foreground"
               >
                 Privacy Policy
               </Link>
               <Link
                 href="#"
-                className="text-base text-gray-600 hover:text-gray-900"
+                className="text-base text-muted-foreground hover:text-foreground"
               >
                 Terms of Service
               </Link>
             </nav>
             <div className="flex justify-center space-x-6 md:order-last">
-              <Link href="#" className="text-gray-600 hover:text-gray-900">
+              <Link href="#" className="text-muted-foreground hover:text-foreground">
                 <span className="sr-only">Twitter</span>
                 <svg
                   aria-hidden="true"
@@ -513,7 +513,7 @@ export default function RecipePage() {
                   <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
                 </svg>
               </Link>
-              <Link href="#" className="text-gray-600 hover:text-gray-900">
+              <Link href="#" className="text-muted-foreground hover:text-foreground">
                 <span className="sr-only">Instagram</span>
                 <svg
                   aria-hidden="true"
@@ -528,7 +528,7 @@ export default function RecipePage() {
                   ></path>
                 </svg>
               </Link>
-              <Link href="#" className="text-gray-600 hover:text-gray-900">
+              <Link href="#" className="text-muted-foreground hover:text-foreground">
                 <span className="sr-only">Facebook</span>
                 <svg
                   aria-hidden="true"
@@ -545,7 +545,7 @@ export default function RecipePage() {
               </Link>
             </div>
           </div>
-          <p className="mt-8 text-center text-base text-gray-600">
+          <p className="mt-8 text-center text-base text-muted-foreground">
             © 2024 Thrive. All rights reserved.
           </p>
         </div>
@@ -556,7 +556,7 @@ export default function RecipePage() {
 
 function RecipePageSkeleton() {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-card">
       <div className="mx-auto w-full max-w-5xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
           <div className="lg:col-span-2">

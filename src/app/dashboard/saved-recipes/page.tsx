@@ -22,16 +22,16 @@ export default function SavedRecipesPage() {
         <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium">
           All Recipes
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
           Breakfast
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
           Lunch
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
           Dinner
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
           Snacks
         </button>
       </div>
@@ -93,18 +93,18 @@ export default function SavedRecipesPage() {
             className="hover:shadow-md transition-shadow cursor-pointer"
           >
             <CardHeader className="pb-3">
-              <div className="w-full h-48 bg-gray-200 rounded-lg mb-3 relative">
+              <div className="w-full h-48 bg-input rounded-lg mb-3 relative">
                 <div className="absolute top-2 right-2">
-                  <Heart className="w-6 h-6 fill-red-500 text-red-500" />
+                  <Heart className="w-6 h-6 fill-red-500 text-red-500 dark:fill-red-400 dark:text-red-400" />
                 </div>
               </div>
               <CardTitle className="text-lg">{recipe.name}</CardTitle>
-              <CardDescription className="text-sm text-gray-500">
+              <CardDescription className="text-sm text-muted-foreground">
                 {recipe.category}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
                 <div className="flex items-center space-x-1">
                   <Clock className="w-4 h-4" />
                   <span>{recipe.time}</span>
@@ -120,7 +120,7 @@ export default function SavedRecipesPage() {
                 {recipe.tags.map((tag, tagIndex) => (
                   <span
                     key={tagIndex}
-                    className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
+                    className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full dark:bg-green-900 dark:text-green-200"
                   >
                     {tag}
                   </span>
@@ -131,7 +131,7 @@ export default function SavedRecipesPage() {
                 <button className="flex-1 bg-purple-500 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
                   View Recipe
                 </button>
-                <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm">
+                <button className="px-3 py-2 border border-border rounded-lg hover:bg-muted transition-colors text-sm">
                   Cook
                 </button>
               </div>
@@ -142,9 +142,9 @@ export default function SavedRecipesPage() {
 
       {/* Empty state (if no recipes) */}
       {/* <div className="text-center py-12">
-        <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No saved recipes yet</h3>
-        <p className="text-gray-500 mb-4">Start exploring recipes and save your favorites!</p>
+        <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-foreground mb-2">No saved recipes yet</h3>
+        <p className="text-muted-foreground mb-4">Start exploring recipes and save your favorites!</p>
         <button className="bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
           Explore Recipes
         </button>

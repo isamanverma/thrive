@@ -42,7 +42,7 @@ export function MealCard({
   };
 
   return (
-    <MagicCard className="bg-gray-50 p-4 rounded-xl">
+    <MagicCard className="p-4 rounded-xl bg-card text-foreground">
       <div
         className={`flex items-center gap-4 ${meal.spoonacularId ? "cursor-pointer" : ""}`}
         onClick={handleMealClick}
@@ -57,7 +57,7 @@ export function MealCard({
         </div>
         <div className="flex-1">
           <h4 className="font-semibold">{meal.name}</h4>
-          <p className="text-sm text-gray-500">{meal.type}</p>
+          <p className="text-sm text-muted-foreground">{meal.type}</p>
         </div>
         <div
           className="flex items-center gap-2"
@@ -68,8 +68,8 @@ export function MealCard({
             size="sm"
             className={`p-2 rounded-full ${
               meal.completed
-                ? "bg-purple-100 text-purple-600 hover:bg-purple-200"
-                : "hover:bg-gray-200"
+                ? "bg-accent text-accent-foreground hover:bg-accent"
+                : "hover:bg-muted"
             }`}
             onClick={() => onToggleComplete?.(meal.id)}
           >
@@ -78,7 +78,7 @@ export function MealCard({
           <Button
             variant="ghost"
             size="sm"
-            className="p-2 rounded-full hover:bg-gray-200"
+            className="p-2 rounded-full hover:bg-input"
             onClick={() => onRepeat?.(meal.id)}
           >
             <Repeat className="h-5 w-5" />
@@ -86,7 +86,7 @@ export function MealCard({
           <Button
             variant="ghost"
             size="sm"
-            className="p-2 rounded-full hover:bg-gray-200"
+            className="p-2 rounded-full hover:bg-input"
             onClick={() => onSave?.(meal.id)}
           >
             <Bookmark className="h-5 w-5" />
@@ -95,9 +95,9 @@ export function MealCard({
       </div>
 
       {showIngredients && meal.ingredients && meal.ingredients.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 pt-4 border-t border-border">
           <p className="text-sm font-semibold mb-2">Ingredients:</p>
-          <ul className="text-sm text-gray-600 list-disc list-inside">
+          <ul className="text-sm text-muted-foreground list-disc list-inside">
             {meal.ingredients.map((ingredient, index) => (
               <li key={index}>{ingredient}</li>
             ))}

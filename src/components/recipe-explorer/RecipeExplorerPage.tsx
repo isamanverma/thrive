@@ -282,9 +282,9 @@ export function RecipeExplorerPage({
       {/* Search Results Summary */}
       {searchQuery.trim() && totalResults > 0 && (
         <div className="mb-4">
-          <p className="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg inline-block">
+          <p className="text-xs text-muted-foreground bg-muted px-3 py-1.5 rounded-lg inline-block">
             Found{" "}
-            <span className="font-semibold text-gray-800">{totalResults}</span>{" "}
+            <span className="font-semibold text-foreground">{totalResults}</span>{" "}
             recipes for &quot;{searchQuery}&quot;
           </p>
         </div>
@@ -310,11 +310,11 @@ export function RecipeExplorerPage({
       {/* Empty State */}
       {!loading && recipes.length === 0 && searchQuery.trim() && (
         <div className="text-center py-8">
-          <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+          <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-3">
             <span className="text-2xl">🍽️</span>
           </div>
           <h3 className="text-base font-semibold mb-1">No recipes found</h3>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Try searching with different keywords or check your spelling.
           </p>
         </div>

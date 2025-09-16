@@ -37,36 +37,38 @@ interface MealTypeRowProps {
 
 const mealTypeStyles = {
   Breakfast: {
-    bg: "bg-orange-50",
-    indicatorBg: "bg-orange-100",
-    indicatorDot: "bg-orange-500",
+    // semantic classes allow tuning in CSS (including dark-mode desaturation)
+    bg: "meal-row--breakfast bg-orange-50",
+    indicatorBg: "meal-indicator--breakfast bg-orange-100",
+    indicatorDot: "meal-indicator-dot--breakfast bg-orange-500",
+    // keep original gradient/dropzone classes for familiar behavior
     dropZone: "from-orange-100 to-orange-200 ring-orange-300",
     hover: "hover:bg-orange-50/30",
-    shadow: "0 8px 25px rgba(255, 165, 0, 0.3)",
+    shadow: "0 8px 25px rgba(255, 165, 0, 0.18)",
   },
   Lunch: {
-    bg: "bg-blue-50",
-    indicatorBg: "bg-blue-100",
-    indicatorDot: "bg-blue-500",
+    bg: "meal-row--lunch bg-blue-50",
+    indicatorBg: "meal-indicator--lunch bg-blue-100",
+    indicatorDot: "meal-indicator-dot--lunch bg-blue-500",
     dropZone: "from-blue-100 to-blue-200 ring-blue-300",
     hover: "hover:bg-blue-50/30",
-    shadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
+    shadow: "0 8px 25px rgba(59, 130, 246, 0.18)",
   },
   Snack: {
-    bg: "bg-purple-50",
-    indicatorBg: "bg-purple-100",
-    indicatorDot: "bg-purple-500",
+    bg: "meal-row--snack bg-purple-50",
+    indicatorBg: "meal-indicator--snack bg-purple-100",
+    indicatorDot: "meal-indicator-dot--snack bg-purple-500",
     dropZone: "from-purple-100 to-purple-200 ring-purple-300",
     hover: "hover:bg-purple-50/30",
-    shadow: "0 8px 25px rgba(147, 51, 234, 0.3)",
+    shadow: "0 8px 25px rgba(147, 51, 234, 0.18)",
   },
   Dinner: {
-    bg: "bg-red-50",
-    indicatorBg: "bg-red-100",
-    indicatorDot: "bg-red-500",
+    bg: "meal-row--dinner bg-red-50",
+    indicatorBg: "meal-indicator--dinner bg-red-100",
+    indicatorDot: "meal-indicator-dot--dinner bg-red-500",
     dropZone: "from-red-100 to-red-200 ring-red-300",
     hover: "hover:bg-red-50/30",
-    shadow: "0 8px 25px rgba(239, 68, 68, 0.3)",
+    shadow: "0 8px 25px rgba(239, 68, 68, 0.18)",
   },
 };
 
@@ -109,7 +111,7 @@ export function MealTypeRow({
             <div
               className={`w-3 h-3 ${styles.indicatorDot} rounded-full`}
             ></div>
-            <span className="text-xs font-medium text-gray-700">
+            <span className="text-xs font-medium text-foreground">
               {mealType}
             </span>
           </div>
@@ -173,7 +175,7 @@ export function MealTypeRow({
                   onClick={() =>
                     onEmptySlotClick && onEmptySlotClick(mealType, index)
                   }
-                  className="group w-full h-full bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-500 text-sm hover:bg-gray-50 transition-colors"
+                  className="group w-full h-full bg-muted rounded-xl border-2 border-dashed border-border flex items-center justify-center text-muted-foreground text-sm hover:bg-muted transition-colors"
                 >
                   <div className="flex flex-col items-center gap-2">
                     <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-50 text-purple-700">

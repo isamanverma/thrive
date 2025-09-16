@@ -76,8 +76,8 @@ export function MagicCard({
       ref={cardRef}
       className={cn("group relative rounded-[inherit]", className)}
     >
-      
-      <div className="absolute inset-px rounded-[inherit] bg-background" />
+      {/* subtle overlay — keep low opacity so children remain readable and not bleached */}
+      <div className="absolute inset-px rounded-[inherit] bg-card/8 backdrop-blur-sm pointer-events-none" />
       <div className="relative">{children}</div>
     </div>
   );

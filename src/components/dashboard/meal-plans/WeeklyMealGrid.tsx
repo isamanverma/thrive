@@ -8,7 +8,6 @@ import type {
 
 import { MealTypeRow } from "./MealTypeRow";
 import React from "react";
-import { motion } from "framer-motion";
 
 interface WeeklyMealGridProps {
   weeklyMeals: WeeklyMeals;
@@ -57,33 +56,28 @@ export function WeeklyMealGrid({
   const adjustedDayIndex = (currentDayIndex - 1 + 7) % 7; // Adjust for 0-based index and wrap around
 
   return (
-    <motion.div
-      className="bg-white rounded-lg overflow-hidden shadow-sm"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <>
       {/* Day headers */}
       <div
-        className="grid gap-1 bg-gray-50 border-b"
+        className="grid gap-1 bg-muted border-b"
         style={{
           gridTemplateColumns: "70px repeat(7, 1fr)",
         }}
       >
-        <div className="p-1 text-center text-xs font-medium text-gray-500"></div>
+        <div className="p-1 text-center text-xs font-medium text-muted-foreground"></div>
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
           <div
             key={day}
             className={`px-2 py-3 text-center font-semibold ${
               index === adjustedDayIndex
                 ? "bg-purple-200 text-purple-700"
-                : "text-gray-700"
+                : "text-foreground"
             }`}
           >
             <div className="flex items-center justify-center gap-1">
               <span>{day}</span>
               {index === adjustedDayIndex && (
-                <span className="text-xs bg-white/80 text-purple-700 px-2 py-0.5 rounded-full font-semibold">
+                <span className="text-xs bg-card/80 text-purple-700 px-2 py-0.5 rounded-full font-semibold">
                   Today
                 </span>
               )}
@@ -110,6 +104,6 @@ export function WeeklyMealGrid({
           todayIndex={adjustedDayIndex}
         />
       ))}
-    </motion.div>
+    </>
   );
 }

@@ -122,12 +122,12 @@ export default function RecipePage() {
 
   if (error || !recipe) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-muted flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl font-bold text-foreground mb-4">
             Recipe Not Found
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-muted-foreground mb-6">
             {error || "The recipe you're looking for doesn't exist."}
           </p>
           <Button
@@ -151,7 +151,7 @@ export default function RecipePage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Simple Back Button Header */}
-      <div className="sticky top-0 z-20 w-full bg-white border-b border-gray-200">
+      <div className="sticky top-0 z-20 w-full bg-card border-b border-border">
         <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6 lg:px-8">
           <button
             onClick={() => {
@@ -161,7 +161,7 @@ export default function RecipePage() {
                 router.back();
               }
             }}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
             <span className="font-medium">Back</span>
@@ -195,7 +195,7 @@ function RecipePageSkeleton() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Back Button Skeleton */}
-      <div className="sticky top-0 z-20 w-full bg-white border-b border-gray-200">
+      <div className="sticky top-0 z-20 w-full bg-card border-b border-border">
         <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6 lg:px-8">
           <Skeleton className="h-6 w-16" />
         </div>
@@ -211,7 +211,7 @@ function RecipePageSkeleton() {
 
               <Skeleton className="aspect-square w-full rounded-2xl" />
 
-              <div className="rounded-xl border border-gray-200 p-6">
+              <div className="rounded-xl border border-border p-6">
                 <div className="grid grid-cols-2 gap-6 text-center sm:grid-cols-4">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i}>
@@ -222,7 +222,7 @@ function RecipePageSkeleton() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-gray-200 p-6">
+              <div className="rounded-xl border border-border p-6">
                 <Skeleton className="h-8 w-32 mb-6" />
                 <div className="space-y-4">
                   <Skeleton className="h-12 w-full" />

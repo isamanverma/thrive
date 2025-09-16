@@ -31,23 +31,23 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Display Name
               </label>
               <input
                 type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Your display name"
                 defaultValue="John Doe"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Email
               </label>
               <input
                 type="email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="your.email@example.com"
                 defaultValue="john.doe@example.com"
               />
@@ -73,7 +73,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Meal Reminders</h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Get reminded about meal times
                 </p>
               </div>
@@ -82,7 +82,7 @@ export default function SettingsPage() {
                   type="checkbox"
                   name="toggle"
                   id="meal-reminders"
-                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-card border-4 appearance-none cursor-pointer"
                 />
                 <label
                   htmlFor="meal-reminders"
@@ -94,7 +94,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Progress Updates</h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Weekly progress summaries
                 </p>
               </div>
@@ -103,7 +103,7 @@ export default function SettingsPage() {
                   type="checkbox"
                   name="toggle"
                   id="progress-updates"
-                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-card border-4 appearance-none cursor-pointer"
                   defaultChecked
                 />
                 <label
@@ -116,7 +116,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Recipe Suggestions</h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   New recipe recommendations
                 </p>
               </div>
@@ -125,7 +125,7 @@ export default function SettingsPage() {
                   type="checkbox"
                   name="toggle"
                   id="recipe-suggestions"
-                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-card border-4 appearance-none cursor-pointer"
                   defaultChecked
                 />
                 <label
@@ -152,7 +152,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Profile Visibility</h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Make your profile public
                 </p>
               </div>
@@ -161,11 +161,11 @@ export default function SettingsPage() {
                   type="checkbox"
                   name="toggle"
                   id="profile-visibility"
-                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-card border-4 appearance-none cursor-pointer"
                 />
                 <label
                   htmlFor="profile-visibility"
-                  className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                  className="toggle-label block overflow-hidden h-6 rounded-full bg-input cursor-pointer"
                 ></label>
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Data Sharing</h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Share data for better recommendations
                 </p>
               </div>
@@ -182,7 +182,7 @@ export default function SettingsPage() {
                   type="checkbox"
                   name="toggle"
                   id="data-sharing"
-                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                  className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-card border-4 appearance-none cursor-pointer"
                   defaultChecked
                 />
                 <label
@@ -211,10 +211,10 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Theme
               </label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+              <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
                 <option value="system">System</option>
@@ -222,10 +222,10 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Language
               </label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+              <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 <option value="en">English</option>
                 <option value="es">Spanish</option>
                 <option value="fr">French</option>
@@ -234,10 +234,10 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Time Zone
               </label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+              <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 <option value="utc">UTC</option>
                 <option value="est">Eastern Time</option>
                 <option value="pst">Pacific Time</option>
@@ -258,10 +258,10 @@ export default function SettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               Download all your data in a portable format
             </p>
-            <button className="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors">
+            <button className="w-full bg-input text-white py-2 rounded-lg hover:bg-input transition-colors">
               Export Data
             </button>
           </CardContent>
@@ -275,7 +275,7 @@ export default function SettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               Get help with using Thrive
             </p>
             <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
@@ -289,7 +289,7 @@ export default function SettingsPage() {
             <CardTitle className="text-red-600">Danger Zone</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               Permanently delete your account and all data
             </p>
             <button className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition-colors">

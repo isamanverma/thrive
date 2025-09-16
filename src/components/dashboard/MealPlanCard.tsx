@@ -39,12 +39,13 @@ interface MealPlanCardProps {
 }
 
 const getMealTypeStyles = (mealType: string) => {
+  // Use simple semantic classes so we can control saturation and borders from CSS.
   const styles = {
-    Breakfast: "bg-orange-100 text-orange-700 border-orange-200",
-    Lunch: "bg-blue-100 text-blue-700 border-blue-200",
-    Snack: "bg-purple-100 text-purple-700 border-purple-200",
-    Dinner: "bg-red-100 text-red-700 border-red-200",
-  };
+    Breakfast: "meal-type meal-type--breakfast",
+    Lunch: "meal-type meal-type--lunch",
+    Snack: "meal-type meal-type--snack",
+    Dinner: "meal-type meal-type--dinner",
+  } as const;
   return styles[mealType as keyof typeof styles] || styles.Lunch;
 };
 
@@ -130,12 +131,12 @@ export function MealPlanCard({
       className="w-full h-full"
     >
       <div
-        className={`bg-white rounded-xl border overflow-hidden cursor-pointer transition-all duration-200 flex flex-col w-full h-full min-h-[180px] max-h-[260px] ${
+        className={`bg-card rounded-xl border overflow-hidden cursor-pointer transition-all duration-200 flex flex-col w-full h-full min-h-[180px] max-h-[260px] ${
           isDraggable ? "cursor-grab active:cursor-grabbing" : ""
         } ${
           isDragging
             ? "border-green-300 shadow-lg shadow-green-100"
-            : "border-gray-200 hover:border-gray-300"
+            : "border-border hover:border-border"
         }`}
         draggable={isDraggable}
         onDragStart={
@@ -156,7 +157,7 @@ export function MealPlanCard({
                 {mealType}
               </span>
               {isDraggable && (
-                <GripVertical className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                <GripVertical className="w-3 h-3 text-muted-foreground flex-shrink-0" />
               )}
             </div>
           </div>
@@ -165,7 +166,7 @@ export function MealPlanCard({
         {/* Drag handle for cards without labels */}
         {!showMealTypeLabel && isDraggable && (
           <div className="p-2 pb-1 flex justify-end flex-shrink-0">
-            <GripVertical className="w-3 h-3 text-gray-400 flex-shrink-0" />
+            <GripVertical className="w-3 h-3 text-muted-foreground flex-shrink-0" />
           </div>
         )}
 
@@ -185,21 +186,21 @@ export function MealPlanCard({
 
         {/* Content */}
         <div className="px-2 pb-2 flex-1 overflow-hidden min-h-0 flex flex-col justify-between">
-          <h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">
+          <h4 className="font-semibold text-sm text-foreground mb-1 line-clamp-1">
             {meal.name}
           </h4>
 
           {/* Calories display (only) */}
           <div className="flex items-center justify-start gap-2">
-            <span className="text-xs text-gray-500">Calories</span>
+            <span className="text-xs text-muted-foreground">Calories</span>
             <div className="flex items-baseline gap-1">
-              <span className="text-sm font-bold text-gray-900">
+              <span className="text-sm font-bold text-foreground">
                 {typeof caloriesValue === "number" && caloriesValue > 0
                   ? caloriesValue
                   : "—"}
               </span>
               {typeof caloriesValue === "number" && caloriesValue > 0 && (
-                <span className="text-xs text-gray-500">kcal</span>
+                <span className="text-xs text-muted-foreground">kcal</span>
               )}
             </div>
           </div>

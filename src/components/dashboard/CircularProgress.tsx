@@ -58,7 +58,7 @@ export function CircularProgress({
           <span className="text-2xl font-bold" style={{ color }}>
             {percentage}%
           </span>
-          <span className="text-xs text-gray-500">{label}</span>
+          <span className="text-xs text-muted-foreground">{label}</span>
         </div>
       </div>
     </div>

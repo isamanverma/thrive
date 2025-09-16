@@ -14,8 +14,8 @@
 
 body {
   font-family: var(--font-plus-jakarta-sans), sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-primary);
+  background-color: var(--background, var(--background-color));
+  color: var(--foreground, var(--text-primary));
 }
 
 .prose ol>li::marker {
@@ -101,9 +101,9 @@ body {
 :root {
   --primary-color: #22c55e;
   --secondary-color: #f0fdf4;
-  --background-color: #ffffff;
-  --text-primary: #1a1a1a;
-  --text-secondary: #4a4a4a;
+  --background-color: var(--background, #ffffff);
+  --text-primary: var(--foreground, #1a1a1a);
+  --text-secondary: var(--muted-foreground, #4a4a4a);
   --accent-color: #dcfce7;
   --font-plus-jakarta-sans: 'Plus Jakarta Sans', sans-serif;
 }
@@ -140,37 +140,53 @@ body {
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.92 0.004 286.32);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.552 0.016 285.938);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.552 0.016 285.938);
+  /* Page / canvas */
+  --background: #1a1b1e;
+  --foreground: #f0f0f0;
+
+  /* Cards and surfaces */
+  --card: #222327;
+  --card-foreground: #f0f0f0;
+  --popover: #222327;
+  --popover-foreground: #f0f0f0;
+
+  /* Brand / accents */
+  --primary: #8c5cff;
+  --primary-foreground: #ffffff;
+  --secondary: #2a2c33;
+  --secondary-foreground: #8c5cff;
+  --muted: #2a2c33;
+  --muted-foreground: #f0f0f0;
+  --accent: #2a2c33;
+  --accent-foreground: #8c5cff;
+
+  /* Inputs / borders / rings */
+  --destructive: #ff6b6b;
+  --border: #33353a;
+  --input: #222327;
+  --ring: #8c5cff;
+
+  /* Charts (leave defaults or tweak as needed) */
+  --chart-1: #f59e0b;
+  --chart-2: #3b82f6;
+  --chart-3: #a78bfa;
+  --chart-4: #10b981;
+  --chart-5: #ef4444;
+
+  /* Sidebar specific tokens per request */
+  --sidebar: #161618;
+  --sidebar-foreground: #f0f0f0;
+  --sidebar-primary: #8c5cff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2a2c33;
+  --sidebar-accent-foreground: #8c5cff;
+  --sidebar-border: #33353a;
+  --sidebar-ring: #8c5cff;
+
+  /* compat mappings for legacy variable usage so text/background switch correctly */
+  --background-color: var(--background);
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-foreground);
 }
 
 @layer base {
@@ -249,12 +265,62 @@ body {
 .group:hover .group-hover\:rotate-y-180 {
   transform: rotateY(180deg);
 }
-/* Meal Plans — minimal Kanban card styles */
+/* Meal Plans — minimal Kanban card styles (adjusted for stronger depth) */
 .meal-card {
-  @apply bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-200;
+  @apply bg-card rounded-xl border border-border overflow-hidden transition-all duration-200;
   min-height: 160px;
   display: flex;
   flex-direction: column;
+
+  /* stronger, black-based shadow to give depth against the page */
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
+  /* subtle darker border so cards sit 'above' the canvas */
+  border-color: rgba(0,0,0,0.06);
+}
+.dark .meal-card {
+  @apply bg-card text-card-foreground border-border;
+}
+
+/* Card outline override: force card borders to the requested shade so cards read with a consistent outline */
+[data-slot="card"],
+.meal-card,
+.meal-modal {
+  border-color: #33353a !important;
+}
+/* Reusable surface helper that makes a surface use a slightly black-tinted background
+   and stronger black shadow to create visual depth for popovers, drawers, modals.
+   Apply the class `surface-depth` on components (popovers, sheets, drawers, modals)
+   that should read as 'deeper' against the page. */
+.surface-depth {
+  /* keep semantic token but mix a touch of black for perceived depth */
+  background-color: color-mix(in srgb, var(--card) 88%, black 12%);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18), 0 6px 14px rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.08);
+}
+
+/* Force dashboard/card foreground to the requested light shade (dark mode only) */
+.dark .bg-card,
+.dark [data-slot="card"],
+.dark .meal-card,
+.dark .meal-modal {
+  color: #f0f0f0 !important;
+}
+
+/* modal tweaks for minimal look (preserve existing look but increase depth) */
+.meal-modal {
+  @apply bg-card rounded-lg shadow-lg p-4;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+  border-color: rgba(0,0,0,0.06);
+}
+
+/* Ensure popovers/sheet/drawer components can opt-in to the stronger depth */
+.popover.surface-depth,
+.sheet.surface-depth,
+.drawer.surface-depth,
+.bg-popover.surface-depth {
+  background-color: color-mix(in srgb, var(--popover) 88%, black 12%) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18) !important;
+  border-color: rgba(0,0,0,0.08) !important;
 }
 
 /* Image container enforces a consistent aspect ratio (4:3) and lets the img fill */
@@ -272,16 +338,16 @@ body {
 
 /* Name and calories */
 .meal-card__name {
-  @apply font-semibold text-sm text-gray-900;
+  @apply font-semibold text-sm text-foreground;
 }
 .meal-card__calories {
-  @apply text-2xl sm:text-3xl font-extrabold text-gray-900;
+  @apply text-2xl sm:text-3xl font-extrabold text-foreground;
   line-height: 1;
 }
 
 /* Modal tweaks for minimal look */
 .meal-modal {
-  @apply bg-white rounded-lg shadow-lg p-4;
+  @apply bg-card rounded-lg shadow-lg p-4;
 }
 
 /* Macro tags (small minimalist pills) */
@@ -292,6 +358,73 @@ body {
   margin-top: 0.5rem;
 }
 .macro-tag {
-  @apply inline-flex items-center text-sm text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200;
+  @apply inline-flex items-center text-sm text-foreground bg-muted px-2 py-0.5 rounded-full border border-border;
   white-space: nowrap;
+}
+.dark .macro-tag {
+  @apply text-muted-foreground bg-muted border-border;
+}
+
+/* Dark-mode compatibility mappings
+   These override common Tailwind light-only utility classes when the .dark
+   class is applied so components immediately respect theme tokens without
+   changing every usage across the codebase.
+*/
+.dark .bg-card { background-color: var(--card) !important; color: var(--card-foreground) !important; }
+.dark .bg-muted,
+.dark .bg-muted { background-color: var(--muted) !important; color: var(--muted-foreground) !important; }
+.dark .bg-input,
+.dark .bg-input { background-color: var(--input) !important; color: var(--muted-foreground) !important; }
+
+.dark .text-foreground,
+.dark .text-foreground,
+.dark .text-foreground { color: var(--foreground) !important; }
+
+.dark .text-muted-foreground,
+.dark .text-muted-foreground,
+.dark .text-muted-foreground { color: var(--muted-foreground) !important; }
+
+.dark .border-border,
+.dark .border-border,
+.dark .border-border { border-color: var(--border) !important; }
+
+/* Hover utility overrides (common patterns) */
+.dark .hover\:bg-muted:hover,
+.dark .hover\:bg-muted:hover,
+.dark .hover\:bg-input:hover { background-color: var(--muted) !important; }
+
+/* Simple handling for fraction opacity classes like bg-card/10 used as overlays.
+   Use attribute selector to catch any classes that include bg-card/ and map to a
+   subtle overlay in dark mode.
+*/
+.dark [class*="bg-card/"] { background-color: rgba(255,255,255,0.06) !important; color: inherit !important; }
+
+/* Ensure elements that relied on white backgrounds use the card token in dark mode */
+.dark .meal-card { background-color: var(--card) !important; color: var(--card-foreground) !important; }
+
+/* Desaturate horizontal Kanban row colors in dark mode:
+   Use semantic row/indicator classes (added in components) so we can tune
+   the visible color while keeping the original light-mode utility classes.
+   Adjust the mix percentages to taste (increase second color for stronger tint).
+*/
+.dark .meal-row--breakfast { background-color: color-mix(in srgb, var(--card) 88%, #fb923c 6%) !important; }
+.dark .meal-row--lunch { background-color: color-mix(in srgb, var(--card) 88%, #60a5fa 6%) !important; }
+.dark .meal-row--snack { background-color: color-mix(in srgb, var(--card) 88%, #c4b5fd 6%) !important; }
+.dark .meal-row--dinner { background-color: color-mix(in srgb, var(--card) 88%, #f87171 6%) !important; }
+
+/* Indicator panels (left column) — slightly lighter than row so labels remain readable */
+.dark .meal-indicator--breakfast { background-color: color-mix(in srgb, var(--card) 82%, #fb923c 8%) !important; }
+.dark .meal-indicator--lunch { background-color: color-mix(in srgb, var(--card) 82%, #60a5fa 8%) !important; }
+.dark .meal-indicator--snack { background-color: color-mix(in srgb, var(--card) 82%, #c4b5fd 8%) !important; }
+.dark .meal-indicator--dinner { background-color: color-mix(in srgb, var(--card) 82%, #f87171 8%) !important; }
+
+/* Small indicator dot — use a muted foreground mix so dots remain visible but desaturated */
+.dark .meal-indicator-dot--breakfast { background-color: color-mix(in srgb, var(--card-foreground) 78%, #fb923c 12%) !important; }
+.dark .meal-indicator-dot--lunch { background-color: color-mix(in srgb, var(--card-foreground) 78%, #60a5fa 12%) !important; }
+.dark .meal-indicator-dot--snack { background-color: color-mix(in srgb, var(--card-foreground) 78%, #c4b5fd 12%) !important; }
+.dark .meal-indicator-dot--dinner { background-color: color-mix(in srgb, var(--card-foreground) 78%, #f87171 12%) !important; }
+
+/* Keep dropzone gradient readable but slightly toned down in dark mode */
+.dark .meal-row--breakfast [class*="from-"], .dark .meal-row--breakfast [class*="to-"] {
+  /* no-op here, but available for per-row dropzone overrides if needed */
 }

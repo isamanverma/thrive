@@ -35,7 +35,7 @@ export function PersonalizedBanner({
           <div className="ml-4">
             <ShimmerButton
               className={cn(
-                "flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-xs font-medium shadow-sm",
+                "flex items-center gap-2 rounded-lg bg-card px-3 py-1.5 text-xs font-medium shadow-sm",
                 "hover:bg-green-50 transition-all duration-200",
                 "dark:bg-green-900/50 dark:hover:bg-green-900/70",
                 loading && "opacity-75 cursor-not-allowed"

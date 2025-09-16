@@ -104,7 +104,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <main className="flex-1 overflow-y-auto px-4 py-6 max-w-7xl mx-auto">
         <DashboardHeader />
 
@@ -113,7 +113,7 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-6">
           {/* Header and Date Selector */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-2xl font-bold text-foreground">
               {isToday(selectedDate) ? "Today's Plans" : "Daily Plans"}
             </h2>
             <DateSelector
@@ -124,8 +124,8 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Meals Section */}
-            <MagicCard className="bg-white p-4 rounded-2xl shadow-sm border-0">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Meals</h3>
+            <MagicCard className="bg-card p-4 rounded-2xl shadow-sm border-0">
+              <h3 className="text-lg font-bold text-foreground mb-4">Meals</h3>
               <div className="space-y-3">
                 {meals.map((meal, index) => (
                   <MealCard
@@ -139,8 +139,8 @@ export default function DashboardPage() {
             </MagicCard>
 
             {/* Exercise Section */}
-            <MagicCard className="bg-white p-4 rounded-2xl shadow-sm border-0">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Exercise</h3>
+            <MagicCard className="bg-card p-4 rounded-2xl shadow-sm border-0">
+              <h3 className="text-lg font-bold text-foreground mb-4">Exercise</h3>
               <div className="space-y-3">
                 {exercises.map((exercise) => (
                   <ExerciseCard
@@ -154,8 +154,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Progress & Infographics */}
-          <MagicCard className="bg-white p-4 rounded-2xl shadow-sm border-0">
-            <h2 className="text-xl font-bold mb-4">Progress & Infographics</h2>
+          <MagicCard className="bg-card p-4 rounded-2xl shadow-sm border-0">
+            <h2 className="text-xl font-bold text-foreground mb-4">Progress & Infographics</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Progress Charts */}
               <div className="flex flex-col items-center justify-center gap-3">

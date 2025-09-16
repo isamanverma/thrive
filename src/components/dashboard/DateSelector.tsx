@@ -101,7 +101,7 @@ export function DateSelector({
     <>
       {/* Desktop Version - Hover-based expandable */}
       <div
-        className="hidden md:flex bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-100 mx-auto max-w-fit transition-all duration-500 ease-in-out hover:shadow-md hover:bg-white"
+        className="hidden md:flex bg-card/80 backdrop-blur-sm rounded-full shadow-sm border border-border mx-auto max-w-fit transition-all duration-500 ease-in-out hover:shadow-md hover:bg-card"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -110,12 +110,12 @@ export function DateSelector({
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigateWeek("prev")}
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors opacity-60 hover:opacity-100"
+              className="p-1 rounded-full hover:bg-muted transition-colors opacity-60 hover:opacity-100"
             >
               <ChevronLeft className="h-3 w-3" />
             </button>
 
-            <div className="text-sm font-medium text-gray-700 min-w-[80px] text-center">
+            <div className="text-sm font-medium text-foreground min-w-[80px] text-center">
               {selectedDate.toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -124,7 +124,7 @@ export function DateSelector({
 
             <button
               onClick={() => navigateWeek("next")}
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors opacity-60 hover:opacity-100"
+              className="p-1 rounded-full hover:bg-muted transition-colors opacity-60 hover:opacity-100"
             >
               <ChevronRight className="h-3 w-3" />
             </button>
@@ -137,7 +137,7 @@ export function DateSelector({
             ${isHovered ? "max-w-xs opacity-100" : "max-w-0 opacity-0"}
           `}
           >
-            <div className="w-px h-4 bg-gray-200 mx-1"></div>
+            <div className="w-px h-4 bg-input mx-1"></div>
             {currentWeek.map((date, index) => {
               const todayDate = isToday(date);
               const selectedDateMatch = isSelected(date);
@@ -155,7 +155,7 @@ export function DateSelector({
                           ? "bg-blue-600 text-white shadow-sm"
                           : todayDate
                             ? "bg-green-100 text-green-700"
-                            : "hover:bg-gray-100 text-gray-600"
+                            : "hover:bg-muted text-muted-foreground"
                     }
                   `}
                 >
@@ -163,7 +163,7 @@ export function DateSelector({
                     className={`text-[10px] font-medium ${
                       selectedDateMatch || todayDate
                         ? "opacity-80"
-                        : "text-gray-400"
+                        : "text-muted-foreground"
                     }`}
                   >
                     {formatShortDay(date).charAt(0)}
@@ -186,7 +186,7 @@ export function DateSelector({
             ${isHovered ? "max-w-xs opacity-100" : "max-w-0 opacity-0"}
           `}
           >
-            <div className="w-px h-4 bg-gray-200 mx-2"></div>
+            <div className="w-px h-4 bg-input mx-2"></div>
             <button
               onClick={navigateToToday}
               className="text-xs text-green-600 hover:text-green-700 font-medium px-2 py-1 rounded hover:bg-green-50 transition-colors whitespace-nowrap"
@@ -200,20 +200,20 @@ export function DateSelector({
       {/* Mobile Version - Touch-friendly */}
       <div className="md:hidden">
         {/* Compact Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3">
+        <div className="bg-card rounded-xl shadow-sm border border-border p-3">
           <div className="flex items-center justify-between">
             <button
               onClick={() => navigateWeek("prev")}
-              className="p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-muted active:bg-muted transition-colors"
             >
-              <ChevronLeft className="h-4 w-4 text-gray-600" />
+              <ChevronLeft className="h-4 w-4 text-muted-foreground" />
             </button>
 
             <button
               onClick={() => setIsMobileExpanded(!isMobileExpanded)}
-              className="flex-1 text-center py-2 px-4 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              className="flex-1 text-center py-2 px-4 rounded-lg hover:bg-muted active:bg-muted transition-colors"
             >
-              <div className="text-sm font-medium text-gray-700">
+              <div className="text-sm font-medium text-foreground">
                 {isToday(selectedDate) ? (
                   <span className="text-green-600 font-semibold">Today</span>
                 ) : (
@@ -224,22 +224,22 @@ export function DateSelector({
                   })
                 )}
               </div>
-              <div className="text-xs text-gray-500 mt-0.5">
+              <div className="text-xs text-muted-foreground mt-0.5">
                 Tap to {isMobileExpanded ? "close" : "choose date"}
               </div>
             </button>
 
             <button
               onClick={() => navigateWeek("next")}
-              className="p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-muted active:bg-muted transition-colors"
             >
-              <ChevronRight className="h-4 w-4 text-gray-600" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
 
           {/* Today Button when not in current week */}
           {!isTodayInCurrentWeek() && (
-            <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="mt-3 pt-3 border-t border-border">
               <button
                 onClick={navigateToToday}
                 className="w-full text-sm text-green-600 hover:text-green-700 font-medium py-2 px-3 rounded-lg hover:bg-green-50 active:bg-green-100 transition-colors"
@@ -252,7 +252,7 @@ export function DateSelector({
 
         {/* Expandable Week View */}
         {isMobileExpanded && (
-          <div className="mt-3 bg-white rounded-xl shadow-sm border border-gray-100 p-3 animate-in slide-in-from-top-2 duration-200">
+          <div className="mt-3 bg-card rounded-xl shadow-sm border border-border p-3 animate-in slide-in-from-top-2 duration-200">
             <div className="grid grid-cols-7 gap-1">
               {currentWeek.map((date, index) => {
                 const todayDate = isToday(date);
@@ -271,7 +271,7 @@ export function DateSelector({
                             ? "bg-blue-600 text-white shadow-sm"
                             : todayDate
                               ? "bg-green-100 text-green-700"
-                              : "hover:bg-gray-50 active:bg-gray-100 text-gray-600"
+                              : "hover:bg-muted active:bg-muted text-muted-foreground"
                       }
                     `}
                   >
@@ -279,7 +279,7 @@ export function DateSelector({
                       className={`text-xs font-medium ${
                         selectedDateMatch || todayDate
                           ? "opacity-80"
-                          : "text-gray-400"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {formatShortDay(date).substring(0, 3)}

@@ -137,10 +137,10 @@ export default function UserCheck({ children }: UserCheckProps) {
               />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-foreground mb-2">
             Connection Error
           </h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <button
             onClick={() => {
               setError(null);
@@ -162,7 +162,7 @@ export default function UserCheck({ children }: UserCheckProps) {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-lg font-medium text-gray-700">Loading...</p>
+          <p className="text-lg font-medium text-foreground">Loading...</p>
         </div>
       </div>
     );

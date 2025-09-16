@@ -27,14 +27,14 @@ export function RecipeExplorerHeader({
     <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
       {/* Title */}
       <div className="text-center md:text-left">
-        <h1 className="text-2xl font-bold text-gray-800 md:text-3xl">
+        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
           Recipe Explorer
         </h1>
       </div>
 
       {/* Search Bar */}
       <div className="relative w-full md:w-96">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
           <Search className="h-4 w-4" />
         </div>
         <Input
@@ -44,7 +44,7 @@ export function RecipeExplorerHeader({
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={loading}
-          className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-10 text-sm placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
+          className="w-full rounded-lg border border-border bg-card py-2 pl-10 pr-10 text-sm placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
         />
         <Button
           onClick={onSearchSubmit}

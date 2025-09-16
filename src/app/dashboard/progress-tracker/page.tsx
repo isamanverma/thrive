@@ -74,8 +74,8 @@ export default function ProgressTrackerPage() {
             <CardDescription>Your weight journey over time</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-              <span className="text-gray-500">
+            <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+              <span className="text-muted-foreground">
                 Weight progress chart will appear here
               </span>
             </div>
@@ -94,7 +94,7 @@ export default function ProgressTrackerPage() {
                   <span>Calories</span>
                   <span>1,850 / 2,000</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-input rounded-full h-2">
                   <div
                     className="bg-purple-500 h-2 rounded-full"
                     style={{ width: "92.5%" }}
@@ -107,7 +107,7 @@ export default function ProgressTrackerPage() {
                   <span>Protein</span>
                   <span>85g / 100g</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-input rounded-full h-2">
                   <div
                     className="bg-blue-600 h-2 rounded-full"
                     style={{ width: "85%" }}
@@ -120,7 +120,7 @@ export default function ProgressTrackerPage() {
                   <span>Carbs</span>
                   <span>180g / 200g</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-input rounded-full h-2">
                   <div
                     className="bg-yellow-600 h-2 rounded-full"
                     style={{ width: "90%" }}
@@ -133,7 +133,7 @@ export default function ProgressTrackerPage() {
                   <span>Fat</span>
                   <span>45g / 60g</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-input rounded-full h-2">
                   <div
                     className="bg-purple-600 h-2 rounded-full"
                     style={{ width: "75%" }}
@@ -157,33 +157,33 @@ export default function ProgressTrackerPage() {
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div>
                   <h4 className="font-medium">Lose 5kg</h4>
-                  <p className="text-sm text-gray-500">Target: Dec 2025</p>
+                  <p className="text-sm text-muted-foreground">Target: Dec 2025</p>
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-medium text-purple-500">75%</div>
-                  <div className="text-xs text-gray-500">2.5kg left</div>
+                  <div className="text-xs text-muted-foreground">2.5kg left</div>
                 </div>
               </div>
 
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div>
                   <h4 className="font-medium">Exercise 5x/week</h4>
-                  <p className="text-sm text-gray-500">This week</p>
+                  <p className="text-sm text-muted-foreground">This week</p>
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-medium text-blue-600">4/5</div>
-                  <div className="text-xs text-gray-500">1 more to go</div>
+                  <div className="text-xs text-muted-foreground">1 more to go</div>
                 </div>
               </div>
 
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div>
                   <h4 className="font-medium">Drink 8 glasses of water</h4>
-                  <p className="text-sm text-gray-500">Daily goal</p>
+                  <p className="text-sm text-muted-foreground">Daily goal</p>
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-medium text-cyan-600">6/8</div>
-                  <div className="text-xs text-gray-500">Today</div>
+                  <div className="text-xs text-muted-foreground">Today</div>
                 </div>
               </div>
             </div>
@@ -201,7 +201,7 @@ export default function ProgressTrackerPage() {
                 <Award className="w-8 h-8 text-purple-500" />
                 <div>
                   <h4 className="font-medium">7-Day Streak</h4>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Completed daily nutrition goals
                   </p>
                 </div>
@@ -211,7 +211,7 @@ export default function ProgressTrackerPage() {
                 <Award className="w-8 h-8 text-blue-600" />
                 <div>
                   <h4 className="font-medium">First 2kg Down</h4>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Reached your first milestone
                   </p>
                 </div>
@@ -221,7 +221,7 @@ export default function ProgressTrackerPage() {
                 <Award className="w-8 h-8 text-purple-600" />
                 <div>
                   <h4 className="font-medium">Recipe Explorer</h4>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Tried 10 new healthy recipes
                   </p>
                 </div>

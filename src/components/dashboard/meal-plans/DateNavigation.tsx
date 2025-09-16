@@ -37,7 +37,7 @@ export function DateNavigation({
       <Button variant="ghost" size="sm" onClick={() => onNavigate("prev")}>
         <ChevronLeft className="w-4 h-4" />
       </Button>
-      <h2 className="text-lg font-medium text-gray-900">
+      <h2 className="text-lg font-medium text-foreground">
         {viewMode === "weekly"
           ? formatWeekRange(currentDate)
           : formatDayDate(currentDate)}

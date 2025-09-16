@@ -33,13 +33,13 @@ export function RecipeInstructions({
 
   return (
     <div>
-      <h3 className="mb-6 text-3xl font-bold text-gray-900">Preparation</h3>
-      <div className="prose prose-lg max-w-none text-gray-600">
+      <h3 className="mb-6 text-3xl font-bold text-foreground">Preparation</h3>
+      <div className="prose prose-lg max-w-none text-muted-foreground">
         {hasInstructions ? (
           <ol className="list-decimal space-y-6 pl-6">
             {instructions[0].steps.map((step) => (
-              <li key={step.number} className="text-gray-600">
-                <strong className="text-gray-900 font-semibold">
+              <li key={step.number} className="text-muted-foreground">
+                <strong className="text-foreground font-semibold">
                   Step {step.number}:
                 </strong>{" "}
                 {step.step}
@@ -48,7 +48,7 @@ export function RecipeInstructions({
           </ol>
         ) : (
           <div className="text-center py-6">
-            <p className="text-gray-500 mb-4">
+            <p className="text-muted-foreground mb-4">
               No detailed instructions available for this recipe.
             </p>
             {sourceUrl && (

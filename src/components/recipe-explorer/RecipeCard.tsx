@@ -64,7 +64,7 @@ export function RecipeCard({
             {recipe.readyInMinutes && (
               <Badge
                 variant="secondary"
-                className="rounded-full bg-white/80 text-gray-700 backdrop-blur-sm text-xs font-medium"
+                className="rounded-full bg-popover/80 text-popover-foreground backdrop-blur-sm text-xs font-medium"
               >
                 {recipe.readyInMinutes} mins
               </Badge>
@@ -73,7 +73,7 @@ export function RecipeCard({
               <Badge
                 key={diet}
                 variant="secondary"
-                className="rounded-full bg-white/80 text-gray-700 backdrop-blur-sm text-xs font-medium"
+                className="rounded-full bg-popover/80 text-popover-foreground backdrop-blur-sm text-xs font-medium"
               >
                 {diet}
               </Badge>
@@ -142,8 +142,8 @@ export function RecipeCard({
               className={cn(
                 "h-7 w-7 p-0 rounded-full transition-all duration-200",
                 isSaved
-                  ? "bg-green-100 text-purple-500 hover:bg-green-200"
-                  : "bg-gray-100 text-muted-foreground hover:bg-gray-200 hover:text-purple-500"
+                  ? "bg-accent text-accent-foreground hover:bg-accent/90"
+                  : "bg-muted text-muted-foreground hover:bg-muted/90 hover:text-primary"
               )}
             >
               <Bookmark className={cn("h-3 w-3", isSaved && "fill-current")} />
@@ -155,7 +155,7 @@ export function RecipeCard({
                 e.stopPropagation();
                 onView(recipe.id);
               }}
-              className="h-7 w-7 p-0 rounded-full bg-gray-100 text-muted-foreground hover:bg-gray-200 hover:text-purple-500 transition-all duration-200"
+              className="h-7 w-7 p-0 rounded-full bg-muted text-muted-foreground hover:bg-input hover:text-purple-500 transition-all duration-200"
             >
               <Eye className="h-3 w-3" />
             </Button>

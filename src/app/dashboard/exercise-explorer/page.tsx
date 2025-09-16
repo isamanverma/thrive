@@ -20,14 +20,14 @@ export default function ExerciseExplorerPage() {
       {/* Search and filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <input
             type="text"
             placeholder="Search exercises..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
           />
         </div>
-        <button className="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50">
+        <button className="flex items-center space-x-2 px-4 py-2 border border-border rounded-lg hover:bg-muted">
           <Filter className="w-4 h-4" />
           <span>Filters</span>
         </button>
@@ -38,22 +38,22 @@ export default function ExerciseExplorerPage() {
         <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium whitespace-nowrap">
           All Exercises
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700 whitespace-nowrap">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground whitespace-nowrap">
           Strength
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700 whitespace-nowrap">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground whitespace-nowrap">
           Cardio
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700 whitespace-nowrap">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground whitespace-nowrap">
           Flexibility
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700 whitespace-nowrap">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground whitespace-nowrap">
           Core
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700 whitespace-nowrap">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground whitespace-nowrap">
           Upper Body
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700 whitespace-nowrap">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground whitespace-nowrap">
           Lower Body
         </button>
       </div>
@@ -154,10 +154,10 @@ export default function ExerciseExplorerPage() {
                   <CardDescription>{exercise.category}</CardDescription>
                 </div>
                 <div className="flex space-x-2">
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Heart className="w-5 h-5 text-gray-400 hover:text-red-500" />
+                  <button className="p-1 hover:bg-muted rounded">
+                    <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500" />
                   </button>
-                  <button className="p-1 hover:bg-gray-100 rounded">
+                  <button className="p-1 hover:bg-muted rounded">
                     <Play className="w-5 h-5 text-purple-500" />
                   </button>
                 </div>
@@ -165,7 +165,7 @@ export default function ExerciseExplorerPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm text-gray-600">
+                <div className="flex items-center justify-between text-sm text-muted-foreground">
                   <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4" />
                     <span>{exercise.duration}</span>
@@ -176,7 +176,7 @@ export default function ExerciseExplorerPage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Difficulty:</span>
+                  <span className="text-muted-foreground">Difficulty:</span>
                   <span
                     className={`px-2 py-1 rounded-full text-xs ${
                       exercise.difficulty === "Beginner"
@@ -190,16 +190,16 @@ export default function ExerciseExplorerPage() {
                   </span>
                 </div>
                 <div className="text-sm">
-                  <span className="text-gray-600">Equipment: </span>
-                  <span className="text-gray-800">{exercise.equipment}</span>
+                  <span className="text-muted-foreground">Equipment: </span>
+                  <span className="text-foreground">{exercise.equipment}</span>
                 </div>
                 <div className="text-sm">
-                  <span className="text-gray-600">Target Muscles:</span>
+                  <span className="text-muted-foreground">Target Muscles:</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {exercise.muscles.map((muscle, muscleIndex) => (
                       <span
                         key={muscleIndex}
-                        className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
+                        className="px-2 py-1 bg-muted text-foreground rounded-full text-xs"
                       >
                         {muscle}
                       </span>
@@ -222,7 +222,7 @@ export default function ExerciseExplorerPage() {
 
       {/* Load more button */}
       <div className="flex justify-center mt-8">
-        <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+        <button className="px-6 py-3 border border-border text-foreground rounded-lg hover:bg-muted transition-colors">
           Load More Exercises
         </button>
       </div>

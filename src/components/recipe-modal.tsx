@@ -184,15 +184,15 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="bg-card text-foreground rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
               {loading ? (
                 <RecipeModalSkeleton onClose={handleClose} />
               ) : error || !recipe ? (
                 <div className="p-8 text-center">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-2xl font-bold text-foreground mb-4">
                     Recipe Not Found
                   </h2>
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-muted-foreground mb-6">
                     {error || "The recipe you're looking for doesn't exist."}
                   </p>
                   <Button onClick={handleClose} variant="outline">
@@ -220,7 +220,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                       {/* Close button in top right */}
                       <button
                         onClick={handleClose}
-                        className="absolute top-4 right-4 p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors"
+                        className="absolute top-4 right-4 p-2 bg-card/10 backdrop-blur-sm rounded-full hover:bg-card/20 transition-colors"
                       >
                         <X className="w-5 h-5 text-white" />
                       </button>
@@ -307,7 +307,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                 Description
                               </h3>
                               <div
-                                className="text-gray-700 leading-relaxed"
+                                className="text-muted-foreground leading-relaxed"
                                 dangerouslySetInnerHTML={{
                                   __html: recipe.summary,
                                 }}
@@ -329,12 +329,12 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                     (step) => (
                                       <div
                                         key={step.number}
-                                        className="flex gap-4 p-4 bg-gray-50 rounded-lg"
+                                        className="flex gap-4 p-4 bg-muted rounded-lg"
                                       >
                                         <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
                                           {step.number}
                                         </div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed">
                                           {step.step}
                                         </p>
                                       </div>
@@ -380,9 +380,9 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                     (ingredient) => (
                                       <div
                                         key={ingredient.id}
-                                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                                        className="flex items-center gap-3 p-3 bg-muted rounded-lg"
                                       >
-                                        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center overflow-hidden">
+                                        <div className="w-8 h-8 bg-card rounded-lg flex items-center justify-center overflow-hidden">
                                           <Image
                                             src={getIngredientImageUrl(
                                               ingredient
@@ -408,7 +408,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                                       ""
                                                     ) || "ingredient";
                                                 target.src = `https://spoonacular.com/cdn/ingredients_100x100/${altName}.png`;
-
+  
                                                 target.onerror = () => {
                                                   target.src =
                                                     "https://via.placeholder.com/32x32/f3f4f6/9ca3af?text=🥘";
@@ -418,10 +418,10 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                           />
                                         </div>
                                         <div className="flex-1">
-                                          <div className="text-sm font-medium text-gray-900">
+                                          <div className="text-sm font-medium text-foreground">
                                             {ingredient.name}
                                           </div>
-                                          <div className="text-xs text-gray-500">
+                                          <div className="text-xs text-muted-foreground">
                                             {ingredient.amount}{" "}
                                             {ingredient.unit}
                                           </div>
@@ -451,16 +451,16 @@ function RecipeModalSkeleton({ onClose }: { onClose: () => void }) {
     <div className="flex flex-col h-full min-h-0">
       {/* Header Skeleton - Fixed */}
       <div className="relative flex-shrink-0">
-        <div className="aspect-[2/1] bg-gray-200 animate-pulse relative">
+        <div className="aspect-[2/1] bg-muted animate-pulse relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 bg-white/10 backdrop-blur-sm rounded-full"
+            className="absolute top-4 right-4 p-2 bg-card/10 backdrop-blur-sm rounded-full"
           >
             <X className="w-5 h-5 text-white" />
           </button>
           <div className="absolute bottom-6 left-6 right-6">
-            <div className="h-8 bg-white/20 rounded w-3/4 mb-2" />
-            <div className="h-4 bg-white/20 rounded w-1/2" />
+            <div className="h-8 bg-card/20 rounded w-3/4 mb-2" />
+            <div className="h-4 bg-card/20 rounded w-1/2" />
           </div>
         </div>
       </div>

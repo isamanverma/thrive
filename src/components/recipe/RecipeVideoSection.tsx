@@ -17,7 +17,7 @@ export function RecipeVideoSection({ videos }: RecipeVideoSectionProps) {
 
   return (
     <div className="mt-12">
-      <h3 className="mb-6 text-3xl font-bold text-gray-900">
+      <h3 className="mb-6 text-3xl font-bold text-foreground">
         Watch Recipe Video
       </h3>
       <div className="aspect-video overflow-hidden rounded-xl">

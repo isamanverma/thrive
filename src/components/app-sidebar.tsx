@@ -7,10 +7,13 @@ import {
   Dumbbell,
   Heart,
   Home,
+  Moon,
   Search,
   Settings,
+  Sun,
   User,
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -27,9 +30,9 @@ import { usePathname, useRouter } from "next/navigation";
 
 import Image from "next/image";
 import Link from "next/link";
-import { ModeToggle } from "@/components/mode-toggle";
 import type { MouseEvent } from "react";
 import { getPendingUserData } from "@/lib/user-sync";
+import { useTheme } from "next-themes";
 
 // Profile button component
 const ProfileButton = () => {
@@ -89,13 +92,13 @@ const ProfileButton = () => {
   return (
     <SidebarMenuButton
       asChild
-      className={`hover:bg-gray-100 rounded-lg p-3 ${
-        isActive ? "bg-gray-100 text-purple-500" : ""
+      className={`hover:bg-muted rounded-lg p-3 ${
+        isActive ? "bg-muted text-purple-600" : ""
       }`}
     >
       <a href="#" onClick={handleClick} className="flex items-center space-x-3">
-        <User className="w-5 h-5 text-purple-500" />
-        <span className="text-lg font-medium text-gray-700">Profile</span>
+        <User className="w-5 h-5 text-purple-600" />
+        <span className="text-lg font-medium text-muted-foreground">Profile</span>
         <UserButton
           appearance={{
             elements: {
@@ -151,10 +154,11 @@ const items = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { setTheme } = useTheme();
 
   return (
-    <Sidebar className="bg-gray-50 border-r border-gray-200">
-      <SidebarHeader className="px-6 py-4 bg-white border-b border-gray-200">
+    <Sidebar className="bg-sidebar border-r border-border">
+      <SidebarHeader className="px-6 py-4 bg-sidebar border-b border-border">
         <div className="flex items-center space-x-3">
           <Image
             src="/logo.png"
@@ -163,7 +167,7 @@ export function AppSidebar() {
             height={40}
             className="rounded-lg"
           />
-          <span className="text-xl font-bold text-gray-800">Thrive</span>
+          <span className="text-xl font-bold text-foreground">Thrive</span>
         </div>
       </SidebarHeader>
       <SidebarContent className="p-4">
@@ -176,19 +180,17 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild
-                      className={`hover:bg-gray-100 rounded-lg p-3 ${
-                        isActive ? "bg-gray-100 text-purple-500" : ""
+                      className={`hover:bg-muted rounded-lg p-3 ${
+                        isActive ? "bg-muted text-purple-600" : ""
                       }`}
                     >
                       <Link
                         href={item.url}
                         className="flex items-center space-x-3"
                       >
-                        <item.icon
-                          className={`w-5 h-5 ${isActive ? "text-purple-500" : "text-purple-500"}`}
-                        />
+                        <item.icon className="w-5 h-5 text-purple-600" />
                         <span
-                          className={`text-lg font-medium ${isActive ? "text-purple-500" : "text-gray-700"}`}
+                          className={`text-lg font-medium ${isActive ? "text-purple-600" : "text-muted-foreground"}`}
                         >
                           {item.title}
                         </span>
@@ -201,13 +203,42 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-4 bg-white border-t border-gray-200">
+      <SidebarFooter className="p-4 bg-sidebar border-t border-border">
         <div className="flex flex-col space-y-3">
+          {/* Theme (mode) toggle first — avoid using SidebarMenuItem (li) here to prevent stray list bullets */}
+          <div className="flex">
+            <DropdownMenu>
+              <SidebarMenuButton asChild className="hover:bg-muted rounded-lg p-3">
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center w-full space-x-3">
+                    <Sun className="w-5 h-5 text-purple-600" />
+                    <span className="text-lg font-medium text-muted-foreground">
+                      Theme
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+              </SidebarMenuButton>
+    
+              <DropdownMenuContent align="end" side="top">
+                <DropdownMenuItem onClick={() => setTheme("light")}>
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("system")}>
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+    
+          {/* Notifications */}
           <SidebarMenuButton
             asChild
-            className={`hover:bg-gray-100 rounded-lg p-3 ${
+            className={`hover:bg-muted rounded-lg p-3 ${
               pathname === "/dashboard/notifications"
-                ? "bg-gray-100 text-purple-500"
+                ? "bg-muted text-purple-500"
                 : ""
             }`}
           >
@@ -215,23 +246,25 @@ export function AppSidebar() {
               href="/dashboard/notifications"
               className="flex items-center space-x-3"
             >
-              <Bell className="w-5 h-5 text-purple-500" />
+              <Bell className="w-5 h-5 text-purple-600" />
               <span
                 className={`text-lg font-medium ${
                   pathname === "/dashboard/notifications"
-                    ? "text-purple-500"
-                    : "text-gray-700"
+                    ? "text-purple-600"
+                    : "text-muted-foreground"
                 }`}
               >
                 Notifications
               </span>
             </Link>
           </SidebarMenuButton>
+    
+          {/* Settings */}
           <SidebarMenuButton
             asChild
-            className={`hover:bg-gray-100 rounded-lg p-3 ${
+            className={`hover:bg-muted rounded-lg p-3 ${
               pathname === "/dashboard/settings"
-                ? "bg-gray-100 text-purple-500"
+                ? "bg-muted text-primary"
                 : ""
             }`}
           >
@@ -239,24 +272,23 @@ export function AppSidebar() {
               href="/dashboard/settings"
               className="flex items-center space-x-3"
             >
-              <Settings className="w-5 h-5 text-purple-500" />
+              <Settings className="w-5 h-5 text-purple-600" />
               <span
                 className={`text-lg font-medium ${
                   pathname === "/dashboard/settings"
-                    ? "text-purple-500"
-                    : "text-gray-700"
+                    ? "text-purple-600"
+                    : "text-muted-foreground"
                 }`}
               >
                 Settings
               </span>
             </Link>
           </SidebarMenuButton>
-          <div className="flex items-center justify-between">
+    
+          {/* Profile */}
+          <div className="flex flex-col space-y-2">
             <div className="flex-1">
               <ProfileButton />
-            </div>
-            <div className="ml-2">
-              <ModeToggle />
             </div>
           </div>
         </div>

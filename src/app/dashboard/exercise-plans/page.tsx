@@ -22,16 +22,16 @@ export default function ExercisePlansPage() {
         <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium">
           Active Plans
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
           Strength
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
           Cardio
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
           Flexibility
         </button>
-        <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+        <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
           Completed
         </button>
       </div>
@@ -103,7 +103,7 @@ export default function ExercisePlansPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm text-gray-600">
+                <div className="flex items-center justify-between text-sm text-muted-foreground">
                   <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4" />
                     <span>{plan.duration}</span>
@@ -114,7 +114,7 @@ export default function ExercisePlansPage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Difficulty:</span>
+                  <span className="text-muted-foreground">Difficulty:</span>
                   <span
                     className={`px-2 py-1 rounded-full text-xs ${
                       plan.difficulty === "Beginner"
@@ -129,12 +129,12 @@ export default function ExercisePlansPage() {
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Progress:</span>
+                    <span className="text-muted-foreground">Progress:</span>
                     <span className="text-purple-500 font-medium">
                       {plan.progress}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-input rounded-full h-2">
                     <div
                       className="bg-purple-500 h-2 rounded-full transition-all duration-300"
                       style={{ width: plan.progress }}

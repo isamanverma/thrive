@@ -137,7 +137,7 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
         {recipes.map((recipe) => (
           <Card
             key={recipe.id}
-            className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 bg-white dark:bg-card shadow-md"
+            className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 bg-card dark:bg-card shadow-md"
           >
             <div className="aspect-video relative overflow-hidden">
               <Image
@@ -209,7 +209,7 @@ export function RecipeSearch({ className }: RecipeSearchProps) {
                     variant="ghost"
                     size="sm"
                     asChild
-                    className="p-2 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+                    className="p-2 hover:bg-muted hover:text-foreground transition-colors"
                     title="Open in new page"
                   >
                     <Link href={getRecipeUrl(recipe.id)} target="_blank">

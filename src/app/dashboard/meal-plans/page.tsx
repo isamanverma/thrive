@@ -12,6 +12,7 @@ import {
   useMealPlanData,
   type MealPlanItem,
 } from "@/components/dashboard/meal-plans";
+import { Skeleton } from "@/components/ui/skeleton";
 import type React from "react";
 import { useState } from "react";
 
@@ -190,55 +191,85 @@ export default function MealPlansPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted p-6">
+      <MealPlanHeader
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        onRegenerate={handleRegenerate}
+      />
+
+      <DateNavigation
+        viewMode={viewMode}
+        currentDate={currentDate}
+        onNavigate={navigateDate}
+      />
+
       {isLoading ? (
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <span className="ml-3 text-gray-600">Loading your meal plan...</span>
+        viewMode === "weekly" ? (
+          <>
+            <div className="mb-4 grid grid-cols-2 gap-4">
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+
+            <div
+              className="grid grid-cols-4 gap-3"
+              style={{ gridAutoRows: "minmax(14rem, auto)" }}
+            >
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="rounded-xl overflow-hidden">
+                  <Skeleton className="h-full w-full rounded-xl" />
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mb-4">
+              <Skeleton className="h-20 w-48" />
+            </div>
+
+            <div
+              className="grid grid-cols-4 gap-3"
+              style={{ gridAutoRows: "minmax(14rem, auto)" }}
+            >
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="rounded-xl overflow-hidden">
+                  <Skeleton className="h-full w-full rounded-xl" />
+                </div>
+              ))}
+            </div>
+          </>
+        )
+      ) : viewMode === "weekly" ? (
+        <div className="bg-card rounded-lg overflow-hidden shadow-sm">
+          <div className="p-6">
+            <WeeklyStatsCard stats={weeklyStats} />
+            <WeeklyMealGrid
+              weeklyMeals={weeklyMeals}
+              draggedItem={draggedItem}
+              activeDropZone={activeDropZone}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onRecipeClick={handleRecipeClick}
+              currentDayIndex={currentDayIndex}
+              onEmptySlotClick={handleEmptySlotClick}
+            />
+          </div>
         </div>
       ) : (
         <>
-          <MealPlanHeader
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-            onRegenerate={handleRegenerate}
+          <DailyStatsCard stats={dailyStats} />
+          <DailyMealGrid
+            sampleMeals={sampleMeals}
+            onRecipeClick={handleRecipeClick}
+            weeklyMeals={weeklyMeals}
+            onEmptySlotClick={handleEmptySlotClick}
+            currentDayIndex={currentDayIndex}
           />
-
-          <DateNavigation
-            viewMode={viewMode}
-            currentDate={currentDate}
-            onNavigate={navigateDate}
-          />
-
-          {viewMode === "weekly" ? (
-            <>
-              <WeeklyStatsCard stats={weeklyStats} />
-              <WeeklyMealGrid
-                weeklyMeals={weeklyMeals}
-                draggedItem={draggedItem}
-                activeDropZone={activeDropZone}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onRecipeClick={handleRecipeClick}
-                currentDayIndex={currentDayIndex}
-                onEmptySlotClick={handleEmptySlotClick}
-              />
-            </>
-          ) : (
-            <>
-              <DailyStatsCard stats={dailyStats} />
-              <DailyMealGrid
-                sampleMeals={sampleMeals}
-                onRecipeClick={handleRecipeClick}
-                weeklyMeals={weeklyMeals}
-                onEmptySlotClick={handleEmptySlotClick}
-                currentDayIndex={currentDayIndex}
-              />
-            </>
-          )}
         </>
       )}
 

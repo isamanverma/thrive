@@ -2,7 +2,7 @@ import React from "react";
 
 export default function HowItWorks() {
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-4xl font-extrabold text-[var(--text-primary)] mb-4">
           How Thrive Works

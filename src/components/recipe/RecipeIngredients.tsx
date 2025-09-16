@@ -17,9 +17,9 @@ export function RecipeIngredients({ ingredients }: RecipeIngredientsProps) {
   if (!ingredients || ingredients.length === 0) {
     return (
       <div className="mb-12">
-        <h3 className="mb-6 text-3xl font-bold text-gray-900">Ingredients</h3>
+        <h3 className="mb-6 text-3xl font-bold text-foreground">Ingredients</h3>
         <div className="text-center py-6">
-          <p className="text-gray-500">
+          <p className="text-muted-foreground">
             No ingredients available for this recipe.
           </p>
         </div>
@@ -49,14 +49,14 @@ export function RecipeIngredients({ ingredients }: RecipeIngredientsProps) {
 
   return (
     <div className="mb-12">
-      <h3 className="mb-6 text-3xl font-bold text-gray-900">Ingredients</h3>
+      <h3 className="mb-6 text-3xl font-bold text-foreground">Ingredients</h3>
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
         {ingredients.map((ingredient, index) => (
           <div
             key={ingredient.id || index}
             className="flex flex-col items-center text-center"
           >
-            <div className="mb-2 h-24 w-24 rounded-full bg-gray-100 p-2 overflow-hidden">
+            <div className="mb-2 h-24 w-24 rounded-full bg-muted p-2 overflow-hidden">
               <div className="h-full w-full relative">
                 <Image
                   src={getIngredientImageUrl(ingredient)}
@@ -80,7 +80,7 @@ export function RecipeIngredients({ ingredients }: RecipeIngredientsProps) {
                 />
               </div>
             </div>
-            <span className="font-medium text-sm text-gray-600 text-center">
+            <span className="font-medium text-sm text-muted-foreground text-center">
               {ingredient.amount} {ingredient.unit} {ingredient.name}
             </span>
           </div>

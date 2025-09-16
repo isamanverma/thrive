@@ -27,15 +27,15 @@ export default function ProfilePage() {
           </CardHeader>
           <CardContent className="text-center">
             <div className="relative inline-block">
-              <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <User className="w-16 h-16 text-gray-400" />
+              <div className="w-32 h-32 bg-input rounded-full mx-auto mb-4 flex items-center justify-center">
+                <User className="w-16 h-16 text-muted-foreground" />
               </div>
               <button className="absolute bottom-0 right-0 p-2 bg-purple-500 text-white rounded-full hover:bg-green-700 transition-colors">
                 <Camera className="w-4 h-4" />
               </button>
             </div>
-            <h3 className="text-lg font-medium text-gray-900">John Doe</h3>
-            <p className="text-sm text-gray-500">Member since January 2024</p>
+            <h3 className="text-lg font-medium text-foreground">John Doe</h3>
+            <p className="text-sm text-muted-foreground">Member since January 2024</p>
           </CardContent>
         </Card>
 
@@ -52,36 +52,36 @@ export default function ProfilePage() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center space-x-3">
-              <Mail className="w-5 h-5 text-gray-400" />
+              <Mail className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-gray-700">Email</p>
-                <p className="text-sm text-gray-900">john.doe@example.com</p>
+                <p className="text-sm font-medium text-foreground">Email</p>
+                <p className="text-sm text-foreground">john.doe@example.com</p>
               </div>
             </div>
 
             <div className="flex items-center space-x-3">
-              <Phone className="w-5 h-5 text-gray-400" />
+              <Phone className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-gray-700">Phone</p>
-                <p className="text-sm text-gray-900">+1 (555) 123-4567</p>
+                <p className="text-sm font-medium text-foreground">Phone</p>
+                <p className="text-sm text-foreground">+1 (555) 123-4567</p>
               </div>
             </div>
 
             <div className="flex items-center space-x-3">
-              <MapPin className="w-5 h-5 text-gray-400" />
+              <MapPin className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-gray-700">Location</p>
-                <p className="text-sm text-gray-900">New York, NY</p>
+                <p className="text-sm font-medium text-foreground">Location</p>
+                <p className="text-sm text-foreground">New York, NY</p>
               </div>
             </div>
 
             <div className="flex items-center space-x-3">
-              <Calendar className="w-5 h-5 text-gray-400" />
+              <Calendar className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-gray-700">
+                <p className="text-sm font-medium text-foreground">
                   Date of Birth
                 </p>
-                <p className="text-sm text-gray-900">January 15, 1990</p>
+                <p className="text-sm text-foreground">January 15, 1990</p>
               </div>
             </div>
           </CardContent>
@@ -103,28 +103,28 @@ export default function ProfilePage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-700">Age</p>
-                <p className="text-lg font-semibold text-gray-900">34 years</p>
+                <p className="text-sm font-medium text-foreground">Age</p>
+                <p className="text-lg font-semibold text-foreground">34 years</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700">Gender</p>
-                <p className="text-lg font-semibold text-gray-900">Male</p>
+                <p className="text-sm font-medium text-foreground">Gender</p>
+                <p className="text-lg font-semibold text-foreground">Male</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-700">Height</p>
-                <p className="text-lg font-semibold text-gray-900">175 cm</p>
+                <p className="text-sm font-medium text-foreground">Height</p>
+                <p className="text-lg font-semibold text-foreground">175 cm</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700">Weight</p>
-                <p className="text-lg font-semibold text-gray-900">68.5 kg</p>
+                <p className="text-sm font-medium text-foreground">Weight</p>
+                <p className="text-lg font-semibold text-foreground">68.5 kg</p>
               </div>
             </div>
 
             <div>
-              <p className="text-sm font-medium text-gray-700">BMI</p>
+              <p className="text-sm font-medium text-foreground">BMI</p>
               <p className="text-lg font-semibold text-purple-500">
                 22.4 (Normal)
               </p>
@@ -145,27 +145,27 @@ export default function ProfilePage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <p className="text-sm font-medium text-gray-700">Primary Goal</p>
-              <p className="text-lg font-semibold text-gray-900">Lose Weight</p>
+              <p className="text-sm font-medium text-foreground">Primary Goal</p>
+              <p className="text-lg font-semibold text-foreground">Lose Weight</p>
             </div>
 
             <div>
-              <p className="text-sm font-medium text-gray-700">Target Weight</p>
-              <p className="text-lg font-semibold text-gray-900">66 kg</p>
+              <p className="text-sm font-medium text-foreground">Target Weight</p>
+              <p className="text-lg font-semibold text-foreground">66 kg</p>
             </div>
 
             <div>
-              <p className="text-sm font-medium text-gray-700">
+              <p className="text-sm font-medium text-foreground">
                 Activity Level
               </p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-lg font-semibold text-foreground">
                 Moderately Active
               </p>
             </div>
 
             <div>
-              <p className="text-sm font-medium text-gray-700">Diet Type</p>
-              <p className="text-lg font-semibold text-gray-900">Balanced</p>
+              <p className="text-sm font-medium text-foreground">Diet Type</p>
+              <p className="text-lg font-semibold text-foreground">Balanced</p>
             </div>
           </CardContent>
         </Card>
@@ -185,7 +185,7 @@ export default function ProfilePage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Allergies</h4>
+              <h4 className="font-medium text-foreground mb-2">Allergies</h4>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-red-100 text-red-800 text-sm rounded-full">
                   Nuts
@@ -197,7 +197,7 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Dislikes</h4>
+              <h4 className="font-medium text-foreground mb-2">Dislikes</h4>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">
                   Spicy Food
@@ -209,7 +209,7 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Preferences</h4>
+              <h4 className="font-medium text-foreground mb-2">Preferences</h4>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
                   Vegetarian
@@ -224,7 +224,7 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Cuisines</h4>
+              <h4 className="font-medium text-foreground mb-2">Cuisines</h4>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
                   Mediterranean
@@ -254,7 +254,7 @@ export default function ProfilePage() {
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
               Change Password
             </button>
-            <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+            <button className="bg-muted text-white px-4 py-2 rounded-lg hover:bg-card transition-colors">
               Export Data
             </button>
             <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">

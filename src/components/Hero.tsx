@@ -13,7 +13,7 @@ export default function Hero() {
         <h1 className="text-white text-5xl font-extrabold leading-tight tracking-tighter md:text-6xl">
           Discover Delicious, Personalized Meal Plans
         </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-200">
+        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
           Thrive uses AI to recommend recipes and create meal plans tailored to
           your taste and dietary preferences. Enjoy a variety of healthy,
           easy-to-make meals without the hassle of planning.

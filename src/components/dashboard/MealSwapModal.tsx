@@ -52,11 +52,13 @@ interface ExtendedIngredient {
 const getMealTypeStyles = (mealType: string) => {
   const styles = {
     Breakfast:
-      "bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-200",
-    Lunch: "bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200",
+      "bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700 dark:hover:bg-orange-800",
+    Lunch:
+      "bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-800",
     Snack:
-      "bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-200",
-    Dinner: "bg-red-100 text-red-700 border-red-200 hover:bg-red-200",
+      "bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-700 dark:hover:bg-purple-800",
+    Dinner:
+      "bg-red-100 text-red-700 border-red-200 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-800",
   };
   return styles[mealType as keyof typeof styles] || styles.Lunch;
 };
@@ -605,7 +607,7 @@ export function MealSwapModal({
                   
                   {/* Horizontal partition */}
                   {localMeals.length > 0 && (
-                    <div className="border-t border-gray-200 my-6 pt-2">
+                    <div className="border-t border-border my-6 pt-2">
                       <h3 className="font-medium text-base mt-4">Your Saved Recipes</h3>
                     </div>
                   )}

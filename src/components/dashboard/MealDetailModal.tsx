@@ -26,10 +26,10 @@ interface MealDetailModalProps {
 
 const getMealTypeStyles = (mealType: string) => {
   const styles = {
-    Breakfast: "bg-orange-100 text-orange-700 border-orange-200",
-    Lunch: "bg-blue-100 text-blue-700 border-blue-200",
-    Snack: "bg-purple-100 text-purple-700 border-purple-200",
-    Dinner: "bg-red-100 text-red-700 border-red-200",
+    Breakfast: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700",
+    Lunch: "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
+    Snack: "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-700",
+    Dinner: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-700",
   };
   return styles[mealType as keyof typeof styles] || styles.Lunch;
 };
@@ -141,17 +141,17 @@ export function MealDetailModal({
           </div>
 
           {/* Calories and nutrition info */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-muted rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-muted-foreground">
                   Calories per serving
                 </span>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-bold text-gray-900">
+                  <span className="text-3xl font-bold text-foreground">
                     {meal.calories}
                   </span>
-                  <span className="text-sm text-gray-500">kcal</span>
+                  <span className="text-sm text-muted-foreground">kcal</span>
                 </div>
               </div>
               {/* Macro chips: show only if value exists */}
@@ -193,11 +193,11 @@ export function MealDetailModal({
 
           {/* Description */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               About this meal
             </h3>
             <p
-              className={`text-gray-700 leading-relaxed ${expanded ? "" : "line-clamp-4"}`}
+              className={`text-foreground leading-relaxed ${expanded ? "" : "line-clamp-4"}`}
             >
               {stripHtml(meal.description)}
             </p>

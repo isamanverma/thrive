@@ -58,10 +58,10 @@ export function RecipeDetailsHeader({ recipe }: RecipeDetailsHeaderProps) {
 
   return (
     <div className="sticky top-28">
-      <h2 className="mb-2 text-4xl font-extrabold tracking-tight text-gray-900">
+      <h2 className="mb-2 text-4xl font-extrabold tracking-tight text-foreground">
         {recipe.title}
       </h2>
-      <p className="mb-6 text-lg text-gray-600">{sanitizedSummary}</p>
+      <p className="mb-6 text-lg text-muted-foreground">{sanitizedSummary}</p>
 
       <div className="mb-8 overflow-hidden rounded-2xl">
         <Image
@@ -108,8 +108,8 @@ export function RecipeDetailsHeader({ recipe }: RecipeDetailsHeaderProps) {
         </div>
       </div>
 
-      <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
-        <h3 className="mb-4 text-2xl font-bold text-gray-900">Actions</h3>
+      <div className="mt-8 rounded-xl border border-border bg-card p-6 shadow-lg">
+        <h3 className="mb-4 text-2xl font-bold text-foreground">Actions</h3>
         <div className="space-y-4">
           <Button
             onClick={handleSaveToFavorites}

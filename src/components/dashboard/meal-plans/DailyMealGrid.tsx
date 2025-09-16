@@ -58,7 +58,7 @@ export function DailyMealGrid({
         <span className="inline-flex items-center rounded-full bg-green-50 text-green-700 px-3 py-1 text-sm font-medium">
           Today
         </span>
-        <span className="text-sm text-gray-600">Showing meals for today</span>
+        <span className="text-sm text-muted-foreground">Showing meals for today</span>
       </div>
 
       <div
@@ -76,7 +76,7 @@ export function DailyMealGrid({
                 onClick={() =>
                   onEmptySlotClick && onEmptySlotClick(type, adjustedDayIndex)
                 }
-                className="group relative bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 h-full flex items-center justify-center text-gray-500 text-sm"
+                className="group relative bg-muted rounded-xl border-2 border-dashed border-border h-full flex items-center justify-center text-muted-foreground text-sm"
               >
                 <div className="flex flex-col items-center gap-2">
                   <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-25/--not-real text-green-700">
@@ -86,7 +86,7 @@ export function DailyMealGrid({
                 </div>
 
                 {/* Tooltip */}
-                <span className="pointer-events-none absolute -top-8 left-1/2 transform -translate-x-1/2 rounded-md bg-gray-900 text-white text-xs px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100">
+                <span className="pointer-events-none absolute -top-8 left-1/2 transform -translate-x-1/2 rounded-md bg-popover text-popover-foreground text-xs px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100">
                   Add {type.toLowerCase()}
                 </span>
               </button>

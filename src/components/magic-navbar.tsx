@@ -37,7 +37,7 @@ export default function MagicNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Left side */}
@@ -70,7 +70,7 @@ export default function MagicNavbar() {
                   className="object-contain mr-2"
                   priority
                 />
-                <span className="text-lg font-semibold text-gray-800">
+                <span className="text-lg font-semibold text-foreground">
                   Thrive
                 </span>
               </a>
@@ -83,8 +83,8 @@ export default function MagicNavbar() {
                   <NavigationMenuItem key={index}>
                     <NavigationMenuLink
                       href={link.href}
-                      className={`text-sm font-medium transition-colors hover:text-green-600 ${
-                        link.active ? "text-green-600" : "text-gray-600"
+                      className={`text-sm font-medium transition-colors hover:text-primary ${
+                        link.active ? "text-primary" : "text-muted-foreground"
                       }`}
                     >
                       {link.label}
@@ -131,15 +131,15 @@ export default function MagicNavbar() {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t py-4">
+          <div className="md:hidden border-t border-border py-4">
             <NavigationMenu className="w-full">
               <NavigationMenuList className="flex-col items-start gap-2 w-full">
                 {navigationLinks.map((link, index) => (
                   <NavigationMenuItem key={index} className="w-full">
                     <NavigationMenuLink
                       href={link.href}
-                      className={`block py-2 px-4 text-sm font-medium transition-colors hover:text-green-600 ${
-                        link.active ? "text-green-600" : "text-gray-600"
+                      className={`block py-2 px-4 text-sm font-medium transition-colors hover:text-primary ${
+                        link.active ? "text-primary" : "text-muted-foreground"
                       }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >

@@ -39,14 +39,14 @@ export function ExerciseCard({
   };
 
   return (
-    <MagicCard className="bg-gray-50 p-4 rounded-xl">
+    <MagicCard className="bg-card p-4 rounded-xl text-foreground">
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-lg bg-blue-100 flex items-center justify-center">
           {getIcon()}
         </div>
         <div className="flex-1">
           <h4 className="font-semibold">{exercise.name}</h4>
-          <p className="text-sm text-gray-500">{exercise.duration}</p>
+          <p className="text-sm text-muted-foreground">{exercise.duration}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -55,7 +55,7 @@ export function ExerciseCard({
             className={`p-2 rounded-full ${
               exercise.completed
                 ? "bg-blue-100 text-blue-600 hover:bg-blue-200"
-                : "hover:bg-gray-200"
+                : "hover:bg-input"
             }`}
             onClick={() => onToggleComplete?.(exercise.id)}
           >
@@ -64,7 +64,7 @@ export function ExerciseCard({
           <Button
             variant="ghost"
             size="sm"
-            className="p-2 rounded-full hover:bg-gray-200"
+            className="p-2 rounded-full hover:bg-input"
             onClick={() => onRepeat?.(exercise.id)}
           >
             <Repeat className="h-5 w-5" />
@@ -72,7 +72,7 @@ export function ExerciseCard({
           <Button
             variant="ghost"
             size="sm"
-            className="p-2 rounded-full hover:bg-gray-200"
+            className="p-2 rounded-full hover:bg-input"
             onClick={() => onWatchVideo?.(exercise.id)}
           >
             <Video className="h-5 w-5" />

@@ -21,7 +21,7 @@ export function AchievementBadge({
         className={`w-16 h-16 rounded-full flex items-center justify-center ${
           isUnlocked
             ? "bg-yellow-100 text-yellow-500"
-            : "bg-gray-100 text-gray-500"
+            : "bg-muted text-muted-foreground"
         }`}
       >
         {icon}
