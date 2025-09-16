@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { auth } from '@clerk/nextjs/server';
+import { logTelemetry } from '@/lib/telemetry';
 import { prisma } from '@/lib/prisma';
 
 interface SpoonacularRecipeDetail {
@@ -114,41 +115,49 @@ export async function GET(
       );
     }
 
+    // Cache TTL (seconds) from environment (default 24h)
+    const TTL_SECONDS = Number(process.env.RECIPE_CACHE_TTL_SECONDS || 86400);
+
     // First check if we have this recipe cached in our database
     const cachedRecipe = await prisma.recipe.findFirst({
-      where: { 
-        sourceId: recipeId,
-        sourceType: 'SPOONACULAR'
+      where: {
+        sourceId: recipeId.toString(),
+        sourceType: 'SPOONACULAR',
       },
-      include: {
-        ingredients: true,
-      },
+      include: { ingredients: true },
     });
 
     if (cachedRecipe) {
-      return NextResponse.json({
-        id: Number(cachedRecipe.sourceId),
-        title: cachedRecipe.title,
-        summary: cachedRecipe.description,
-        image: cachedRecipe.imageUrl,
-        fallbackImage: cachedRecipe.fallbackImageUrl,
-        readyInMinutes: cachedRecipe.totalTime,
-        servings: cachedRecipe.servings,
-        cuisines: [cachedRecipe.cuisine].filter(Boolean), 
-        dishTypes: [cachedRecipe.mealType].filter(Boolean),
-        diets: cachedRecipe.tags || [],
-        extendedIngredients: cachedRecipe.ingredients.map(ing => ({
-          id: ing.ingredientId,
-          name: ing.name,
-          amount: ing.amount,
-          unit: ing.unit,
-          original: ing.original,
-          image: ing.image,
-        })) || [],
-        analyzedInstructions: cachedRecipe.instructions || [],
-        nutrition: cachedRecipe.nutrition,
-        isCached: true,
-      });
+      const updatedAt = cachedRecipe.updatedAt || cachedRecipe.createdAt || new Date(0);
+      const ageSeconds = (Date.now() - new Date(updatedAt).getTime()) / 1000;
+      if (ageSeconds < TTL_SECONDS) {
+        logTelemetry('recipe_cache_hit', { recipeId, ageSeconds });
+        return NextResponse.json({
+          id: Number(cachedRecipe.sourceId),
+          title: cachedRecipe.title,
+          summary: cachedRecipe.description,
+          image: cachedRecipe.imageUrl,
+          fallbackImage: cachedRecipe.fallbackImageUrl,
+          readyInMinutes: cachedRecipe.totalTime,
+          servings: cachedRecipe.servings,
+          cuisines: [cachedRecipe.cuisine].filter(Boolean),
+          dishTypes: [cachedRecipe.mealType].filter(Boolean),
+          diets: cachedRecipe.tags || [],
+          extendedIngredients: (cachedRecipe.ingredients || []).map((ing) => ({
+            id: ing.ingredientId,
+            name: ing.name,
+            amount: ing.amount,
+            unit: ing.unit,
+            original: ing.original,
+            image: ing.image,
+          })),
+          analyzedInstructions: cachedRecipe.instructions || [],
+          nutrition: cachedRecipe.nutrition,
+          isCached: true,
+        });
+      } else {
+        logTelemetry('recipe_cache_stale', { recipeId, ageSeconds });
+      }
     }
 
     // If not cached, fetch from Spoonacular API
@@ -160,7 +169,7 @@ export async function GET(
       );
     }
 
-    const spoonacularUrl = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${apiKey}&includeNutrition=true`;
+  const spoonacularUrl = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${apiKey}&includeNutrition=true`;
 
     const response = await fetch(spoonacularUrl);
     
@@ -199,12 +208,10 @@ export async function GET(
       isCached: false,
     };
 
-    // Cache the recipe in our database for future requests
+    // Upsert with idempotency: use a unique id like 'spoonacular-<id>' in the recipe.id field
     try {
       await prisma.recipe.upsert({
-        where: { 
-          id: `spoonacular-${spoonacularData.id}` 
-        },
+        where: { id: `spoonacular-${spoonacularData.id}` },
         update: {
           title: spoonacularData.title,
           description: spoonacularData.summary,
@@ -214,6 +221,9 @@ export async function GET(
           cuisine: spoonacularData.cuisines?.[0] || null,
           mealType: spoonacularData.dishTypes?.[0] || null,
           tags: spoonacularData.diets || [],
+          rawApiResponse: JSON.stringify(spoonacularData),
+          cacheTtlSeconds: Number(process.env.RECIPE_CACHE_TTL_SECONDS || 86400),
+          // Replace ingredients atomically
           ingredients: {
             deleteMany: {},
             create: transformIngredients(spoonacularData.extendedIngredients || []),
@@ -235,6 +245,8 @@ export async function GET(
           cuisine: spoonacularData.cuisines?.[0] || null,
           mealType: spoonacularData.dishTypes?.[0] || null,
           tags: spoonacularData.diets || [],
+          rawApiResponse: JSON.stringify(spoonacularData),
+          cacheTtlSeconds: Number(process.env.RECIPE_CACHE_TTL_SECONDS || 86400),
           ingredients: {
             create: transformIngredients(spoonacularData.extendedIngredients || []),
           },
@@ -245,11 +257,13 @@ export async function GET(
           sourceUrl: `https://spoonacular.com/recipes/${spoonacularData.id}`,
           isPublic: true,
           savedCount: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       });
+      logTelemetry('recipe_cache_upsert', { recipeId: spoonacularData.id });
     } catch (dbError) {
-      console.error('Error caching recipe:', dbError);
-      // Continue without caching if there's a DB error
+      logTelemetry('recipe_cache_error', { recipeId: spoonacularData.id, message: (dbError as Error).message });
     }
 
     return NextResponse.json(transformedRecipe);

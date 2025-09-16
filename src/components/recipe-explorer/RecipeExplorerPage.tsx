@@ -68,7 +68,11 @@ const FEATURED_RECIPES: Recipe[] = [
   },
 ];
 
-export function RecipeExplorerPage() {
+export function RecipeExplorerPage({
+  onSelectRecipe,
+}: {
+  onSelectRecipe?: (recipe: Recipe) => void;
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("breakfast");
   const [sortBy, setSortBy] = useState("relevance");
@@ -186,32 +190,54 @@ export function RecipeExplorerPage() {
   const handleViewRecipe = useCallback(
     (recipeId: number) => {
       const recipe = recipes.find((r) => r.id === recipeId);
-      if (recipe) {
-        setSelectedRecipe(recipe);
-        setIsModalOpen(true);
+      if (!recipe) return;
+
+      // If a caller provided onSelectRecipe (meal-plan flow), call it to replace/fill
+      if (onSelectRecipe) {
+        onSelectRecipe(recipe);
+        // don't open modal in selection flows
+        return;
       }
+
+      // Default behaviour: open modal to view recipe details
+      setSelectedRecipe(recipe);
+      setIsModalOpen(true);
     },
-    [recipes]
+    [recipes, onSelectRecipe]
   );
 
-  const handleAddToMealPlan = useCallback(async (recipeId: number) => {
-    try {
-      await addUserRecipe(recipeId, "liked");
-      toast.success("Recipe added to your meal plan!");
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Add to meal plan error:", error);
+  const handleAddToMealPlan = useCallback(
+    async (recipeId: number) => {
+      const recipe = recipes.find((r) => r.id === recipeId);
+      if (!recipe) return;
 
-      // Show specific error message if user needs to complete onboarding
-      if (error instanceof Error && error.message.includes("onboarding")) {
-        toast.error(
-          "Please complete your profile setup first by visiting the onboarding page."
-        );
-      } else {
-        toast.error("Failed to add recipe to meal plan. Please try again.");
+      // If used in a select flow, delegate selection to the parent
+      if (onSelectRecipe) {
+        onSelectRecipe(recipe);
+        setIsModalOpen(false);
+        toast.success("Recipe selected for meal slot.");
+        return;
       }
-    }
-  }, []);
+
+      try {
+        await addUserRecipe(recipeId, "liked");
+        toast.success("Recipe added to your meal plan!");
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error("Add to meal plan error:", error);
+
+        // Show specific error message if user needs to complete onboarding
+        if (error instanceof Error && error.message.includes("onboarding")) {
+          toast.error(
+            "Please complete your profile setup first by visiting the onboarding page."
+          );
+        } else {
+          toast.error("Failed to add recipe to meal plan. Please try again.");
+        }
+      }
+    },
+    [onSelectRecipe, recipes]
+  );
 
   const handleSaveToFavorites = useCallback(async (recipeId: number) => {
     try {
@@ -311,6 +337,7 @@ export function RecipeExplorerPage() {
         onAddToMealPlan={handleAddToMealPlan}
         onSaveToFavorites={handleSaveToFavorites}
         isSaved={selectedRecipe ? savedRecipes.has(selectedRecipe.id) : false}
+        onSelectRecipe={onSelectRecipe}
       />
     </div>
   );

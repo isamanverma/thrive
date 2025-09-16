@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -65,6 +65,8 @@ interface VideoResult {
 export default function RecipePage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   const recipeId = params.id as string;
 
   const [recipe, setRecipe] = useState<RecipeDetails | null>(null);
@@ -129,7 +131,13 @@ export default function RecipePage() {
             {error || "The recipe you're looking for doesn't exist."}
           </p>
           <Button
-            onClick={() => router.back()}
+            onClick={() => {
+              if (returnTo) {
+                router.push(returnTo);
+              } else {
+                router.back();
+              }
+            }}
             className="bg-purple-500 hover:bg-green-700"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -146,7 +154,13 @@ export default function RecipePage() {
       <div className="sticky top-0 z-20 w-full bg-white border-b border-gray-200">
         <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6 lg:px-8">
           <button
-            onClick={() => router.back()}
+            onClick={() => {
+              if (returnTo) {
+                router.push(returnTo);
+              } else {
+                router.back();
+              }
+            }}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />

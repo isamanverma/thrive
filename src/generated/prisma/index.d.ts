@@ -7333,6 +7333,7 @@ export namespace Prisma {
     cookTime: number | null
     totalTime: number | null
     servings: number | null
+    cacheTtlSeconds: number | null
     userRating: number | null
     savedCount: number | null
   }
@@ -7342,6 +7343,7 @@ export namespace Prisma {
     cookTime: number | null
     totalTime: number | null
     servings: number | null
+    cacheTtlSeconds: number | null
     userRating: number | null
     savedCount: number | null
   }
@@ -7362,6 +7364,7 @@ export namespace Prisma {
     cookTime: number | null
     totalTime: number | null
     servings: number | null
+    cacheTtlSeconds: number | null
     userRating: number | null
     savedCount: number | null
     isPublic: boolean | null
@@ -7386,6 +7389,7 @@ export namespace Prisma {
     cookTime: number | null
     totalTime: number | null
     servings: number | null
+    cacheTtlSeconds: number | null
     userRating: number | null
     savedCount: number | null
     isPublic: boolean | null
@@ -7414,6 +7418,8 @@ export namespace Prisma {
     nutrition: number
     tags: number
     namedEntities: number
+    rawApiResponse: number
+    cacheTtlSeconds: number
     userRating: number
     savedCount: number
     isPublic: number
@@ -7429,6 +7435,7 @@ export namespace Prisma {
     cookTime?: true
     totalTime?: true
     servings?: true
+    cacheTtlSeconds?: true
     userRating?: true
     savedCount?: true
   }
@@ -7438,6 +7445,7 @@ export namespace Prisma {
     cookTime?: true
     totalTime?: true
     servings?: true
+    cacheTtlSeconds?: true
     userRating?: true
     savedCount?: true
   }
@@ -7458,6 +7466,7 @@ export namespace Prisma {
     cookTime?: true
     totalTime?: true
     servings?: true
+    cacheTtlSeconds?: true
     userRating?: true
     savedCount?: true
     isPublic?: true
@@ -7482,6 +7491,7 @@ export namespace Prisma {
     cookTime?: true
     totalTime?: true
     servings?: true
+    cacheTtlSeconds?: true
     userRating?: true
     savedCount?: true
     isPublic?: true
@@ -7510,6 +7520,8 @@ export namespace Prisma {
     nutrition?: true
     tags?: true
     namedEntities?: true
+    rawApiResponse?: true
+    cacheTtlSeconds?: true
     userRating?: true
     savedCount?: true
     isPublic?: true
@@ -7625,6 +7637,8 @@ export namespace Prisma {
     nutrition: JsonValue | null
     tags: string[]
     namedEntities: string[]
+    rawApiResponse: JsonValue | null
+    cacheTtlSeconds: number | null
     userRating: number | null
     savedCount: number
     isPublic: boolean
@@ -7672,6 +7686,8 @@ export namespace Prisma {
     nutrition?: boolean
     tags?: boolean
     namedEntities?: boolean
+    rawApiResponse?: boolean
+    cacheTtlSeconds?: boolean
     userRating?: boolean
     savedCount?: boolean
     isPublic?: boolean
@@ -7705,6 +7721,8 @@ export namespace Prisma {
     nutrition?: boolean
     tags?: boolean
     namedEntities?: boolean
+    rawApiResponse?: boolean
+    cacheTtlSeconds?: boolean
     userRating?: boolean
     savedCount?: boolean
     isPublic?: boolean
@@ -7734,6 +7752,8 @@ export namespace Prisma {
     nutrition?: boolean
     tags?: boolean
     namedEntities?: boolean
+    rawApiResponse?: boolean
+    cacheTtlSeconds?: boolean
     userRating?: boolean
     savedCount?: boolean
     isPublic?: boolean
@@ -7763,6 +7783,8 @@ export namespace Prisma {
     nutrition?: boolean
     tags?: boolean
     namedEntities?: boolean
+    rawApiResponse?: boolean
+    cacheTtlSeconds?: boolean
     userRating?: boolean
     savedCount?: boolean
     isPublic?: boolean
@@ -7771,7 +7793,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type RecipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "imageUrl" | "fallbackImageUrl" | "sourceType" | "sourceId" | "sourceUrl" | "cuisine" | "mealType" | "difficulty" | "prepTime" | "cookTime" | "totalTime" | "servings" | "instructions" | "nutrition" | "tags" | "namedEntities" | "userRating" | "savedCount" | "isPublic" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["recipe"]>
+  export type RecipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "imageUrl" | "fallbackImageUrl" | "sourceType" | "sourceId" | "sourceUrl" | "cuisine" | "mealType" | "difficulty" | "prepTime" | "cookTime" | "totalTime" | "servings" | "instructions" | "nutrition" | "tags" | "namedEntities" | "rawApiResponse" | "cacheTtlSeconds" | "userRating" | "savedCount" | "isPublic" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["recipe"]>
   export type RecipeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     ingredients?: boolean | Recipe$ingredientsArgs<ExtArgs>
     createdBy?: boolean | Recipe$createdByArgs<ExtArgs>
@@ -7814,6 +7836,8 @@ export namespace Prisma {
       nutrition: Prisma.JsonValue | null
       tags: string[]
       namedEntities: string[]
+      rawApiResponse: Prisma.JsonValue | null
+      cacheTtlSeconds: number | null
       userRating: number | null
       savedCount: number
       isPublic: boolean
@@ -8266,6 +8290,8 @@ export namespace Prisma {
     readonly nutrition: FieldRef<"Recipe", 'Json'>
     readonly tags: FieldRef<"Recipe", 'String[]'>
     readonly namedEntities: FieldRef<"Recipe", 'String[]'>
+    readonly rawApiResponse: FieldRef<"Recipe", 'Json'>
+    readonly cacheTtlSeconds: FieldRef<"Recipe", 'Int'>
     readonly userRating: FieldRef<"Recipe", 'Float'>
     readonly savedCount: FieldRef<"Recipe", 'Int'>
     readonly isPublic: FieldRef<"Recipe", 'Boolean'>
@@ -10014,6 +10040,8 @@ export namespace Prisma {
     nutrition: 'nutrition',
     tags: 'tags',
     namedEntities: 'namedEntities',
+    rawApiResponse: 'rawApiResponse',
+    cacheTtlSeconds: 'cacheTtlSeconds',
     userRating: 'userRating',
     savedCount: 'savedCount',
     isPublic: 'isPublic',
@@ -10582,6 +10610,8 @@ export namespace Prisma {
     nutrition?: JsonNullableFilter<"Recipe">
     tags?: StringNullableListFilter<"Recipe">
     namedEntities?: StringNullableListFilter<"Recipe">
+    rawApiResponse?: JsonNullableFilter<"Recipe">
+    cacheTtlSeconds?: IntNullableFilter<"Recipe"> | number | null
     userRating?: FloatNullableFilter<"Recipe"> | number | null
     savedCount?: IntFilter<"Recipe"> | number
     isPublic?: BoolFilter<"Recipe"> | boolean
@@ -10614,6 +10644,8 @@ export namespace Prisma {
     nutrition?: SortOrderInput | SortOrder
     tags?: SortOrder
     namedEntities?: SortOrder
+    rawApiResponse?: SortOrderInput | SortOrder
+    cacheTtlSeconds?: SortOrderInput | SortOrder
     userRating?: SortOrderInput | SortOrder
     savedCount?: SortOrder
     isPublic?: SortOrder
@@ -10649,6 +10681,8 @@ export namespace Prisma {
     nutrition?: JsonNullableFilter<"Recipe">
     tags?: StringNullableListFilter<"Recipe">
     namedEntities?: StringNullableListFilter<"Recipe">
+    rawApiResponse?: JsonNullableFilter<"Recipe">
+    cacheTtlSeconds?: IntNullableFilter<"Recipe"> | number | null
     userRating?: FloatNullableFilter<"Recipe"> | number | null
     savedCount?: IntFilter<"Recipe"> | number
     isPublic?: BoolFilter<"Recipe"> | boolean
@@ -10681,6 +10715,8 @@ export namespace Prisma {
     nutrition?: SortOrderInput | SortOrder
     tags?: SortOrder
     namedEntities?: SortOrder
+    rawApiResponse?: SortOrderInput | SortOrder
+    cacheTtlSeconds?: SortOrderInput | SortOrder
     userRating?: SortOrderInput | SortOrder
     savedCount?: SortOrder
     isPublic?: SortOrder
@@ -10717,6 +10753,8 @@ export namespace Prisma {
     nutrition?: JsonNullableWithAggregatesFilter<"Recipe">
     tags?: StringNullableListFilter<"Recipe">
     namedEntities?: StringNullableListFilter<"Recipe">
+    rawApiResponse?: JsonNullableWithAggregatesFilter<"Recipe">
+    cacheTtlSeconds?: IntNullableWithAggregatesFilter<"Recipe"> | number | null
     userRating?: FloatNullableWithAggregatesFilter<"Recipe"> | number | null
     savedCount?: IntWithAggregatesFilter<"Recipe"> | number
     isPublic?: BoolWithAggregatesFilter<"Recipe"> | boolean
@@ -11202,6 +11240,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -11233,6 +11273,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -11264,6 +11306,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -11295,6 +11339,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -11326,6 +11372,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -11354,6 +11402,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -11381,6 +11431,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -12015,6 +12067,8 @@ export namespace Prisma {
     nutrition?: SortOrder
     tags?: SortOrder
     namedEntities?: SortOrder
+    rawApiResponse?: SortOrder
+    cacheTtlSeconds?: SortOrder
     userRating?: SortOrder
     savedCount?: SortOrder
     isPublic?: SortOrder
@@ -12028,6 +12082,7 @@ export namespace Prisma {
     cookTime?: SortOrder
     totalTime?: SortOrder
     servings?: SortOrder
+    cacheTtlSeconds?: SortOrder
     userRating?: SortOrder
     savedCount?: SortOrder
   }
@@ -12048,6 +12103,7 @@ export namespace Prisma {
     cookTime?: SortOrder
     totalTime?: SortOrder
     servings?: SortOrder
+    cacheTtlSeconds?: SortOrder
     userRating?: SortOrder
     savedCount?: SortOrder
     isPublic?: SortOrder
@@ -12072,6 +12128,7 @@ export namespace Prisma {
     cookTime?: SortOrder
     totalTime?: SortOrder
     servings?: SortOrder
+    cacheTtlSeconds?: SortOrder
     userRating?: SortOrder
     savedCount?: SortOrder
     isPublic?: SortOrder
@@ -12085,6 +12142,7 @@ export namespace Prisma {
     cookTime?: SortOrder
     totalTime?: SortOrder
     servings?: SortOrder
+    cacheTtlSeconds?: SortOrder
     userRating?: SortOrder
     savedCount?: SortOrder
   }
@@ -13098,6 +13156,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -13128,6 +13188,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -13273,6 +13335,8 @@ export namespace Prisma {
     nutrition?: JsonNullableFilter<"Recipe">
     tags?: StringNullableListFilter<"Recipe">
     namedEntities?: StringNullableListFilter<"Recipe">
+    rawApiResponse?: JsonNullableFilter<"Recipe">
+    cacheTtlSeconds?: IntNullableFilter<"Recipe"> | number | null
     userRating?: FloatNullableFilter<"Recipe"> | number | null
     savedCount?: IntFilter<"Recipe"> | number
     isPublic?: BoolFilter<"Recipe"> | boolean
@@ -13342,6 +13406,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -13372,6 +13438,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -13465,6 +13533,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -13495,6 +13565,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -13692,6 +13764,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -13722,6 +13796,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -13799,6 +13875,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -13829,6 +13907,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -14179,6 +14259,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -14209,6 +14291,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -14255,6 +14339,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -14285,6 +14371,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -14341,6 +14429,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeCreatetagsInput | string[]
     namedEntities?: RecipeCreatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: number | null
     userRating?: number | null
     savedCount?: number
     isPublic?: boolean
@@ -14448,6 +14538,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -14478,6 +14570,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean
@@ -14508,6 +14602,8 @@ export namespace Prisma {
     nutrition?: NullableJsonNullValueInput | InputJsonValue
     tags?: RecipeUpdatetagsInput | string[]
     namedEntities?: RecipeUpdatenamedEntitiesInput | string[]
+    rawApiResponse?: NullableJsonNullValueInput | InputJsonValue
+    cacheTtlSeconds?: NullableIntFieldUpdateOperationsInput | number | null
     userRating?: NullableFloatFieldUpdateOperationsInput | number | null
     savedCount?: IntFieldUpdateOperationsInput | number
     isPublic?: BoolFieldUpdateOperationsInput | boolean

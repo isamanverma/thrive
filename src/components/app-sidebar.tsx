@@ -27,6 +27,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import Image from "next/image";
 import Link from "next/link";
+import { ModeToggle } from "@/components/mode-toggle";
 import type { MouseEvent } from "react";
 import { getPendingUserData } from "@/lib/user-sync";
 
@@ -54,7 +55,9 @@ const ProfileButton = () => {
     }
 
     try {
-      const res = await fetch(`/api/users?clerkId=${encodeURIComponent(user.id)}`);
+      const res = await fetch(
+        `/api/users?clerkId=${encodeURIComponent(user.id)}`
+      );
       if (res.ok) {
         const data = await res.json();
 
@@ -62,7 +65,10 @@ const ProfileButton = () => {
         if (data.exists && data.user) {
           const u = data.user;
           const hasOnboarding =
-            u.age && u.weight && u.height && (u.activityLevel || u.goals || u.diet_preference);
+            u.age &&
+            u.weight &&
+            u.height &&
+            (u.activityLevel || u.goals || u.diet_preference);
 
           if (hasOnboarding) {
             router.push("/dashboard");
@@ -93,7 +99,8 @@ const ProfileButton = () => {
         <UserButton
           appearance={{
             elements: {
-              userButtonTrigger: "bg-transparent border-none shadow-none p-0 ml-auto",
+              userButtonTrigger:
+                "bg-transparent border-none shadow-none p-0 ml-auto",
               userButtonAvatarBox: "w-5 h-5",
             },
           }}
@@ -244,7 +251,14 @@ export function AppSidebar() {
               </span>
             </Link>
           </SidebarMenuButton>
-          <ProfileButton />
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <ProfileButton />
+            </div>
+            <div className="ml-2">
+              <ModeToggle />
+            </div>
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>

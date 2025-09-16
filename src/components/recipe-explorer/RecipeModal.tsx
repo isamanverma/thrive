@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import { Recipe as ApiRecipe } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { Button } from "@/components/ui/button";
@@ -15,24 +16,14 @@ import Image from "next/image";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { cn } from "@/lib/utils";
 
-interface Recipe {
-  id: number;
-  title: string;
-  image: string;
-  readyInMinutes?: number;
-  servings?: number;
-  diets?: string[];
-  cuisines?: string[];
-  summary?: string;
-}
-
 interface RecipeModalProps {
-  recipe: Recipe | null;
+  recipe: ApiRecipe | null;
   isOpen: boolean;
   onClose: () => void;
   onAddToMealPlan: (recipeId: number) => void;
   onSaveToFavorites: (recipeId: number) => void;
   isSaved?: boolean;
+  onSelectRecipe?: (recipe: ApiRecipe) => void;
 }
 
 export function RecipeModal({
@@ -42,6 +33,7 @@ export function RecipeModal({
   onAddToMealPlan,
   onSaveToFavorites,
   isSaved = false,
+  onSelectRecipe,
 }: RecipeModalProps) {
   if (!recipe) return null;
 
@@ -182,6 +174,34 @@ export function RecipeModal({
                     <BookmarkPlus className="h-5 w-5" />
                   )}
                   {isSaved ? "Saved to Favorites" : "Save to Favorites"}
+                </Button>
+
+                {/* View Recipe / Select for meal plan */}
+                <Button
+                  variant="ghost"
+                  onClick={async () => {
+                    // If a parent provided onSelectRecipe, this modal is being used in a selection flow.
+                    if (onSelectRecipe) {
+                      onSelectRecipe(recipe);
+                      onClose();
+                      return;
+                    }
+
+                    // Default behavior: warm cache by calling the API route, then navigate to recipe page
+                    try {
+                      // call API to warm cache (fire-and-forget)
+                      fetch(`/api/recipes/${recipe.id}`, { method: "GET" });
+                    } catch {
+                      // ignore network errors here, navigation will still proceed
+                    }
+
+                    // Navigate to recipe page using full link (client navigation will still work if inside next/router)
+                    // Use window.location to ensure page-level data fetching runs on the server and caches
+                    window.location.href = `/recipe/${recipe.id}`;
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-base font-bold"
+                >
+                  View Recipe
                 </Button>
               </div>
             </BlurFade>

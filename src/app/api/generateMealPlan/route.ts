@@ -176,9 +176,9 @@ export async function POST(request: NextRequest) {
                 servings: meal.servings,
                 sourceId: meal.id.toString(),
                 sourceType: 'SPOONACULAR',
-                ingredients: [],
-                instructions: [],
-                tags: [],
+                // ingredients, instructions and tags are omitted here because
+                // nested create types require specific shapes. They can be
+                // populated later when detailed recipe data is available.
                 isPublic: true,
                 savedCount: 0,
               },

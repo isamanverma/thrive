@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { auth } from '@clerk/nextjs/server';
+import { logTelemetry } from '@/lib/telemetry';
 
 interface SpoonacularSearchResponse {
   results: SpoonacularRecipe[];
@@ -45,8 +46,9 @@ export async function GET(request: NextRequest) {
     const maxReadyTime = searchParams.get('maxReadyTime');
     const minCalories = searchParams.get('minCalories');
     const maxCalories = searchParams.get('maxCalories');
-    const number = searchParams.get('number') || '12';
-    const offset = searchParams.get('offset') || '0';
+  // Enforce sane default page size of 10 and clamp allowed values
+  const number = String(Math.min(Math.max(Number(searchParams.get('number') || 10), 1), 50));
+  const offset = String(Math.max(Number(searchParams.get('offset') || 0), 0));
 
     if (!query && !ingredients) {
       return NextResponse.json(
@@ -84,11 +86,21 @@ export async function GET(request: NextRequest) {
     if (maxCalories) params.append('maxCalories', maxCalories);
 
     const spoonacularUrl = `https://api.spoonacular.com/recipes/complexSearch?${params.toString()}`;
-
     const response = await fetch(spoonacularUrl);
-    
+
+    if (response.status === 429) {
+      // Forward retry info when provided
+      const retryAfter = response.headers.get('Retry-After') || undefined;
+      logTelemetry('search_rate_limited', { query, offset: Number(offset), number: Number(number) });
+      return NextResponse.json(
+        { error: 'Spoonacular rate limit reached. Try again later.', retryAfter },
+        { status: 429 }
+      );
+    }
+
     if (!response.ok) {
       console.error('Spoonacular API error:', response.status, response.statusText);
+      logTelemetry('search_failure', { status: response.status, statusText: response.statusText, query });
       return NextResponse.json(
         { error: 'Failed to fetch recipes from Spoonacular' },
         { status: response.status }

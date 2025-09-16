@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import UserSyncProvider from "@/components/UserSyncProvider";
@@ -32,17 +33,26 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
-      afterSignInUrl={process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || "/dashboard"}
-      afterSignUpUrl={process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || "/onboarding"}
+    // afterSignInUrl={
+    //   process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || "/dashboard"
+    // }
+    // afterSignUpUrl={
+    //   process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || "/onboarding"
+    // }
     >
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <link rel="icon" href="/favicon.ico" />
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${plusJakartaSans.variable} antialiased`}
         >
-          <UserSyncProvider>
-            {children}
-          </UserSyncProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <UserSyncProvider>{children}</UserSyncProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

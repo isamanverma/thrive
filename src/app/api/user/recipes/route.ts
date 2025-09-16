@@ -171,6 +171,8 @@ export async function GET(request: NextRequest) {
             cuisine: true,
             mealType: true,
             tags: true,
+            // Include ingredients so the drawer can show real ingredient lists
+            ingredients: true,
           },
         },
       },

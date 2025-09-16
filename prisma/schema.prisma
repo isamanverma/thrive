@@ -46,7 +46,7 @@ model MealPlan {
   startDate     DateTime
   endDate       DateTime
   constraints   Json?
-  gridJson      Json?          // Added for meal plan grid persistence
+  gridJson      Json? // Added for meal plan grid persistence
   createdAt     DateTime       @default(now())
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   mealPlanItems MealPlanItem[]
@@ -97,6 +97,8 @@ model Recipe {
   nutrition        Json? // JSON object for detailed nutrition data
   tags             String[] // Array of tags (e.g., ["vegetarian", "gluten-free"])
   namedEntities    String[] // For ML/NER processing
+  rawApiResponse   Json? // Full raw API response from external sources (e.g., Spoonacular)
+  cacheTtlSeconds  Int? // Cache TTL in seconds for externally fetched recipes
   userRating       Float? // Average user rating (0-5)
   savedCount       Int                @default(0) // Number of times saved (for popularity)
   isPublic         Boolean            @default(true) // Whether recipe is publicly visible

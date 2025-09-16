@@ -193,6 +193,8 @@ exports.Prisma.RecipeScalarFieldEnum = {
   nutrition: 'nutrition',
   tags: 'tags',
   namedEntities: 'namedEntities',
+  rawApiResponse: 'rawApiResponse',
+  cacheTtlSeconds: 'cacheTtlSeconds',
   userRating: 'userRating',
   savedCount: 'savedCount',
   isPublic: 'isPublic',

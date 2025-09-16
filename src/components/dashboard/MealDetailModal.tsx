@@ -235,7 +235,23 @@ export function MealDetailModal({
               <Heart className="w-4 h-4 mr-2" />
               Add to Favorites
             </Button>
-            <Button className="flex-1">View Full Recipe</Button>
+            <Button 
+              className="flex-1"
+              onClick={async () => {
+                if (meal?.id) {
+                  try {
+                    // Warm cache by calling the API route
+                    await fetch(`/api/recipes/${meal.id}`, { method: "GET" });
+                  } catch {
+                    // Ignore network errors, navigation will still proceed
+                  }
+                  // Navigate to recipe page
+                  window.location.href = `/recipe/${meal.id}`;
+                }
+              }}
+            >
+              View Full Recipe
+            </Button>
           </div>
         </DialogFooter>
       </DialogContent>
