@@ -287,10 +287,6 @@ export default function MealPlansPage() {
         isOpen={swapModalOpen}
         onClose={() => setSwapModalOpen(false)}
         mealType={swapMealType}
-        availableMeals={
-          sampleMeals[swapMealType.toLowerCase() as keyof typeof sampleMeals] ||
-          []
-        }
         onMealSelect={handleRecipeSelect}
       />
     </div>

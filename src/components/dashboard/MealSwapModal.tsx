@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { MealPlanItem } from "./MealPlanCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { getUserRecipes } from "@/lib/api";
 import { logTelemetry } from "@/lib/telemetry";
 import { useRouter } from "next/navigation";
 
@@ -26,7 +27,6 @@ interface MealSwapModalProps {
   isOpen: boolean;
   onClose: () => void;
   mealType: string;
-  availableMeals?: MealPlanItem[];
   onMealSelect: (meal: MealPlanItem) => void;
   isLoading?: boolean;
 }
@@ -105,27 +105,18 @@ export function MealSwapModal({
   const [localMeals, setLocalMeals] = useState<MealPlanItem[]>([]);
 
   // When the drawer opens (and when page changes), load DB-sourced meals
-  // only when not actively searching. Uses server-side pagination (limit/offset).
+  // using the client API helper getUserRecipes. Skip when searching (search has priority).
   useEffect(() => {
     if (!isOpen) return;
     if (searchQuery.trim()) return; // search has priority
 
     let cancelled = false;
-    const controller = new AbortController();
 
     const fetchLocalMeals = async (currentPage = 0) => {
-      // indicate loading via isLoading prop or isSearching; local spinner not required
       try {
         const offset = currentPage * pageSize;
-        const res = await fetch(
-          `/api/user/recipes?status=saved&limit=${pageSize}&offset=${offset}`,
-          { signal: controller.signal }
-        );
-        if (!res.ok) {
-          if (!cancelled) setLocalMeals([]);
-          return;
-        }
-        const json = await res.json();
+        // Use client helper which wraps /api/user/recipes
+        const json = await getUserRecipes("saved", pageSize, offset);
         const recipesList = (json.recipes || []) as Array<
           Record<string, unknown>
         >;
@@ -192,7 +183,6 @@ export function MealSwapModal({
 
         if (!cancelled) {
           setLocalMeals(mapped);
-          // server returns pagination object; map total into totalResults used by UI
           const pagination = json.pagination || {};
           const total =
             typeof pagination.total === "number"
@@ -203,19 +193,16 @@ export function MealSwapModal({
       } catch (err) {
         if (!cancelled) {
           logTelemetry("local_meals_fetch_error", {
-            message: (err as Error).message,
+            message: err instanceof Error ? err.message : String(err),
           });
           setLocalMeals([]);
         }
-      } finally {
-        // no-op
       }
     };
 
     fetchLocalMeals(page);
     return () => {
       cancelled = true;
-      controller.abort();
     };
   }, [isOpen, searchQuery, page]);
 
@@ -237,6 +224,22 @@ export function MealSwapModal({
       setIsSearching(true);
       setSearchError(null);
       try {
+        // First check if we have matching recipes in the database
+        const filteredDbMeals = localMeals.filter((meal) =>
+          (meal.name || "").toLowerCase().includes(q.toLowerCase()) ||
+          ((meal.description || "") as string).toLowerCase().includes(q.toLowerCase())
+        );
+        
+        // If we have enough matches in the database, don't call the API
+        if (filteredDbMeals.length >= 5) {
+          if (!cancelled) {
+            setSearchResults([]);
+            setTotalResults(filteredDbMeals.length);
+            setIsSearching(false);
+          }
+          return;
+        }
+        
         const offset = currentPage * pageSize;
         const params = new URLSearchParams({
           q,
@@ -287,7 +290,7 @@ export function MealSwapModal({
       controller.abort();
       clearTimeout(timer);
     };
-  }, [searchQuery, page]);
+  }, [searchQuery, page, localMeals, pageSize]);
 
   // Focus search input when drawer opens
   useEffect(() => {
@@ -334,9 +337,9 @@ export function MealSwapModal({
     }
   }
 
-  // Derived list shown in UI: either DB/local meals or Spoonacular search results when searching
+  // Derived UI lists
   const isSearchActive = !!searchQuery.trim();
-  const filteredMeals: MealPlanItem[] = useMemo(() => {
+  const searchedMeals: MealPlanItem[] = useMemo(() => {
     if (isSearchActive) {
       return searchResults.map((r: SpoonacularSearchResult) => {
         const calories =
@@ -352,6 +355,11 @@ export function MealSwapModal({
         } as MealPlanItem;
       });
     }
+    return [];
+  }, [searchResults, isSearchActive]);
+
+  // Filter local meals based on search query
+  const filteredLocalMeals: MealPlanItem[] = useMemo(() => {
     const defaultMeals = localMeals && localMeals.length > 0 ? localMeals : [];
     if (!searchQuery.trim()) return defaultMeals;
     const q = searchQuery.toLowerCase();
@@ -360,7 +368,10 @@ export function MealSwapModal({
         (meal.name || "").toLowerCase().includes(q) ||
         ((meal.description || "") as string).toLowerCase().includes(q)
     );
-  }, [localMeals, searchQuery, searchResults, isSearchActive]);
+  }, [localMeals, searchQuery]);
+
+  // Effective local meals (DB results only)
+  const effectiveLocalMeals: MealPlanItem[] = localMeals || [];
 
   // Simple keyboard handler kept for future use
   const _handleKeyDown = (event: React.KeyboardEvent, meal: MealPlanItem) => {
@@ -371,7 +382,12 @@ export function MealSwapModal({
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={onClose}>
+    <Drawer
+      open={isOpen}
+      onOpenChange={(open: boolean) => {
+        if (!open) onClose();
+      }}
+    >
       <DrawerContent
         className="mx-auto max-w-7xl max-h-[90vh] flex flex-col bg-background"
         aria-labelledby="swap-modal-title"
@@ -430,7 +446,7 @@ export function MealSwapModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {Array.from({ length: 8 }).map((_, index) => (
                 <BlurFade key={index} delay={index * 0.1} inView>
-                  <Card className="overflow-hidden">
+                  <Card className="overflow-hidden max-w-[320px] mx-auto">
                     <Skeleton className="w-full h-48 rounded-none" />
                     <CardContent className="p-4">
                       <Skeleton className="h-4 w-3/4 mb-2" />
@@ -455,38 +471,30 @@ export function MealSwapModal({
               )}
 
               {/* Show search results section if there are search results */}
-              {isSearchActive && searchResults.length > 0 && (
+              {isSearchActive && searchedMeals.length > 0 && (
                 <>
                   <div className="mb-4">
                     <h3 className="font-medium text-base">Search Results</h3>
                     <p className="text-sm text-muted-foreground">
-                      {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} found
+                      {searchedMeals.length} result
+                      {searchedMeals.length !== 1 ? "s" : ""} found
                     </p>
                   </div>
-                  
+
                   <div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8"
-                    role="grid"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                    role="list"
                     aria-label={`Search results for ${mealType.toLowerCase()} meals`}
                   >
-                    {searchResults.map((r: SpoonacularSearchResult, index) => {
-                      const calories =
-                        r?.nutrition?.nutrients?.find(
-                          (n) => (n?.name || "").toLowerCase() === "calories"
-                        )?.amount ?? undefined;
-                      const meal = {
-                        id: Number(r.id),
-                        name: r.title,
-                        image: r.image,
-                        description: r.summary || "",
-                        calories,
-                      } as MealPlanItem;
-                      
-                      return (
-                        <BlurFade key={meal.id} delay={index * 0.05} inView>
+                    {searchedMeals.map((meal, index) => (
+                      <div
+                        key={meal.id}
+                        className="flex-shrink-0"
+                      >
+                        <BlurFade delay={index * 0.05} inView>
                           <Card
-                            className="h-full cursor-pointer group relative overflow-hidden hover:shadow-lg transition-all duration-200"
-                            role="gridcell"
+                            className="h-full cursor-pointer group relative overflow-hidden hover:shadow-lg transition-all duration-200 max-w-[320px] mx-auto dark:bg-gray-800 dark:border-gray-700"
+                            role="listitem"
                             tabIndex={0}
                             onClick={() => {
                               onMealSelect(meal);
@@ -494,7 +502,7 @@ export function MealSwapModal({
                               logTelemetry("meal_swap_selected", {
                                 mealId: meal.id,
                                 mealType,
-                                source: "search"
+                                source: "search",
                               });
                             }}
                             onKeyDown={(e) => {
@@ -518,25 +526,23 @@ export function MealSwapModal({
                                   alt={meal.name}
                                   fill
                                   className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                {/* View button: warms cache and navigates to recipe page */}
                                 <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
                                   <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={async (e) => {
-                                      e.stopPropagation(); // Prevent the card click event from firing
+                                      e.stopPropagation();
                                       const returnTo =
                                         typeof window !== "undefined"
                                           ? window.location.pathname
                                           : "/dashboard/meal-plans";
                                       try {
-                                        // warm cache
-                                        await fetch(`/api/recipes/${meal.id}`, {
-                                          method: "GET",
-                                        });
+                                        await fetch(
+                                          `/api/recipes/${meal.id}`,
+                                          { method: "GET" }
+                                        );
                                       } catch {
                                         // ignore
                                       }
@@ -551,7 +557,6 @@ export function MealSwapModal({
                                 </div>
                               </div>
 
-                              {/* Ingredients overlay */}
                               {hoveredMeal === meal.id && (
                                 <div className="absolute inset-0 bg-black/80 flex flex-col justify-center p-4">
                                   <h4 className="text-white font-semibold text-sm mb-2">
@@ -577,23 +582,23 @@ export function MealSwapModal({
 
                             <CardContent className="p-4 flex-1 flex flex-col">
                               <div className="flex-1">
-                                <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors dark:text-gray-100">
                                   {meal.name}
                                 </h3>
-                                <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                                <p className="text-sm text-muted-foreground line-clamp-2 mb-3 dark:text-gray-300">
                                   {meal.description}
                                 </p>
                               </div>
 
-                              <div className="flex items-center justify-between pt-2 border-t">
-                                <span className="text-xs text-muted-foreground font-medium">
+                              <div className="flex items-center justify-between pt-2 border-t dark:border-gray-700">
+                                <span className="text-xs text-muted-foreground font-medium dark:text-gray-400">
                                   Calories
                                 </span>
                                 <div className="flex items-baseline gap-1">
-                                  <span className="font-bold text-foreground">
+                                  <span className="font-bold text-foreground dark:text-gray-200">
                                     {meal.calories}
                                   </span>
-                                  <span className="text-xs text-muted-foreground">
+                                  <span className="text-xs text-muted-foreground dark:text-gray-400">
                                     kcal
                                   </span>
                                 </div>
@@ -601,166 +606,166 @@ export function MealSwapModal({
                             </CardContent>
                           </Card>
                         </BlurFade>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
                   
                   {/* Horizontal partition */}
-                  {localMeals.length > 0 && (
+                  {filteredLocalMeals.length > 0 && (
                     <div className="border-t border-border my-6 pt-2">
-                      <h3 className="font-medium text-base mt-4">Your Saved Recipes</h3>
+                      <h3 className="font-medium text-base mt-4 dark:text-gray-200">
+                        Database Recipes
+                      </h3>
                     </div>
                   )}
                 </>
               )}
 
-              {/* Show count of available meals */}
-              {!isSearchActive && (
-                <div className="mb-4">
-                  <p className="text-sm text-muted-foreground">
-                    {localMeals.length} meal
-                    {localMeals.length !== 1 ? "s" : ""} available
-                  </p>
-                </div>
-              )}
+              {/* Always show database recipes */}
+              {(isSearchActive ? filteredLocalMeals : localMeals).length > 0 ? (
+                <>
+                  <div className="mb-4">
+                    <h3 className="font-medium text-base dark:text-gray-200">Database Recipes</h3>
+                    <p className="text-sm text-muted-foreground dark:text-gray-400">
+                      {(isSearchActive ? filteredLocalMeals : localMeals).length}{" "}
+                      {(isSearchActive ? filteredLocalMeals : localMeals).length === 1
+                        ? "recipe"
+                        : "recipes"}{" "}
+                      available
+                    </p>
+                  </div>
 
-              {/* Show empty state if no meals available */}
-              {localMeals.length === 0 && !isSearchActive && !isSearching ? (
-                <div className="w-full py-12 text-center text-sm text-muted-foreground">
+                  <div
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                    role="grid"
+                    aria-label={`Available ${mealType.toLowerCase()} meals`}
+                  >
+                    {(isSearchActive ? filteredLocalMeals : localMeals).map((meal, index) => (
+                      <BlurFade key={meal.id} delay={index * 0.05} inView>
+                        <Card
+                          className="h-full cursor-pointer group relative overflow-hidden hover:shadow-lg transition-all duration-200 max-w-[320px] mx-auto dark:bg-gray-800 dark:border-gray-700"
+                          role="gridcell"
+                          tabIndex={0}
+                          onClick={() => {
+                            onMealSelect(meal);
+                            onClose();
+                            logTelemetry("meal_swap_selected", {
+                              mealId: meal.id,
+                              mealType,
+                            });
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              onMealSelect(meal);
+                              onClose();
+                            }
+                          }}
+                          onMouseEnter={() => {
+                            fetchIngredientsForMeal(meal.id, meal.name);
+                            setHoveredMeal(meal.id);
+                          }}
+                          onMouseLeave={() => setHoveredMeal(null)}
+                          aria-label={`Select ${meal.name}, ${meal.calories} calories`}
+                        >
+                          <div className="relative">
+                            <div className="w-full h-48 overflow-hidden">
+                              <Image
+                                src={meal.image || "/placeholder.svg"}
+                                alt={meal.name}
+                                fill
+                                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    const returnTo =
+                                      typeof window !== "undefined"
+                                        ? window.location.pathname
+                                        : "/dashboard/meal-plans";
+                                    try {
+                                      await fetch(
+                                        `/api/recipes/${meal.id}`,
+                                        { method: "GET" }
+                                      );
+                                    } catch {
+                                      // ignore
+                                    }
+                                    onClose();
+                                    router.push(
+                                      `/recipe/${meal.id}?returnTo=${encodeURIComponent(returnTo)}`
+                                    );
+                                  }}
+                                >
+                                  View
+                                </Button>
+                              </div>
+                            </div>
+
+                            {hoveredMeal === meal.id && (
+                              <div className="absolute inset-0 bg-black/80 flex flex-col justify-center p-4">
+                                <h4 className="text-white font-semibold text-sm mb-2">
+                                  Ingredients
+                                </h4>
+                                <div className="space-y-1 max-h-32 overflow-y-auto">
+                                  {(
+                                    ingredientsMap[meal.id] ||
+                                    generateIngredients(meal.name)
+                                  ).map((ingredient, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="flex items-center gap-2 text-white/90 text-xs"
+                                    >
+                                      <div className="w-1 h-1 bg-green-400 rounded-full flex-shrink-0" />
+                                      <span>{ingredient}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          <CardContent className="p-4 flex-1 flex flex-col">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors dark:text-gray-100">
+                                {meal.name}
+                              </h3>
+                              <p className="text-sm text-muted-foreground line-clamp-2 mb-3 dark:text-gray-300">
+                                {meal.description}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center justify-between pt-2 border-t dark:border-gray-700">
+                              <span className="text-xs text-muted-foreground font-medium dark:text-gray-400">
+                                Calories
+                              </span>
+                              <div className="flex items-baseline gap-1">
+                                <span className="font-bold text-foreground dark:text-gray-200">
+                                  {meal.calories}
+                                </span>
+                                <span className="text-xs text-muted-foreground dark:text-gray-400">
+                                  kcal
+                                </span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </BlurFade>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="w-full py-12 text-center text-sm text-muted-foreground dark:text-gray-400">
                   <p>No saved recipes found.</p>
                   <p className="mt-2">
                     Try searching for recipes or save some recipes to your
                     library to see them here.
                   </p>
-                </div>
-              ) : (
-                <div
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-                  role="grid"
-                  aria-label={`Available ${mealType.toLowerCase()} meals`}
-                >
-                  {/* Show local meals if not searching or if we're showing both sections */}
-                  {(!isSearchActive ? localMeals : isSearchActive && searchResults.length > 0 ? localMeals : []).map((meal, index) => (
-                    <BlurFade key={meal.id} delay={index * 0.05} inView>
-                      <Card
-                        className="h-full cursor-pointer group relative overflow-hidden hover:shadow-lg transition-all duration-200"
-                        role="gridcell"
-                        tabIndex={0}
-                        onClick={() => {
-                          // When this modal is used to swap/fill a meal slot, clicking a search result
-                          // should select the recipe and replace the slot instead of navigating.
-                          onMealSelect(meal);
-                          onClose();
-                          logTelemetry("meal_swap_selected", {
-                            mealId: meal.id,
-                            mealType,
-                          });
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            onMealSelect(meal);
-                            onClose();
-                          }
-                        }}
-                        onMouseEnter={() => {
-                          fetchIngredientsForMeal(meal.id, meal.name);
-                          setHoveredMeal(meal.id);
-                        }}
-                        onMouseLeave={() => setHoveredMeal(null)}
-                        aria-label={`Select ${meal.name}, ${meal.calories} calories`}
-                      >
-                        <div className="relative">
-                          <div className="w-full h-48 overflow-hidden">
-                            <Image
-                              src={meal.image || "/placeholder.svg"}
-                              alt={meal.name}
-                              fill
-                              className="object-cover transition-transform duration-300 group-hover:scale-105"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            {/* View button: warms cache and navigates to recipe page */}
-                            <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={async (e) => {
-                                  e.stopPropagation(); // Prevent the card click event from firing
-                                  const returnTo =
-                                    typeof window !== "undefined"
-                                      ? window.location.pathname
-                                      : "/dashboard/meal-plans";
-                                  try {
-                                    // warm cache
-                                    await fetch(`/api/recipes/${meal.id}`, {
-                                      method: "GET",
-                                    });
-                                  } catch {
-                                    // ignore
-                                  }
-                                  onClose();
-                                  router.push(
-                                    `/recipe/${meal.id}?returnTo=${encodeURIComponent(returnTo)}`
-                                  );
-                                }}
-                              >
-                                View
-                              </Button>
-                            </div>
-                          </div>
-
-                          {/* Ingredients overlay */}
-                          {hoveredMeal === meal.id && (
-                            <div className="absolute inset-0 bg-black/80 flex flex-col justify-center p-4">
-                              <h4 className="text-white font-semibold text-sm mb-2">
-                                Ingredients
-                              </h4>
-                              <div className="space-y-1 max-h-32 overflow-y-auto">
-                                {(
-                                  ingredientsMap[meal.id] ||
-                                  generateIngredients(meal.name)
-                                ).map((ingredient, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="flex items-center gap-2 text-white/90 text-xs"
-                                  >
-                                    <div className="w-1 h-1 bg-green-400 rounded-full flex-shrink-0" />
-                                    <span>{ingredient}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        <CardContent className="p-4 flex-1 flex flex-col">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                              {meal.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                              {meal.description}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center justify-between pt-2 border-t">
-                            <span className="text-xs text-muted-foreground font-medium">
-                              Calories
-                            </span>
-                            <div className="flex items-baseline gap-1">
-                              <span className="font-bold text-foreground">
-                                {meal.calories}
-                              </span>
-                              <span className="text-xs text-muted-foreground">
-                                kcal
-                              </span>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </BlurFade>
-                  ))}
                 </div>
               )}
 
