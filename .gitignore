@@ -7,6 +7,9 @@ pnpm-debug.log*
 
 # Next.js
 .next/
+.roo/
+.clerk/
+.github/
 out/
 build/
 dist/
@@ -45,6 +48,10 @@ prisma/migrations/
 .DS_Store?
 ._*
 .Spotlight-V100
+
+# Documentation files
+CODE_FIXES_SUMMARY.md
+RECIPE_IMPLEMENTATION.md
 .Trashes
 ehthumbs.db
 Thumbs.db
