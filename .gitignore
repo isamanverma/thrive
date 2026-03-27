@@ -129,3 +129,44 @@ temp/
 # Backup files
 *.bak
 *.backup
+
+# Opencode
+.opencode/
+.opencoderc
+skills-lock.json
+
+# Factory / AI agent configs
+.factory/
+.kilocode/
+.kiro/
+.kube/
+.trae/
+.roo/
+
+# Env files (never commit these)
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+.next/
+dist/
+
+# Bun
+bun.lockb
+
+# Turborepo
+.turbo/
+
+# Vercel
+.vercel/
+
+# Netlify
+.netlify/
+
+# Openlogs
+.openlogs/
+
+# Claude & AI configs
+.claude/
+.agents/
