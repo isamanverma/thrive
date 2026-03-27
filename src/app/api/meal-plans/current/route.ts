@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
+
+interface DishPayload {
+  recipeId: string;
+  sourceId?: string;
+  name: string;
+  calories: number;
+  image?: string;
+  description?: string;
+  quantity: number;
+  unit: string;
+  nutrition?: unknown;
+}
 
 interface MealItem {
   id: number;
@@ -10,15 +22,35 @@ interface MealItem {
   image?: string;
   description?: string;
   nutrition?: unknown;
+  dishes?: DishPayload[];
 }
 
 type _WeeklyMeals = Record<number, Record<string, MealItem>>;
 
+function resolveCalories(nutrition: unknown): number {
+  if (!nutrition || typeof nutrition !== "object") return 0;
+  const rn = nutrition as { [k: string]: unknown };
+  if (typeof rn.calories === "number") return rn.calories as number;
+  if (Array.isArray(rn.nutrients)) {
+    const found = (rn.nutrients as unknown[]).find((n) => {
+      if (!n || typeof n !== "object") return false;
+      const obj = n as { name?: unknown; amount?: unknown };
+      return (
+        typeof obj.name === "string" &&
+        (obj.name as string).toLowerCase().includes("calorie") &&
+        typeof obj.amount === "number"
+      );
+    });
+    if (found) return (found as { amount: number }).amount;
+  }
+  return 0;
+}
+
 // GET: Load current user's active meal plan
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -32,11 +64,15 @@ export async function GET() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Get current week's meal plan (Monday to Sunday)
-    const currentDate = new Date();
+    // Allow the client to request a specific week via ?date=YYYY-MM-DD
+    const url = new URL(request.url);
+    const dateParam = url.searchParams.get("date");
+    const currentDate = dateParam ? new Date(dateParam) : new Date();
+
+    // Get week range (Monday to Sunday) for the target date
     const startOfWeek = new Date(currentDate);
-    // Get Monday as start of week (0=Sunday, 1=Monday)
-    const mondayOffset = currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
+    const mondayOffset =
+      currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
     startOfWeek.setDate(currentDate.getDate() + mondayOffset);
     startOfWeek.setHours(0, 0, 0, 0);
 
@@ -48,17 +84,17 @@ export async function GET() {
     let mealPlan = await prisma.mealPlan.findFirst({
       where: {
         userId: user.id,
-        startDate: {
-          lte: endOfWeek,
-        },
-        endDate: {
-          gte: startOfWeek,
-        },
+        startDate: { lte: endOfWeek },
+        endDate: { gte: startOfWeek },
       },
       include: {
         mealPlanItems: {
           include: {
             cachedRecipe: true,
+            dishes: {
+              include: { recipe: true },
+              orderBy: { order: "asc" },
+            },
           },
         },
       },
@@ -76,6 +112,10 @@ export async function GET() {
           mealPlanItems: {
             include: {
               cachedRecipe: true,
+              dishes: {
+                include: { recipe: true },
+                orderBy: { order: "asc" },
+              },
             },
           },
         },
@@ -83,50 +123,69 @@ export async function GET() {
     }
 
     // Transform to frontend format
-    // Frontend uses 0=Monday, 1=Tuesday, ... 6=Sunday
     const weeklyMeals: Record<number, Record<string, MealItem>> = {};
-    
+
     for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
       weeklyMeals[dayIndex] = {};
     }
 
     mealPlan.mealPlanItems.forEach((item) => {
-      // Database dayOfWeek: 1=Monday, 2=Tuesday, ... 7=Sunday  
-      // Frontend dayIndex: 0=Monday, 1=Tuesday, ... 6=Sunday
-      const dayIndex = item.dayOfWeek - 1; // Convert 1-7 to 0-6
+      const dayIndex = item.dayOfWeek - 1;
       const mealType = item.mealType.toLowerCase();
-      
-      if (item.cachedRecipe && dayIndex >= 0 && dayIndex < 7) {
-  const rawNutrition = item.cachedRecipe.nutrition as unknown | null;
 
-        // Resolve calories from various nutrition shapes:
-        // - { calories: number }
-        // - { nutrients: [{ name: 'Calories', amount: number, unit: 'kcal' }, ...] }
-        let calories = 0;
-        if (rawNutrition && typeof rawNutrition === "object") {
-          const rn = rawNutrition as { [k: string]: unknown };
-          if (typeof rn.calories === "number") {
-            calories = rn.calories as number;
-          } else if (Array.isArray(rn.nutrients)) {
-            const nutrients = rn.nutrients as unknown[];
-            const found = nutrients.find((n) => {
-              if (!n || typeof n !== "object") return false;
-              const obj = n as { name?: unknown; amount?: unknown };
-              return typeof obj.name === "string" && (obj.name as string).toLowerCase().includes("calorie") && typeof obj.amount === "number";
-            });
-            if (found) calories = (found as { amount: number }).amount;
-          }
-        }
+      if (dayIndex < 0 || dayIndex >= 7) return;
 
-        weeklyMeals[dayIndex][mealType] = {
-          id: parseInt(item.cachedRecipe.sourceId || item.cachedRecipe.id),
+      // Build dishes array from MealDish records
+      const dishes: DishPayload[] = item.dishes.map((dish) => {
+        const calories = resolveCalories(dish.recipe.nutrition);
+        return {
+          recipeId: dish.recipeId,
+          sourceId: dish.recipe.sourceId || undefined,
+          name: dish.recipe.title,
+          calories: Math.round(calories * dish.quantity) || 0,
+          image: dish.recipe.imageUrl || dish.recipe.fallbackImageUrl || "",
+          description: dish.recipe.description || "",
+          quantity: dish.quantity,
+          unit: dish.unit,
+          nutrition: dish.recipe.nutrition || undefined,
+        };
+      });
+
+      // Fallback: if no dishes but has cachedRecipe, create a single dish from it
+      if (dishes.length === 0 && item.cachedRecipe) {
+        const calories = resolveCalories(item.cachedRecipe.nutrition);
+        dishes.push({
+          recipeId: item.cachedRecipe.id,
+          sourceId: item.cachedRecipe.sourceId || undefined,
           name: item.cachedRecipe.title,
           calories: Math.round(calories) || 0,
-          image: item.cachedRecipe.imageUrl || item.cachedRecipe.fallbackImageUrl || "",
+          image:
+            item.cachedRecipe.imageUrl ||
+            item.cachedRecipe.fallbackImageUrl ||
+            "",
           description: item.cachedRecipe.description || "",
+          quantity: 1,
+          unit: "serving",
           nutrition: item.cachedRecipe.nutrition || undefined,
-        };
+        });
       }
+
+      const totalCalories = dishes.reduce(
+        (sum, d) => sum + (d.calories || 0),
+        0,
+      );
+      const firstName = dishes[0]?.name || "";
+      const firstImage = dishes[0]?.image || "";
+
+      weeklyMeals[dayIndex][mealType] = {
+        id: parseInt(item.cachedRecipe?.sourceId || item.id),
+        name:
+          dishes.length > 1 ? `${firstName} +${dishes.length - 1}` : firstName,
+        calories: totalCalories,
+        image: firstImage,
+        description: dishes[0]?.description || "",
+        dishes,
+      };
     });
 
     return NextResponse.json({
@@ -135,12 +194,11 @@ export async function GET() {
       startDate: mealPlan.startDate,
       endDate: mealPlan.endDate,
     });
-    
   } catch (error) {
     console.error("Error loading meal plan:", error);
     return NextResponse.json(
       { error: "Failed to load meal plan" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -149,7 +207,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -166,7 +224,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Parse dates - if not provided, calculate current week
+    // Parse dates
     let mealPlanStartDate: Date;
     let mealPlanEndDate: Date;
 
@@ -174,10 +232,10 @@ export async function POST(request: NextRequest) {
       mealPlanStartDate = new Date(startDate);
       mealPlanEndDate = new Date(endDate);
     } else {
-      // Calculate current week (Monday to Sunday)
       const currentDate = new Date();
       mealPlanStartDate = new Date(currentDate);
-      const mondayOffset = currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
+      const mondayOffset =
+        currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
       mealPlanStartDate.setDate(currentDate.getDate() + mondayOffset);
       mealPlanStartDate.setHours(0, 0, 0, 0);
 
@@ -190,12 +248,8 @@ export async function POST(request: NextRequest) {
     let mealPlan = await prisma.mealPlan.findFirst({
       where: {
         userId: user.id,
-        startDate: {
-          lte: mealPlanEndDate,
-        },
-        endDate: {
-          gte: mealPlanStartDate,
-        },
+        startDate: { lte: mealPlanEndDate },
+        endDate: { gte: mealPlanStartDate },
       },
     });
 
@@ -209,84 +263,144 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Clear existing meal plan items for this week
-    await prisma.mealPlanItem.deleteMany({
-      where: {
-        mealPlanId: mealPlan.id,
-      },
-    });
+    const safeWeeklyMeals = weeklyMeals || {};
+    const hasAnyMeals = Object.values(safeWeeklyMeals).some(
+      (day) => day && Object.keys(day as Record<string, unknown>).length > 0,
+    );
+
+    if (hasAnyMeals) {
+      // Delete existing dishes first, then items
+      const existingItems = await prisma.mealPlanItem.findMany({
+        where: { mealPlanId: mealPlan.id },
+        select: { id: true },
+      });
+      if (existingItems.length > 0) {
+        await prisma.mealDish.deleteMany({
+          where: { mealPlanItemId: { in: existingItems.map((i) => i.id) } },
+        });
+      }
+      await prisma.mealPlanItem.deleteMany({
+        where: { mealPlanId: mealPlan.id },
+      });
+    }
 
     // Create new meal plan items from weeklyMeals
-    const mealPlanItems = [];
-    
-    for (const [dayIndexStr, dayMeals] of Object.entries(weeklyMeals)) {
+    for (const [dayIndexStr, dayMeals] of Object.entries(safeWeeklyMeals)) {
       const dayIndex = parseInt(dayIndexStr);
-      // Frontend dayIndex: 0=Monday, 1=Tuesday, ... 6=Sunday
-      // Database dayOfWeek: 1=Monday, 2=Tuesday, ... 7=Sunday
-      const dayOfWeek = dayIndex + 1; // Convert 0-6 to 1-7
-      
-      if (dayOfWeek < 1 || dayOfWeek > 7) continue; // Skip invalid days
-      
-      for (const [mealType, meal] of Object.entries(dayMeals as Record<string, MealItem>)) {
-        if (meal && meal.id && meal.name) {
-          // Try to find or create recipe in database
-          let recipe = await prisma.recipe.findFirst({
-            where: {
-              OR: [
-                { sourceId: meal.id.toString() },
-                { id: meal.id.toString() },
-              ],
+      const dayOfWeek = dayIndex + 1;
+
+      if (dayOfWeek < 1 || dayOfWeek > 7) continue;
+
+      for (const [mealType, meal] of Object.entries(
+        dayMeals as Record<string, MealItem>,
+      )) {
+        if (!meal || !meal.name) continue;
+
+        // Find or create a recipe for the slot's primary reference
+        let recipe = await prisma.recipe.findFirst({
+          where: {
+            OR: [
+              { sourceId: meal.id?.toString() },
+              { id: meal.id?.toString() },
+            ],
+          },
+        });
+
+        if (!recipe && meal.name) {
+          recipe = await prisma.recipe.create({
+            data: {
+              title: meal.name,
+              description: meal.description || null,
+              imageUrl: meal.image || null,
+              sourceType: "EXTERNAL_API",
+              sourceId: meal.id?.toString() || null,
+              nutrition: meal.calories
+                ? { calories: meal.calories }
+                : undefined,
+              isPublic: true,
             },
           });
+        }
 
-          // If recipe doesn't exist, create it
-          if (!recipe) {
-            recipe = await prisma.recipe.create({
-              data: {
-                title: meal.name,
-                description: meal.description || null,
-                imageUrl: meal.image || null,
-                sourceType: "EXTERNAL_API",
-                sourceId: meal.id.toString(),
-                nutrition: meal.calories ? { calories: meal.calories } : undefined,
-                isPublic: true,
-              },
-            });
-          }
+        if (!recipe) continue;
 
-          mealPlanItems.push({
+        // Create the MealPlanItem
+        const mealPlanItem = await prisma.mealPlanItem.create({
+          data: {
             mealPlanId: mealPlan.id,
             dayOfWeek,
             mealType: mealType.toLowerCase(),
             cachedRecipeId: recipe.id,
-            sourceId: meal.id.toString(),
+            sourceId: meal.id?.toString() || null,
+          },
+        });
+
+        // Create dishes if provided
+        const dishes = meal.dishes || [];
+        if (dishes.length > 0) {
+          for (let i = 0; i < dishes.length; i++) {
+            const dish = dishes[i];
+            // Find or create recipe for dish
+            let dishRecipe = await prisma.recipe.findFirst({
+              where: {
+                OR: [{ sourceId: dish.recipeId }, { id: dish.recipeId }],
+              },
+            });
+
+            if (!dishRecipe) {
+              dishRecipe = await prisma.recipe.create({
+                data: {
+                  title: dish.name,
+                  description: dish.description || null,
+                  imageUrl: dish.image || null,
+                  sourceType: "EXTERNAL_API",
+                  sourceId: dish.recipeId,
+                  nutrition: dish.calories
+                    ? { calories: dish.calories }
+                    : undefined,
+                  isPublic: true,
+                },
+              });
+            }
+
+            await prisma.mealDish.create({
+              data: {
+                mealPlanItemId: mealPlanItem.id,
+                recipeId: dishRecipe.id,
+                quantity: dish.quantity || 1,
+                unit: dish.unit || "serving",
+                order: i,
+              },
+            });
+          }
+        } else {
+          // No dishes array — create a single dish from the primary recipe
+          await prisma.mealDish.create({
+            data: {
+              mealPlanItemId: mealPlanItem.id,
+              recipeId: recipe.id,
+              quantity: 1,
+              unit: "serving",
+              order: 0,
+            },
           });
         }
       }
     }
 
-    // Bulk create meal plan items
-    if (mealPlanItems.length > 0) {
-      await prisma.mealPlanItem.createMany({
-        data: mealPlanItems,
-      });
-    }
-
     return NextResponse.json({
       success: true,
       mealPlanId: mealPlan.id,
-      itemsCreated: mealPlanItems.length,
       weekRange: {
         startDate: mealPlan.startDate,
         endDate: mealPlan.endDate,
       },
     });
-    
   } catch (error) {
     console.error("Error saving meal plan:", error);
     return NextResponse.json(
       { error: "Failed to save meal plan" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,232 +1,20 @@
 import type {
+  Dish,
   DraggedItem,
   DropZone,
   MealPlanItem,
   ViewMode,
   WeeklyMeals,
-  WeeklyStats
+  WeeklyStats,
 } from "../types";
+import {
+  fetchCurrentMealPlan,
+  invalidateMealPlanCache,
+  saveCurrentMealPlan,
+  swapMealsAPI,
+  updateMealDishesAPI,
+} from "@/lib/mealPlanClient";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-const sampleMeals = {
-  breakfast: [
-    {
-      id: 1,
-      name: "Greek Yogurt Parfait",
-      calories: 350,
-      image: "/greek-yogurt-parfait.png",
-      description: "Creamy yogurt layered with granola and fresh berries",
-    },
-    {
-      id: 2,
-      name: "Oatmeal with Berries",
-      calories: 300,
-      image: "/oatmeal-with-berries.png",
-      description: "Warm oats topped with mixed berries and honey",
-    },
-    {
-      id: 3,
-      name: "Scrambled Eggs",
-      calories: 280,
-      image: "/fluffy-scrambled-eggs.png",
-      description: "Fluffy scrambled eggs with herbs and butter",
-    },
-    {
-      id: 4,
-      name: "Green Smoothie",
-      calories: 320,
-      image: "/green-smoothie.png",
-      description: "Spinach, banana, and mango smoothie",
-    },
-    {
-      id: 5,
-      name: "Pancakes",
-      calories: 450,
-      image: "/fluffy-pancakes.png",
-      description: "Stack of fluffy pancakes with maple syrup",
-    },
-    {
-      id: 6,
-      name: "Poha",
-      calories: 280,
-      image: "/poha-indian-breakfast.jpg",
-      description: "Flattened rice with vegetables and spices",
-    },
-    {
-      id: 7,
-      name: "Dosa",
-      calories: 350,
-      image: "/dosa-south-indian-crepe.jpg",
-      description: "Crispy fermented crepe with coconut chutney",
-    },
-    {
-      id: 8,
-      name: "Avocado Toast",
-      calories: 320,
-      image: "/avocado-toast.png",
-      description: "Whole grain toast topped with mashed avocado",
-    },
-  ],
-  lunch: [
-    {
-      id: 9,
-      name: "Quinoa Salad",
-      calories: 450,
-      image: "/colorful-quinoa-salad.png",
-      description: "Protein-rich quinoa with fresh vegetables",
-    },
-    {
-      id: 10,
-      name: "Chicken Salad",
-      calories: 480,
-      image: "/creamy-chicken-salad.png",
-      description: "Grilled chicken with mixed greens",
-    },
-    {
-      id: 11,
-      name: "Lentil Soup",
-      calories: 400,
-      image: "/hearty-lentil-soup.png",
-      description: "Hearty soup with red lentils and vegetables",
-    },
-    {
-      id: 12,
-      name: "Tuna Sandwich",
-      calories: 420,
-      image: "/tuna-sandwich.jpg",
-      description: "Fresh tuna salad on whole wheat bread",
-    },
-    {
-      id: 13,
-      name: "Leftover Stir-fry",
-      calories: 650,
-      image: "/leftover-stir-fry.jpg",
-      description: "Mixed vegetables stir-fried with tofu",
-    },
-    {
-      id: 14,
-      name: "Buddha Bowl",
-      calories: 520,
-      image: "/buddha-bowl-healthy.jpg",
-      description: "Colorful bowl with grains, vegetables, and protein",
-    },
-    {
-      id: 15,
-      name: "Wrap",
-      calories: 380,
-      image: "/healthy-wrap.jpg",
-      description: "Whole wheat wrap with chicken and vegetables",
-    },
-  ],
-  snack: [
-    {
-      id: 16,
-      name: "Apple & Peanut Butter",
-      calories: 150,
-      image: "/apple-peanut-butter.jpg",
-      description: "Crisp apple slices with natural peanut butter",
-    },
-    {
-      id: 17,
-      name: "Mixed Nuts",
-      calories: 180,
-      image: "/mixed-nuts.png",
-      description: "Handful of almonds, walnuts, and cashews",
-    },
-    {
-      id: 18,
-      name: "Greek Yogurt",
-      calories: 120,
-      image: "/greek-yogurt-bowl.png",
-      description: "Plain Greek yogurt with a drizzle of honey",
-    },
-    {
-      id: 19,
-      name: "Protein Bar",
-      calories: 200,
-      image: "/protein-bar.png",
-      description: "Homemade protein bar with oats and dates",
-    },
-    {
-      id: 20,
-      name: "Trail Mix",
-      calories: 160,
-      image: "/trail-mix.png",
-      description: "Mixed nuts, dried fruits, and seeds",
-    },
-    {
-      id: 21,
-      name: "Banana with Almond Butter",
-      calories: 190,
-      image: "/banana-almond-butter.png",
-      description: "Fresh banana with creamy almond butter",
-    },
-    {
-      id: 22,
-      name: "Hummus with Veggies",
-      calories: 140,
-      image: "/hummus-veggies.png",
-      description: "Fresh vegetables with homemade hummus",
-    },
-  ],
-  dinner: [
-    {
-      id: 23,
-      name: "Spaghetti Bolognese",
-      calories: 600,
-      image: "/spaghetti-bolognese.png",
-      description: "Classic pasta with rich meat sauce",
-    },
-    {
-      id: 24,
-      name: "Fish Tacos",
-      calories: 550,
-      image: "/fish-tacos.jpg",
-      description: "Grilled fish with fresh salsa in corn tortillas",
-    },
-    {
-      id: 25,
-      name: "Leftover Pizza",
-      calories: 800,
-      image: "/leftover-pizza.jpg",
-      description: "Homemade pizza with fresh toppings",
-    },
-    {
-      id: 26,
-      name: "Homemade Pizza",
-      calories: 800,
-      image: "/homemade-pizza.png",
-      description: "Wood-fired pizza with seasonal vegetables",
-    },
-    {
-      id: 27,
-      name: "Roast Chicken",
-      calories: 700,
-      image: "/perfectly-roasted-chicken.png",
-      description: "Herb-crusted roasted chicken with vegetables",
-    },
-    {
-      id: 28,
-      name: "Salmon Teriyaki",
-      calories: 520,
-      image: "/salmon-teriyaki.jpg",
-      description: "Glazed salmon with steamed rice and broccoli",
-    },
-    {
-      id: 29,
-      name: "Vegetable Curry",
-      calories: 450,
-      image: "/vegetable-curry.png",
-      description: "Spiced vegetable curry with basmati rice",
-    },
-  ],
-};
-
-const baseWeeklyStats = {
-  avgProtein: 120,
-  avgCarbs: 150,
-  avgFat: 60,
-};
 
 export function useMealPlanData() {
   const [viewMode, setViewMode] = useState<ViewMode>("weekly");
@@ -234,14 +22,13 @@ export function useMealPlanData() {
   const [draggedItem, setDraggedItem] = useState<DraggedItem | null>(null);
   const [activeDropZone, setActiveDropZone] = useState<DropZone | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [mealPlanId, setMealPlanId] = useState<string | null>(null);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isLoadingRef = useRef(false); // Prevent multiple simultaneous API calls
-  const initialLoadRef = useRef(false); // Track if initial load has happened
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isLoadingRef = useRef(false);
+  const initialLoadRef = useRef(false);
 
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeals>(() => {
-    // Start with an empty week so the UI renders a neutral skeleton on hard refresh.
-    // Persisted data (if any) will replace this after the initial fetch completes.
     const meals: WeeklyMeals = {};
     for (let i = 0; i < 7; i++) {
       meals[i] = {};
@@ -250,265 +37,380 @@ export function useMealPlanData() {
   });
 
   // Load meal plan from database
-  const loadMealPlan = useCallback(async () => {
-    try {
-      // Prevent multiple simultaneous API calls
-      if (isLoadingRef.current) {
-        return;
-      }
+  const loadMealPlan = useCallback(
+    async (targetDate?: Date, options?: { preserveUI?: boolean }) => {
+      const date = targetDate ?? currentDate;
+      try {
+        if (isLoadingRef.current) return;
 
-      isLoadingRef.current = true;
-      setIsLoading(true);
+        isLoadingRef.current = true;
+        if (!initialLoadRef.current || !options?.preserveUI) {
+          setIsLoading(true);
+          setIsRefreshing(false);
+        } else {
+          setIsRefreshing(true);
+        }
 
-      const response = await fetch('/api/meal-plans/current');
+        const { ok, data, error } = await fetchCurrentMealPlan(date);
+        if (!ok || !data) {
+          console.warn("Failed to load meal plan, rendering empty week", error);
+          const emptyMeals: WeeklyMeals = {};
+          for (let i = 0; i < 7; i++) emptyMeals[i] = {};
+          setWeeklyMeals(emptyMeals);
+          setMealPlanId(null);
+          return;
+        }
 
-      if (!response.ok) {
-        // Ensure UI shows an empty week rather than sample data on failure
-        console.warn('Failed to load meal plan, rendering empty week');
-        const emptyMeals: WeeklyMeals = {};
-        for (let i = 0; i < 7; i++) emptyMeals[i] = {};
-        setWeeklyMeals(emptyMeals);
+        const meals: WeeklyMeals = {};
+        for (let i = 0; i < 7; i++) meals[i] = {};
+
+        if (
+          data &&
+          typeof data.weeklyMeals === "object" &&
+          Object.keys(data.weeklyMeals).length > 0
+        ) {
+          Object.entries(data.weeklyMeals).forEach(([k, v]) => {
+            const idx = parseInt(k, 10);
+            if (!Number.isNaN(idx) && idx >= 0 && idx < 7) {
+              meals[idx] = v as WeeklyMeals[number];
+            }
+          });
+          setWeeklyMeals(meals);
+          setMealPlanId(data.mealPlanId || null);
+        } else {
+          setWeeklyMeals(meals);
+          setMealPlanId(data?.mealPlanId || null);
+        }
+
+        // Warm adjacent weeks in cache so prev/next navigation feels instant.
+        const prevWeekDate = new Date(date);
+        prevWeekDate.setDate(prevWeekDate.getDate() - 7);
+        const nextWeekDate = new Date(date);
+        nextWeekDate.setDate(nextWeekDate.getDate() + 7);
+        void fetchCurrentMealPlan(prevWeekDate);
+        void fetchCurrentMealPlan(nextWeekDate);
+      } catch (error) {
+        console.error("Error loading meal plan:", error);
+        const meals: WeeklyMeals = {};
+        for (let i = 0; i < 7; i++) meals[i] = {};
+        setWeeklyMeals(meals);
         setMealPlanId(null);
-        return;
+      } finally {
+        isLoadingRef.current = false;
+        setIsLoading(false);
+        setIsRefreshing(false);
+        initialLoadRef.current = true;
       }
-
-      const data = await response.json();
-
-      // Normalize server response into a complete 0-6 mapping to avoid shape changes
-      const meals: WeeklyMeals = {};
-      for (let i = 0; i < 7; i++) meals[i] = {};
-
-      if (data && typeof data.weeklyMeals === 'object' && Object.keys(data.weeklyMeals).length > 0) {
-        Object.entries(data.weeklyMeals).forEach(([k, v]) => {
-          const idx = parseInt(k, 10);
-          if (!Number.isNaN(idx) && idx >= 0 && idx < 7) {
-            meals[idx] = v as WeeklyMeals[number];
-          }
-        });
-        setWeeklyMeals(meals);
-        setMealPlanId(data.mealPlanId || null);
-      } else {
-        // No persisted items -> keep empty week (neutral skeleton)
-        setWeeklyMeals(meals);
-        setMealPlanId(data?.mealPlanId || null);
-      }
-    } catch (error) {
-      console.error('Error loading meal plan:', error);
-      const meals: WeeklyMeals = {};
-      for (let i = 0; i < 7; i++) meals[i] = {};
-      setWeeklyMeals(meals);
-      setMealPlanId(null);
-    } finally {
-      isLoadingRef.current = false;
-      setIsLoading(false);
-      initialLoadRef.current = true;
-    }
-  }, []);
+    },
+    [currentDate],
+  );
 
   // Save meal plan to database
-  const saveMealPlan = useCallback(async (meals: WeeklyMeals) => {
-    try {
-      // Calculate start and end dates for current week using the state currentDate
-      const startOfWeek = new Date(currentDate);
-      // Get Monday as start of week
-      const mondayOffset = currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
-      startOfWeek.setDate(currentDate.getDate() + mondayOffset);
-      startOfWeek.setHours(0, 0, 0, 0);
+  const saveMealPlan = useCallback(
+    async (meals: WeeklyMeals) => {
+      try {
+        const startOfWeek = new Date(currentDate);
+        const mondayOffset =
+          currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
+        startOfWeek.setDate(currentDate.getDate() + mondayOffset);
+        startOfWeek.setHours(0, 0, 0, 0);
 
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
-      endOfWeek.setHours(23, 59, 59, 999);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
 
-      const response = await fetch('/api/meal-plans/current', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          weeklyMeals: meals,
-          startDate: startOfWeek.toISOString(),
-          endDate: endOfWeek.toISOString(),
-        }),
+        const payload = await saveCurrentMealPlan(
+          meals,
+          startOfWeek.toISOString(),
+          endOfWeek.toISOString(),
+        );
+        if (payload && payload.mealPlanId) {
+          setMealPlanId(payload.mealPlanId);
+        }
+      } catch (error) {
+        console.error("Error saving meal plan:", error);
+      }
+    },
+    [currentDate],
+  );
+
+  // Update a meal slot with dishes
+  const updateMealDishes = useCallback(
+    async (dayIndex: number, mealType: string, dishes: Dish[]) => {
+      const idx = Math.max(0, Math.min(6, Math.floor(Number(dayIndex) || 0)));
+      const mealTypeKey = String(mealType || "").toLowerCase();
+
+      // Optimistically update UI
+      setWeeklyMeals((prevMeals) => {
+        const newMeals = JSON.parse(JSON.stringify(prevMeals));
+        if (!newMeals[idx]) newMeals[idx] = {};
+
+        if (dishes.length === 0) {
+          delete newMeals[idx][mealTypeKey];
+        } else {
+          const totalCalories = dishes.reduce(
+            (sum: number, d: Dish) => sum + (d.calories || 0),
+            0,
+          );
+          newMeals[idx][mealTypeKey] = {
+            id: dishes[0].recipeId,
+            name:
+              dishes.length > 1
+                ? `${dishes[0].name} +${dishes.length - 1}`
+                : dishes[0].name,
+            calories: totalCalories,
+            image: dishes[0].image || "",
+            description: dishes[0].description || "",
+            dishes,
+          };
+        }
+        return newMeals;
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setMealPlanId(data.mealPlanId);
-      } else {
-        console.error('Failed to save meal plan');
-      }
-    } catch (error) {
-      console.error('Error saving meal plan:', error);
-    }
-  }, [currentDate]);
-
-  // Update a single meal with optimistic updates
-  const updateSingleMeal = useCallback(async (
-    dayIndex: number, 
-    mealType: string, 
-    meal: MealPlanItem | null
-  ) => {
-    // Optimistically update the UI first
-    setWeeklyMeals((prevMeals) => {
-      const newMeals = JSON.parse(JSON.stringify(prevMeals));
-      const mealTypeKey = mealType.toLowerCase();
-
-      if (!newMeals[dayIndex]) {
-        newMeals[dayIndex] = {};
-      }
-
-      if (meal) {
-        newMeals[dayIndex][mealTypeKey] = meal;
-      } else {
-        delete newMeals[dayIndex][mealTypeKey];
-      }
-
-      return newMeals;
-    });
-
-    // Then persist to database
-    try {
-      const response = await fetch('/api/meal-plans/update-meal', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          dayIndex,
-          mealType: mealType.toLowerCase(),
-          meal: meal,
-          action: meal ? 'set' : 'remove',
-        }),
-      });
-
-      if (!response.ok) {
-        console.error('Failed to update meal in database, reverting...');
-        // Revert optimistic update on failure
+      // Persist to backend
+      try {
+        invalidateMealPlanCache(currentDate);
+        await updateMealDishesAPI(
+          idx,
+          mealTypeKey,
+          dishes.map((d) => ({
+            recipeId: d.recipeId,
+            name: d.name,
+            calories: d.calories,
+            image: d.image,
+            description: d.description,
+            quantity: d.quantity,
+            unit: d.unit,
+          })),
+          dishes.length > 0 ? "set" : "remove",
+        );
+      } catch (error) {
+        console.error("Failed to update meal dishes, reloading...", error);
         loadMealPlan();
       }
-    } catch (error) {
-      console.error('Error updating meal:', error);
-      // Revert optimistic update on failure
-      loadMealPlan();
-    }
-  }, [loadMealPlan]);
+    },
+    [currentDate, loadMealPlan],
+  );
 
-  // Swap two meals with optimistic updates
-  const swapMeals = useCallback(async (
-    sourceDayIndex: number,
-    sourceMealType: string,
-    targetDayIndex: number,
-    targetMealType: string
-  ) => {
-    // Store original state for potential rollback
-    const originalMeals = JSON.parse(JSON.stringify(weeklyMeals));
+  // Remove a meal slot
+  const removeMeal = useCallback(
+    async (dayIndex: number, mealType: string) => {
+      await updateMealDishes(dayIndex, mealType, []);
+    },
+    [updateMealDishes],
+  );
 
-    // Optimistically update the UI first
-    setWeeklyMeals((prevMeals) => {
-      const newMeals = JSON.parse(JSON.stringify(prevMeals));
-      const sourceMealKey = sourceMealType.toLowerCase();
-      const targetMealKey = targetMealType.toLowerCase();
+  // Swap two meals
+  const swapMeals = useCallback(
+    async (
+      sourceDayIndex: number,
+      sourceMealType: string,
+      targetDayIndex: number,
+      targetMealType: string,
+    ) => {
+      const srcIdx = Math.max(
+        0,
+        Math.min(6, Math.floor(Number(sourceDayIndex) || 0)),
+      );
+      const tgtIdx = Math.max(
+        0,
+        Math.min(6, Math.floor(Number(targetDayIndex) || 0)),
+      );
+      const srcKey = String(sourceMealType || "").toLowerCase();
+      const tgtKey = String(targetMealType || "").toLowerCase();
 
-      if (!newMeals[sourceDayIndex]) newMeals[sourceDayIndex] = {};
-      if (!newMeals[targetDayIndex]) newMeals[targetDayIndex] = {};
+      let originalMeals: WeeklyMeals | null = null;
 
-      const sourceMeal = newMeals[sourceDayIndex][sourceMealKey];
-      const targetMeal = newMeals[targetDayIndex][targetMealKey];
+      setWeeklyMeals((prevMeals) => {
+        originalMeals = JSON.parse(JSON.stringify(prevMeals));
+        const newMeals = JSON.parse(JSON.stringify(prevMeals));
 
-      // Perform the swap
-      if (sourceMeal && targetMeal) {
-        // Both exist - swap them
-        newMeals[sourceDayIndex][sourceMealKey] = targetMeal;
-        newMeals[targetDayIndex][targetMealKey] = sourceMeal;
-      } else if (sourceMeal && !targetMeal) {
-        // Only source exists - move to target
-        delete newMeals[sourceDayIndex][sourceMealKey];
-        newMeals[targetDayIndex][targetMealKey] = sourceMeal;
-      } else if (!sourceMeal && targetMeal) {
-        // Only target exists - move to source
-        delete newMeals[targetDayIndex][targetMealKey];
-        newMeals[sourceDayIndex][sourceMealKey] = targetMeal;
-      }
+        if (!newMeals[srcIdx]) newMeals[srcIdx] = {};
+        if (!newMeals[tgtIdx]) newMeals[tgtIdx] = {};
 
-      return newMeals;
-    });
+        const sourceMeal = newMeals[srcIdx][srcKey];
+        const targetMeal = newMeals[tgtIdx][tgtKey];
 
-    // Then persist to database
-    try {
-      const response = await fetch('/api/meal-plans/swap-meals', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sourceDayIndex,
-          sourceMealType: sourceMealType.toLowerCase(),
-          targetDayIndex,
-          targetMealType: targetMealType.toLowerCase(),
-        }),
+        if (sourceMeal && targetMeal) {
+          newMeals[srcIdx][srcKey] = targetMeal;
+          newMeals[tgtIdx][tgtKey] = sourceMeal;
+        } else if (sourceMeal && !targetMeal) {
+          delete newMeals[srcIdx][srcKey];
+          newMeals[tgtIdx][tgtKey] = sourceMeal;
+        } else if (!sourceMeal && targetMeal) {
+          delete newMeals[tgtIdx][tgtKey];
+          newMeals[srcIdx][srcKey] = targetMeal;
+        }
+
+        return newMeals;
       });
 
-      if (!response.ok) {
-        console.error('Failed to swap meals in database, reverting...');
-        // Revert to original state on failure
-        setWeeklyMeals(originalMeals);
+      try {
+        invalidateMealPlanCache(currentDate);
+        await swapMealsAPI(srcIdx, srcKey, tgtIdx, tgtKey);
+      } catch (error) {
+        console.error("Failed to swap meals in database, reverting...", error);
+        if (originalMeals) {
+          setWeeklyMeals(originalMeals);
+        } else {
+          loadMealPlan();
+        }
       }
-    } catch (error) {
-      console.error('Error swapping meals:', error);
-      // Revert to original state on failure
-      setWeeklyMeals(originalMeals);
-    }
-  }, [weeklyMeals]);
+    },
+    [currentDate, loadMealPlan],
+  );
 
   // Enhanced setWeeklyMeals that also saves to database with debouncing
-  const updateWeeklyMeals = useCallback((
-    mealsOrUpdater: WeeklyMeals | ((prev: WeeklyMeals) => WeeklyMeals)
-  ) => {
-    setWeeklyMeals((prevMeals) => {
-      const newMeals = typeof mealsOrUpdater === 'function' 
-        ? mealsOrUpdater(prevMeals) 
-        : mealsOrUpdater;
-      
-      // Clear previous timeout
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-      
-      // Debounce the save operation to avoid too many API calls
-      saveTimeoutRef.current = setTimeout(() => {
-        saveMealPlan(newMeals);
-      }, 1000); // Save after 1 second of inactivity
-      
-      return newMeals;
-    });
-  }, [saveMealPlan]);
+  const updateWeeklyMeals = useCallback(
+    (mealsOrUpdater: WeeklyMeals | ((prev: WeeklyMeals) => WeeklyMeals)) => {
+      setWeeklyMeals((prevMeals) => {
+        const newMeals =
+          typeof mealsOrUpdater === "function"
+            ? mealsOrUpdater(prevMeals)
+            : mealsOrUpdater;
 
-  // Load meal plan on component mount only
+        if (saveTimeoutRef.current) {
+          clearTimeout(saveTimeoutRef.current);
+        }
+
+        saveTimeoutRef.current = setTimeout(() => {
+          saveMealPlan(newMeals);
+        }, 1000);
+
+        return newMeals;
+      });
+    },
+    [saveMealPlan],
+  );
+
+  // Load meal plan on mount
   useEffect(() => {
-    loadMealPlan();
+    loadMealPlan(undefined, { preserveUI: false });
   }, [loadMealPlan]);
 
-  // Calculate total calories for a day
+  // Re-fetch when navigating to a different week
+  const prevWeekStartRef = useRef<string>("");
+  useEffect(() => {
+    const startOfWeek = new Date(currentDate);
+    const mondayOffset =
+      currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
+    startOfWeek.setDate(currentDate.getDate() + mondayOffset);
+    startOfWeek.setHours(0, 0, 0, 0);
+    const weekKey = startOfWeek.toISOString();
+
+    if (prevWeekStartRef.current && prevWeekStartRef.current !== weekKey) {
+      loadMealPlan(currentDate, { preserveUI: true });
+    }
+    prevWeekStartRef.current = weekKey;
+  }, [currentDate, loadMealPlan]);
+
+  // Calculate nutrition from dishes
+  const calculateDishCalories = (dish: Dish): number => {
+    return dish.calories || 0;
+  };
+
+  const calculateSlotCalories = (meal: MealPlanItem | undefined): number => {
+    if (!meal) return 0;
+    if (meal.dishes && meal.dishes.length > 0) {
+      return meal.dishes.reduce((sum, d) => sum + calculateDishCalories(d), 0);
+    }
+    return meal.calories || 0;
+  };
+
   const calculateDayCalories = (dayMeals: Record<string, MealPlanItem>) => {
     return Object.values(dayMeals).reduce(
-      (total, meal) => total + (meal.calories ?? 0),
-      0
+      (total, meal) => total + calculateSlotCalories(meal),
+      0,
     );
   };
 
-  // Calculate weekly average calories
+  const calculateDayMacros = (dayMeals: Record<string, MealPlanItem>) => {
+    let protein = 0;
+    let carbs = 0;
+    let fat = 0;
+
+    Object.values(dayMeals).forEach((meal) => {
+      if (meal?.dishes) {
+        meal.dishes.forEach((dish) => {
+          const nut = dish.nutrition as
+            | {
+                nutrients?: Array<{ name: string; amount: number }>;
+              }
+            | undefined;
+          if (nut?.nutrients) {
+            const p = nut.nutrients.find(
+              (n) => n.name?.toLowerCase() === "protein",
+            )?.amount;
+            const c = nut.nutrients.find(
+              (n) =>
+                n.name?.toLowerCase() === "carbohydrates" ||
+                n.name?.toLowerCase() === "carbs",
+            )?.amount;
+            const f = nut.nutrients.find(
+              (n) => n.name?.toLowerCase() === "fat",
+            )?.amount;
+            protein += p ? Math.round(p * dish.quantity) : 0;
+            carbs += c ? Math.round(c * dish.quantity) : 0;
+            fat += f ? Math.round(f * dish.quantity) : 0;
+          }
+        });
+      }
+    });
+
+    return { protein, carbs, fat };
+  };
+
   const calculateWeeklyStats = (): WeeklyStats => {
-    const totalCalories = Object.values(weeklyMeals).reduce(
-      (total, dayMeals) => total + calculateDayCalories(dayMeals),
-      0
-    );
+    let totalCalories = 0;
+    let totalProtein = 0;
+    let totalCarbs = 0;
+    let totalFat = 0;
+    let daysWithData = 0;
+
+    Object.values(weeklyMeals).forEach((dayMeals) => {
+      const dayCals = calculateDayCalories(
+        dayMeals as Record<string, MealPlanItem>,
+      );
+      const macros = calculateDayMacros(
+        dayMeals as Record<string, MealPlanItem>,
+      );
+      if (dayCals > 0 || Object.keys(dayMeals).length > 0) {
+        totalCalories += dayCals;
+        totalProtein += macros.protein;
+        totalCarbs += macros.carbs;
+        totalFat += macros.fat;
+        daysWithData++;
+      }
+    });
+
+    const divisor = daysWithData || 1;
     return {
       avgCalories: Math.round(totalCalories / 7),
-      ...baseWeeklyStats,
+      avgProtein: Math.round(totalProtein / 7),
+      avgCarbs: Math.round(totalCarbs / 7),
+      avgFat: Math.round(totalFat / 7),
     };
   };
 
-  // Calculate current day index (0 = Sunday, 1 = Monday, etc.)
+  const calculateDailyStats = () => {
+    const adjustedDayIndex = (currentDate.getDay() - 1 + 7) % 7;
+    const dayMeals = weeklyMeals[adjustedDayIndex] || {};
+    const totalCalories = calculateDayCalories(
+      dayMeals as Record<string, MealPlanItem>,
+    );
+    const macros = calculateDayMacros(dayMeals as Record<string, MealPlanItem>);
+    const goal = 2000;
+
+    return {
+      totalCalories,
+      caloriesLeft: Math.max(0, goal - totalCalories),
+      protein: macros.protein,
+      carbs: macros.carbs,
+      fat: macros.fat,
+      goal,
+    };
+  };
+
   const getCurrentDayIndex = () => {
     return currentDate.getDay();
   };
@@ -531,25 +433,27 @@ export function useMealPlanData() {
     weeklyMeals,
     draggedItem,
     activeDropZone,
-    sampleMeals,
     isLoading,
+    isRefreshing,
     mealPlanId,
-    
+
     // Setters
     setViewMode,
-    setWeeklyMeals: updateWeeklyMeals, // Use the enhanced version that saves to DB
+    setWeeklyMeals: updateWeeklyMeals,
     setDraggedItem,
     setActiveDropZone,
-    
+
     // Computed values
     weeklyStats: calculateWeeklyStats(),
-    
+    dailyStats: calculateDailyStats(),
+
     // Functions
     navigateDate,
     calculateDayCalories,
     loadMealPlan,
     saveMealPlan,
-    updateSingleMeal,
+    updateMealDishes,
+    removeMeal,
     swapMeals,
   };
 }

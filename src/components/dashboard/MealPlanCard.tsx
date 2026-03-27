@@ -2,6 +2,7 @@
 
 import { GripVertical } from "lucide-react";
 import Image from "next/image";
+import React from "react";
 import { motion } from "framer-motion";
 
 export interface MealPlanItem {
@@ -10,11 +11,7 @@ export interface MealPlanItem {
   calories?: number;
   image?: string;
   description?: string;
-  // nutrition may be either a normalized { calories: number } or the Spoonacular Nutrition object
-  nutrition?:
-    | { calories?: number }
-    | { nutrients?: Array<{ name: string; amount: number; unit: string }> }
-    | Record<string, unknown>;
+  nutrition?: unknown;
 }
 
 interface MealPlanCardProps {
@@ -26,13 +23,13 @@ interface MealPlanCardProps {
   onCardClick: (
     meal: MealPlanItem,
     mealType: string,
-    dayIndex?: number
+    dayIndex?: number,
   ) => void;
   onDragStart?: (
     e: React.DragEvent,
     meal: MealPlanItem,
     mealType: string,
-    dayIndex: number
+    dayIndex: number,
   ) => void;
   onDragEnd?: () => void;
   isDragging?: boolean;
@@ -49,7 +46,7 @@ const getMealTypeStyles = (mealType: string) => {
   return styles[mealType as keyof typeof styles] || styles.Lunch;
 };
 
-export function MealPlanCard({
+function MealPlanCardInner({
   meal,
   mealType,
   dayIndex,
@@ -60,6 +57,21 @@ export function MealPlanCard({
   onDragEnd,
   isDragging = false,
 }: MealPlanCardProps) {
+  // Diagnostics: lightweight render counter & props snapshot (browser-only)
+  try {
+    // Count renders to help diagnose excessive re-renders
+    console.count && console.count("[mealPlan] MealPlanCard render");
+    // Small debug payload to avoid heavy logs
+    console.debug &&
+      console.debug("[mealPlan] MealPlanCard props", {
+        id: meal?.id,
+        mealType,
+        dayIndex,
+        isDragging,
+      });
+  } catch (e) {
+    /* ignore logging errors in older browsers */
+  }
   // Resolve calories from several possible shapes:
   // - meal.calories (normalized)
   // - meal.nutrition.calories
@@ -209,3 +221,5 @@ export function MealPlanCard({
     </motion.div>
   );
 }
+
+export const MealPlanCard = React.memo(MealPlanCardInner);

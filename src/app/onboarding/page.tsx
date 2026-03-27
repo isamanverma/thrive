@@ -8,6 +8,7 @@ import { Citrus } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 type QuestionType = "number" | "single-choice" | "multi-choice";
 
@@ -126,9 +127,11 @@ export default function OnboardingPage() {
         console.log("Database temporarily unavailable, storing data locally");
         // Store user data locally for retry later using the sync utility
         storePendingUserData(userData);
-        
+
         // Show a more user-friendly notification
-        console.log("Your profile has been temporarily saved and will be synchronized when the service is available.");
+        console.log(
+          "Your profile has been temporarily saved and will be synchronized when the service is available.",
+        );
       } else {
         console.log("User saved successfully:", result.id);
         // Clear any pending data on successful save
@@ -237,13 +240,21 @@ export default function OnboardingPage() {
 
   if (isSubmitting) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-lg font-medium text-foreground">
-            Setting up your profile...
-          </p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#fffaf5]">
+        <div className="relative w-48 h-48 mb-6">
+          <div className="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-20" />
+          <Image
+            src="/thrive mascots/bgRemoved/cooking Background Removed.png"
+            alt="Setting up"
+            fill
+            className="relative z-10 object-contain animate-bounce"
+            style={{ animationDuration: "1.5s" }}
+            priority
+          />
         </div>
+        <p className="text-zinc-600 font-medium animate-pulse">
+          Setting up your profile...
+        </p>
       </div>
     );
   }
@@ -253,7 +264,7 @@ export default function OnboardingPage() {
       {/* Navbar */}
       <nav className="flex justify-between items-center h-16">
         <div className="flex flex-row items-center">
-          <div className="m-2 rounded-md bg-purple-500 p-1 shadow-md">
+          <div className="m-2 rounded-md bg-orange-500 p-1 shadow-md">
             <Citrus color="white" strokeWidth={1.5} />
           </div>
           <h1 className="text-xl font-semibold">Thrive AI</h1>
@@ -277,7 +288,7 @@ export default function OnboardingPage() {
         </div>
         <div className="w-full bg-input rounded-full h-2">
           <div
-            className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+            className="bg-orange-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((step + 1) / questions.length) * 100}%` }}
           ></div>
         </div>
@@ -304,7 +315,7 @@ export default function OnboardingPage() {
                   ref={inputRef}
                   type="number"
                   min={1}
-                  className="w-full border border-border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg"
+                  className="w-full border border-border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-orange-500 text-lg"
                   value={formData[currentQuestion.name] ?? ""}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -334,7 +345,7 @@ export default function OnboardingPage() {
                       }
                       className={`px-4 py-3 border rounded-lg cursor-pointer transition ${
                         formData[currentQuestion.name] === opt
-                          ? "bg-purple-500 text-white border-purple-500"
+                          ? "bg-orange-500 text-white border-orange-500"
                           : "border-border hover:bg-muted hover:border-green-300"
                       }`}
                     >
@@ -370,7 +381,7 @@ export default function OnboardingPage() {
                         }
                         className={`px-4 py-3 border rounded-lg cursor-pointer transition ${
                           arr.includes(opt)
-                            ? "bg-purple-500 text-white border-purple-500"
+                            ? "bg-orange-500 text-white border-orange-500"
                             : "border-border hover:bg-muted hover:border-green-300"
                         }`}
                       >
@@ -397,7 +408,7 @@ export default function OnboardingPage() {
                 <button
                   onClick={handleNext}
                   disabled={!isAnswered(currentQuestion)}
-                  className="px-6 py-2 rounded-lg bg-purple-500 text-white disabled:opacity-50 hover:bg-green-700 font-medium"
+                  className="px-6 py-2 rounded-lg bg-orange-500 text-white disabled:opacity-50 hover:bg-orange-700 font-medium"
                 >
                   {step === questions.length - 1 ? "Complete Setup" : "Next"}
                 </button>

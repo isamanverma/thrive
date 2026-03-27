@@ -138,7 +138,7 @@ export default function RecipePage() {
                 router.back();
               }
             }}
-            className="bg-purple-500 hover:bg-green-700"
+            className="bg-orange-500 hover:bg-orange-700"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Go Back

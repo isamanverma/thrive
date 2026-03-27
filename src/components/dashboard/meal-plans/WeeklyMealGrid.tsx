@@ -1,7 +1,6 @@
 import type {
   DraggedItem,
   DropZone,
-  MealPlanItem,
   MealTypeCapitalized,
   WeeklyMeals,
 } from "./types";
@@ -13,36 +12,17 @@ interface WeeklyMealGridProps {
   weeklyMeals: WeeklyMeals;
   draggedItem: DraggedItem | null;
   activeDropZone: DropZone | null;
-  onDragStart: (
-    e: React.DragEvent,
-    meal: MealPlanItem,
-    mealType: string,
-    dayIndex: number
-  ) => void;
-  onDragEnd: () => void;
-  onDragOver: (e: React.DragEvent, mealType: string, dayIndex: number) => void;
-  onDragLeave: (e: React.DragEvent) => void;
-  onDrop: (e: React.DragEvent, mealType: string, dayIndex: number) => void;
-  onRecipeClick: (
-    recipe: MealPlanItem,
-    mealType: string,
-    dayIndex?: number
-  ) => void;
   currentDayIndex: number;
-  onEmptySlotClick?: (mealType: string, dayIndex: number) => void;
+  onSlotClick: (mealType: string, dayIndex: number) => void;
+  onEmptySlotClick: (mealType: string, dayIndex: number) => void;
 }
 
-export function WeeklyMealGrid({
+export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
   weeklyMeals,
   draggedItem,
   activeDropZone,
-  onDragStart,
-  onDragEnd,
-  onDragOver,
-  onDragLeave,
-  onDrop,
-  onRecipeClick,
   currentDayIndex,
+  onSlotClick,
   onEmptySlotClick,
 }: WeeklyMealGridProps) {
   const mealTypes: MealTypeCapitalized[] = [
@@ -52,58 +32,42 @@ export function WeeklyMealGrid({
     "Dinner",
   ];
 
-  // Ensure currentDayIndex is within the valid range (1-7)
-  const adjustedDayIndex = (currentDayIndex - 1 + 7) % 7; // Adjust for 0-based index and wrap around
+  const adjustedDayIndex = (currentDayIndex - 1 + 7) % 7;
 
   return (
-    <>
-      {/* Day headers */}
-      <div
-        className="grid gap-1 bg-muted border-b"
-        style={{
-          gridTemplateColumns: "70px repeat(7, 1fr)",
-        }}
-      >
-        <div className="p-1 text-center text-xs font-medium text-muted-foreground"></div>
+    <div className="w-full h-full min-h-0 flex flex-col">
+      {/* Day headers — label spacer + 7 day columns */}
+      <div className="grid grid-cols-[40px_repeat(7,1fr)] gap-x-2">
+        <div /> {/* empty label spacer */}
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
           <div
             key={day}
-            className={`px-2 py-3 text-center font-semibold ${
+            className={`py-2 text-center text-xs font-semibold transition-colors rounded-lg ${
               index === adjustedDayIndex
-                ? "bg-purple-200 text-purple-700"
+                ? "bg-primary/10 text-primary"
                 : "text-foreground"
             }`}
           >
-            <div className="flex items-center justify-center gap-1">
-              <span>{day}</span>
-              {index === adjustedDayIndex && (
-                <span className="text-xs bg-card/80 text-purple-700 px-2 py-0.5 rounded-full font-semibold">
-                  Today
-                </span>
-              )}
-            </div>
+            {day}
           </div>
         ))}
       </div>
 
       {/* Meal type rows */}
-      {mealTypes.map((mealType) => (
-        <MealTypeRow
-          key={mealType}
-          mealType={mealType}
-          weeklyMeals={weeklyMeals}
-          draggedItem={draggedItem}
-          activeDropZone={activeDropZone}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          onDrop={onDrop}
-          onRecipeClick={onRecipeClick}
-          onEmptySlotClick={onEmptySlotClick}
-          todayIndex={adjustedDayIndex}
-        />
-      ))}
-    </>
+      <div className="grid grid-rows-4 gap-y-2 mt-1 flex-1 min-h-0 auto-rows-fr">
+        {mealTypes.map((mealType) => (
+          <MealTypeRow
+            key={mealType}
+            mealType={mealType}
+            weeklyMeals={weeklyMeals}
+            draggedItem={draggedItem}
+            activeDropZone={activeDropZone}
+            todayIndex={adjustedDayIndex}
+            onSlotClick={onSlotClick}
+            onEmptySlotClick={onEmptySlotClick}
+          />
+        ))}
+      </div>
+    </div>
   );
-}
+});

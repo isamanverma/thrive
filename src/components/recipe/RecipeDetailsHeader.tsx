@@ -113,7 +113,7 @@ export function RecipeDetailsHeader({ recipe }: RecipeDetailsHeaderProps) {
         <div className="space-y-4">
           <Button
             onClick={handleSaveToFavorites}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-green-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-orange-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
           >
             <Heart className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
             Save to Favorites
@@ -121,7 +121,7 @@ export function RecipeDetailsHeader({ recipe }: RecipeDetailsHeaderProps) {
           <Button
             onClick={handleAddToMealPlan}
             variant="outline"
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-green-600 bg-green-50 px-5 py-3 text-base font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-green-600 bg-green-50 px-5 py-3 text-base font-semibold text-green-600 shadow-sm transition-colors hover:bg-orange-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
           >
             <CalendarPlus className="h-5 w-5" />
             Add to Meal Plan

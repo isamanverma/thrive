@@ -19,7 +19,7 @@ export default function NotificationsPage() {
 
       {/* Notification controls */}
       <div className="flex space-x-4">
-        <button className="flex items-center space-x-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-green-700 transition-colors">
+        <button className="flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-700 transition-colors">
           <Check className="w-4 h-4" />
           <span>Mark All Read</span>
         </button>
@@ -40,7 +40,7 @@ export default function NotificationsPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3">
                     <div className="p-2 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-200">
-                      <Bell className="w-4 h-4 text-purple-500 dark:text-green-200" />
+                      <Bell className="w-4 h-4 text-orange-500 dark:text-green-200" />
                     </div>
                     <div>
                       <h4 className="font-medium text-foreground">

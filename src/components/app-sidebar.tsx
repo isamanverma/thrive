@@ -13,7 +13,12 @@ import {
   Sun,
   User,
 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -59,7 +64,7 @@ const ProfileButton = () => {
 
     try {
       const res = await fetch(
-        `/api/users?clerkId=${encodeURIComponent(user.id)}`
+        `/api/users?clerkId=${encodeURIComponent(user.id)}`,
       );
       if (res.ok) {
         const data = await res.json();
@@ -93,18 +98,20 @@ const ProfileButton = () => {
     <SidebarMenuButton
       asChild
       className={`hover:bg-muted rounded-lg p-3 ${
-        isActive ? "bg-muted text-purple-600" : ""
+        isActive ? "bg-muted text-orange-600" : ""
       }`}
     >
       <a href="#" onClick={handleClick} className="flex items-center space-x-3">
-        <User className="w-5 h-5 text-purple-600" />
-        <span className="text-lg font-medium text-muted-foreground">Profile</span>
+        <User className="w-4 h-4 text-orange-600" />
+        <span className="text-base font-medium text-muted-foreground">
+          Profile
+        </span>
         <UserButton
           appearance={{
             elements: {
               userButtonTrigger:
                 "bg-transparent border-none shadow-none p-0 ml-auto",
-              userButtonAvatarBox: "w-5 h-5",
+              userButtonAvatarBox: "w-4 h-4",
             },
           }}
         />
@@ -158,16 +165,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="bg-sidebar border-r border-border">
-      <SidebarHeader className="px-6 py-4 bg-sidebar border-b border-border">
+      <SidebarHeader className="px-6 py-3.5 bg-sidebar border-b border-border">
         <div className="flex items-center space-x-3">
           <Image
             src="/logo.png"
             alt="Thrive Logo"
-            width={40}
-            height={40}
+            width={36}
+            height={36}
             className="rounded-lg"
           />
-          <span className="text-xl font-bold text-foreground">Thrive</span>
+          <span className="text-base font-bold text-foreground">Thrive</span>
         </div>
       </SidebarHeader>
       <SidebarContent className="p-4">
@@ -181,16 +188,16 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       asChild
                       className={`hover:bg-muted rounded-lg p-3 ${
-                        isActive ? "bg-muted text-purple-600" : ""
+                        isActive ? "bg-muted text-orange-600" : ""
                       }`}
                     >
                       <Link
                         href={item.url}
                         className="flex items-center space-x-3"
                       >
-                        <item.icon className="w-5 h-5 text-purple-600" />
+                        <item.icon className="w-4 h-4 text-orange-600" />
                         <span
-                          className={`text-lg font-medium ${isActive ? "text-purple-600" : "text-muted-foreground"}`}
+                          className={`text-base font-medium ${isActive ? "text-orange-600" : "text-muted-foreground"}`}
                         >
                           {item.title}
                         </span>
@@ -208,17 +215,20 @@ export function AppSidebar() {
           {/* Theme (mode) toggle first — avoid using SidebarMenuItem (li) here to prevent stray list bullets */}
           <div className="flex">
             <DropdownMenu>
-              <SidebarMenuButton asChild className="hover:bg-muted rounded-lg p-3">
+              <SidebarMenuButton
+                asChild
+                className="hover:bg-muted rounded-lg p-3"
+              >
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center w-full space-x-3">
-                    <Sun className="w-5 h-5 text-purple-600" />
-                    <span className="text-lg font-medium text-muted-foreground">
+                    <Sun className="w-4 h-4 text-orange-600" />
+                    <span className="text-base font-medium text-muted-foreground">
                       Theme
                     </span>
                   </button>
                 </DropdownMenuTrigger>
               </SidebarMenuButton>
-    
+
               <DropdownMenuContent align="end" side="top">
                 <DropdownMenuItem onClick={() => setTheme("light")}>
                   Light
@@ -232,13 +242,13 @@ export function AppSidebar() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-    
+
           {/* Notifications */}
           <SidebarMenuButton
             asChild
             className={`hover:bg-muted rounded-lg p-3 ${
               pathname === "/dashboard/notifications"
-                ? "bg-muted text-purple-500"
+                ? "bg-muted text-orange-500"
                 : ""
             }`}
           >
@@ -246,11 +256,11 @@ export function AppSidebar() {
               href="/dashboard/notifications"
               className="flex items-center space-x-3"
             >
-              <Bell className="w-5 h-5 text-purple-600" />
+              <Bell className="w-4 h-4 text-orange-600" />
               <span
-                className={`text-lg font-medium ${
+                className={`text-base font-medium ${
                   pathname === "/dashboard/notifications"
-                    ? "text-purple-600"
+                    ? "text-orange-600"
                     : "text-muted-foreground"
                 }`}
               >
@@ -258,25 +268,23 @@ export function AppSidebar() {
               </span>
             </Link>
           </SidebarMenuButton>
-    
+
           {/* Settings */}
           <SidebarMenuButton
             asChild
             className={`hover:bg-muted rounded-lg p-3 ${
-              pathname === "/dashboard/settings"
-                ? "bg-muted text-primary"
-                : ""
+              pathname === "/dashboard/settings" ? "bg-muted text-primary" : ""
             }`}
           >
             <Link
               href="/dashboard/settings"
               className="flex items-center space-x-3"
             >
-              <Settings className="w-5 h-5 text-purple-600" />
+              <Settings className="w-4 h-4 text-orange-600" />
               <span
-                className={`text-lg font-medium ${
+                className={`text-base font-medium ${
                   pathname === "/dashboard/settings"
-                    ? "text-purple-600"
+                    ? "text-orange-600"
                     : "text-muted-foreground"
                 }`}
               >
@@ -284,7 +292,7 @@ export function AppSidebar() {
               </span>
             </Link>
           </SidebarMenuButton>
-    
+
           {/* Profile */}
           <div className="flex flex-col space-y-2">
             <div className="flex-1">

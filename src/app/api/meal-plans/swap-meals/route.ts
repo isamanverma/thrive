@@ -1,42 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { PrismaClient } from "@/generated/prisma";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-
-const prisma = new PrismaClient();
 
 // POST: Swap two meals in the current meal plan
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
-    const { 
-      sourceDayIndex, 
-      sourceMealType, 
-      targetDayIndex, 
-      targetMealType 
-    } = body;
+    const { sourceDayIndex, sourceMealType, targetDayIndex, targetMealType } =
+      body;
 
     // Validate input
-    if (typeof sourceDayIndex !== "number" || sourceDayIndex < 0 || sourceDayIndex > 6) {
-      return NextResponse.json({ error: "Invalid sourceDayIndex. Must be 0-6" }, { status: 400 });
+    if (
+      typeof sourceDayIndex !== "number" ||
+      sourceDayIndex < 0 ||
+      sourceDayIndex > 6
+    ) {
+      return NextResponse.json(
+        { error: "Invalid sourceDayIndex. Must be 0-6" },
+        { status: 400 },
+      );
     }
 
-    if (typeof targetDayIndex !== "number" || targetDayIndex < 0 || targetDayIndex > 6) {
-      return NextResponse.json({ error: "Invalid targetDayIndex. Must be 0-6" }, { status: 400 });
+    if (
+      typeof targetDayIndex !== "number" ||
+      targetDayIndex < 0 ||
+      targetDayIndex > 6
+    ) {
+      return NextResponse.json(
+        { error: "Invalid targetDayIndex. Must be 0-6" },
+        { status: 400 },
+      );
     }
 
     if (!sourceMealType || typeof sourceMealType !== "string") {
-      return NextResponse.json({ error: "Invalid sourceMealType" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid sourceMealType" },
+        { status: 400 },
+      );
     }
 
     if (!targetMealType || typeof targetMealType !== "string") {
-      return NextResponse.json({ error: "Invalid targetMealType" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid targetMealType" },
+        { status: 400 },
+      );
     }
 
     // Find user in database
@@ -51,7 +65,8 @@ export async function POST(request: NextRequest) {
     // Calculate current week (Monday to Sunday)
     const currentDate = new Date();
     const startOfWeek = new Date(currentDate);
-    const mondayOffset = currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
+    const mondayOffset =
+      currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
     startOfWeek.setDate(currentDate.getDate() + mondayOffset);
     startOfWeek.setHours(0, 0, 0, 0);
 
@@ -73,7 +88,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (!mealPlan) {
-      return NextResponse.json({ error: "No meal plan found for current week" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No meal plan found for current week" },
+        { status: 404 },
+      );
     }
 
     // Convert frontend dayIndex (0-6) to database dayOfWeek (1-7)
@@ -158,12 +176,11 @@ export async function POST(request: NextRequest) {
       source: { dayIndex: sourceDayIndex, mealType: sourceMealType },
       target: { dayIndex: targetDayIndex, mealType: targetMealType },
     });
-    
   } catch (error) {
     console.error("Error swapping meals:", error);
     return NextResponse.json(
       { error: "Failed to swap meals" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

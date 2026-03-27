@@ -5,33 +5,48 @@ interface WeeklyStatsCardProps {
 }
 
 export function WeeklyStatsCard({ stats }: WeeklyStatsCardProps) {
+  const items = [
+    {
+      label: "Calories",
+      value: stats.avgCalories,
+      unit: "kcal",
+      color: "text-amber-600",
+    },
+    {
+      label: "Protein",
+      value: `${stats.avgProtein}g`,
+      unit: null,
+      color: "text-sky-600",
+    },
+    {
+      label: "Carbs",
+      value: `${stats.avgCarbs}g`,
+      unit: null,
+      color: "text-orange-500",
+    },
+    {
+      label: "Fat",
+      value: `${stats.avgFat}g`,
+      unit: null,
+      color: "text-rose-500",
+    },
+  ];
+
   return (
-    <div className="bg-card rounded-lg p-6 mb-8 shadow-sm">
-      <h3 className="text-lg font-semibold text-foreground mb-4">Weekly Stats</h3>
-      <div className="grid grid-cols-4 gap-6">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Avg. Daily Calories</p>
-          <p className="text-2xl font-bold text-purple-600">
-            {stats.avgCalories}
-          </p>
+    <div className="flex items-baseline gap-8 mb-6 px-1">
+      <span className="text-xs font-semibold text-foreground/60 uppercase tracking-wider">
+        Daily avg
+      </span>
+      {items.map((item) => (
+        <div key={item.label} className="flex items-baseline gap-1.5">
+          <span className={`text-2xl font-bold tabular-nums ${item.color}`}>
+            {item.value}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {item.unit ?? item.label.toLowerCase()}
+          </span>
         </div>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Avg. Protein</p>
-          <p className="text-2xl font-bold text-blue-600">
-            {stats.avgProtein}g
-          </p>
-        </div>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Avg. Carbs</p>
-          <p className="text-2xl font-bold text-orange-600">
-            {stats.avgCarbs}g
-          </p>
-        </div>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Avg. Fat</p>
-          <p className="text-2xl font-bold text-purple-600">{stats.avgFat}g</p>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

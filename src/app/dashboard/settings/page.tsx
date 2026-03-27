@@ -52,7 +52,7 @@ export default function SettingsPage() {
                 defaultValue="john.doe@example.com"
               />
             </div>
-            <button className="w-full bg-purple-500 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+            <button className="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-700 transition-colors">
               Save Profile
             </button>
           </CardContent>

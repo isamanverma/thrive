@@ -20,6 +20,7 @@ import { MealPlanItem } from "./MealPlanCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { getUserRecipes } from "@/lib/api";
+import { getRecipes } from "@/lib/mealPlanClient";
 import { logTelemetry } from "@/lib/telemetry";
 import { useRouter } from "next/navigation";
 
@@ -39,9 +40,7 @@ interface SpoonacularSearchResult {
   title: string;
   image?: string;
   summary?: string;
-  nutrition?: {
-    nutrients?: Array<{ name?: string; amount?: number; unit?: string }>;
-  };
+  nutrition?: unknown;
 }
 
 interface ExtendedIngredient {
@@ -56,7 +55,7 @@ const getMealTypeStyles = (mealType: string) => {
     Lunch:
       "bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-800",
     Snack:
-      "bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-700 dark:hover:bg-purple-800",
+      "bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700 dark:hover:bg-orange-800",
     Dinner:
       "bg-red-100 text-red-700 border-red-200 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-800",
   };
@@ -88,7 +87,7 @@ export function MealSwapModal({
 
   // Search / pagination state
   const [searchResults, setSearchResults] = useState<SpoonacularSearchResult[]>(
-    []
+    [],
   );
   const [totalResults, setTotalResults] = useState(0);
   const [page, setPage] = useState(0);
@@ -105,7 +104,8 @@ export function MealSwapModal({
   const [localMeals, setLocalMeals] = useState<MealPlanItem[]>([]);
 
   // When the drawer opens (and when page changes), load DB-sourced meals
-  // using the client API helper getUserRecipes. Skip when searching (search has priority).
+  // using the centralized client helper getRecipes (server merges external+db).
+  // When no query is present we show DB recipes immediately for responsiveness.
   useEffect(() => {
     if (!isOpen) return;
     if (searchQuery.trim()) return; // search has priority
@@ -114,81 +114,34 @@ export function MealSwapModal({
 
     const fetchLocalMeals = async (currentPage = 0) => {
       try {
-        const offset = currentPage * pageSize;
-        // Use client helper which wraps /api/user/recipes
-        const json = await getUserRecipes("saved", pageSize, offset);
-        const recipesList = (json.recipes || []) as Array<
-          Record<string, unknown>
-        >;
-
-        const mapped: MealPlanItem[] = recipesList.map((ur) => {
-          const urObj = ur as Record<string, unknown>;
-          const cr =
-            (urObj["cachedRecipe"] as Record<string, unknown> | undefined) ??
-            undefined;
-
-          const sourceIdCandidate =
-            cr && typeof cr["sourceId"] === "string"
-              ? String(cr["sourceId"])
-              : typeof urObj["sourceId"] === "string"
-                ? String(urObj["sourceId"])
-                : null;
-          const idNum = sourceIdCandidate ? Number(sourceIdCandidate) : NaN;
-
-          const title =
-            cr && typeof cr["title"] === "string"
-              ? String(cr["title"])
-              : urObj["name"]
-                ? String(urObj["name"])
-                : `Recipe ${sourceIdCandidate ?? "unknown"}`;
-          const imageUrl =
-            cr && typeof cr["imageUrl"] === "string"
-              ? String(cr["imageUrl"])
-              : "/placeholder.svg";
-          const description =
-            cr && typeof cr["description"] === "string"
-              ? String(cr["description"])
-              : "";
-
-          let calories: number | undefined = undefined;
-          if (
-            cr &&
-            typeof cr["nutrition"] === "object" &&
-            cr["nutrition"] !== null
-          ) {
-            const nut = cr["nutrition"] as Record<string, unknown>;
-            if (typeof nut["calories"] === "number")
-              calories = nut["calories"] as number;
-            else if (
-              typeof nut["calories"] === "string" &&
-              !Number.isNaN(Number(nut["calories"]))
-            )
-              calories = Number(nut["calories"]);
-          }
-
-          const nutrition =
-            cr && typeof cr["nutrition"] === "object"
-              ? (cr["nutrition"] as Record<string, unknown>)
+        const { results = [] } = await getRecipes(
+          undefined,
+          currentPage,
+          pageSize,
+        );
+        // Server returns merged results; pick DB-backed recipes for the "Database Recipes" list
+        const dbResults = (results || []).filter((r) => r.source === "db");
+        const mapped: MealPlanItem[] = dbResults.map((r) => {
+          const sourceId = r.sourceId ?? r.id;
+          const calories =
+            r.nutrition &&
+            typeof r.nutrition === "object" &&
+            (r.nutrition as { calories?: unknown }).calories
+              ? Number((r.nutrition as { calories?: unknown }).calories)
               : undefined;
-
           return {
-            id: Number.isFinite(idNum) ? idNum : Number(sourceIdCandidate ?? 0),
-            name: title,
-            image: imageUrl,
-            description,
+            id: Number(sourceId) || 0,
+            name: r.title || `Recipe ${sourceId}`,
+            image: r.image || "/placeholder.svg",
+            description: (r.summary as string) || "",
             calories,
-            nutrition: nutrition as Record<string, unknown> | undefined,
+            nutrition: r.nutrition as Record<string, unknown> | undefined,
           } as MealPlanItem;
         });
 
         if (!cancelled) {
           setLocalMeals(mapped);
-          const pagination = json.pagination || {};
-          const total =
-            typeof pagination.total === "number"
-              ? pagination.total
-              : mapped.length;
-          setTotalResults(total);
+          setTotalResults(mapped.length);
         }
       } catch (err) {
         if (!cancelled) {
@@ -206,7 +159,7 @@ export function MealSwapModal({
     };
   }, [isOpen, searchQuery, page]);
 
-  // Debounced search effect
+  // Debounced search effect (uses server-side merged external+DB results).
   useEffect(() => {
     const q = searchQuery.trim();
     if (!q) {
@@ -218,64 +171,69 @@ export function MealSwapModal({
     }
 
     let cancelled = false;
-    const controller = new AbortController();
 
     const fetchPage = async (currentPage = 0) => {
       setIsSearching(true);
       setSearchError(null);
       try {
-        // First check if we have matching recipes in the database
-        const filteredDbMeals = localMeals.filter((meal) =>
-          (meal.name || "").toLowerCase().includes(q.toLowerCase()) ||
-          ((meal.description || "") as string).toLowerCase().includes(q.toLowerCase())
+        // Quick DB-local filtering first
+        const filteredDbMeals = localMeals.filter(
+          (meal) =>
+            (meal.name || "").toLowerCase().includes(q.toLowerCase()) ||
+            ((meal.description || "") as string)
+              .toLowerCase()
+              .includes(q.toLowerCase()),
         );
-        
-        // If we have enough matches in the database, don't call the API
+
+        // If DB has enough matches, avoid external call for responsiveness
         if (filteredDbMeals.length >= 5) {
           if (!cancelled) {
-            setSearchResults([]);
+            // Map to SpoonacularSearchResult-like shape expected by UI
+            const mapped = filteredDbMeals.map((m) => ({
+              id: Number(m.id),
+              title: m.name,
+              image: m.image,
+              summary: m.description,
+              nutrition: m.nutrition
+                ? { nutrients: [{ name: "Calories", amount: m.calories || 0 }] }
+                : undefined,
+              readyInMinutes: undefined,
+              servings: undefined,
+            }));
+            setSearchResults(mapped);
             setTotalResults(filteredDbMeals.length);
             setIsSearching(false);
           }
           return;
         }
-        
-        const offset = currentPage * pageSize;
-        const params = new URLSearchParams({
-          q,
-          number: String(pageSize),
-          offset: String(offset),
-        });
-        const res = await fetch(`/api/searchRecipe?${params.toString()}`, {
-          signal: controller.signal,
-        });
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          if (res.status === 429) {
-            const retryAfter = body?.retryAfter ?? "a moment";
-            setSearchError(
-              `Rate limit reached. Try again in ${retryAfter} seconds.`
-            );
-            logTelemetry("search_rate_limited", { query: q, offset });
-          } else {
-            setSearchError(body?.error || "Search failed. Please try again.");
-            logTelemetry("search_failure", {
-              status: res.status,
-              statusText: res.statusText,
-              query: q,
-            });
-          }
+
+        const resp = await getRecipes(q, currentPage, pageSize);
+        if (!resp || !resp.results) {
           setSearchResults([]);
           setTotalResults(0);
           return;
         }
-        const json = await res.json();
+
+        // Server returns external-first merged results; map to local searchResult shape
+        const mappedResults = resp.results.map((r) => ({
+          id: Number(r.sourceId ?? r.id),
+          title: r.title,
+          image: r.image,
+          summary: r.summary,
+          nutrition: r.nutrition,
+          readyInMinutes: r.readyInMinutes,
+          servings: r.servings,
+          // keep additional fields if needed
+        }));
+
         if (cancelled) return;
-        setSearchResults(json.results || []);
-        setTotalResults(json.totalResults || 0);
+        setSearchResults(mappedResults);
+        // Server does not currently return totalResults in merged endpoint; approximate
+        setTotalResults(mappedResults.length);
       } catch (err) {
-        if ((err as unknown as Error).name === "AbortError") return;
-        logTelemetry("search_exception", { message: (err as Error).message });
+        logTelemetry("search_exception", {
+          message: err instanceof Error ? err.message : String(err),
+        });
         setSearchError("Network error while searching. Please try again.");
         setSearchResults([]);
         setTotalResults(0);
@@ -287,8 +245,8 @@ export function MealSwapModal({
     const timer = setTimeout(() => fetchPage(page), 300);
     return () => {
       cancelled = true;
-      controller.abort();
       clearTimeout(timer);
+      // No explicit abort controller needed for getRecipes wrapper
     };
   }, [searchQuery, page, localMeals, pageSize]);
 
@@ -342,9 +300,13 @@ export function MealSwapModal({
   const searchedMeals: MealPlanItem[] = useMemo(() => {
     if (isSearchActive) {
       return searchResults.map((r: SpoonacularSearchResult) => {
+        const nut = r.nutrition as
+          | { nutrients?: Array<{ name?: string; amount?: number }> }
+          | undefined;
         const calories =
-          r?.nutrition?.nutrients?.find(
-            (n) => (n?.name || "").toLowerCase() === "calories"
+          nut?.nutrients?.find(
+            (n: { name?: string; amount?: number }) =>
+              (n?.name || "").toLowerCase() === "calories",
           )?.amount ?? undefined;
         return {
           id: Number(r.id),
@@ -366,7 +328,7 @@ export function MealSwapModal({
     return defaultMeals.filter(
       (meal) =>
         (meal.name || "").toLowerCase().includes(q) ||
-        ((meal.description || "") as string).toLowerCase().includes(q)
+        ((meal.description || "") as string).toLowerCase().includes(q),
     );
   }, [localMeals, searchQuery]);
 
@@ -487,10 +449,7 @@ export function MealSwapModal({
                     aria-label={`Search results for ${mealType.toLowerCase()} meals`}
                   >
                     {searchedMeals.map((meal, index) => (
-                      <div
-                        key={meal.id}
-                        className="flex-shrink-0"
-                      >
+                      <div key={meal.id} className="flex-shrink-0">
                         <BlurFade delay={index * 0.05} inView>
                           <Card
                             className="h-full cursor-pointer group relative overflow-hidden hover:shadow-lg transition-all duration-200 max-w-[320px] mx-auto dark:bg-gray-800 dark:border-gray-700"
@@ -539,16 +498,15 @@ export function MealSwapModal({
                                           ? window.location.pathname
                                           : "/dashboard/meal-plans";
                                       try {
-                                        await fetch(
-                                          `/api/recipes/${meal.id}`,
-                                          { method: "GET" }
-                                        );
+                                        await fetch(`/api/recipes/${meal.id}`, {
+                                          method: "GET",
+                                        });
                                       } catch {
                                         // ignore
                                       }
                                       onClose();
                                       router.push(
-                                        `/recipe/${meal.id}?returnTo=${encodeURIComponent(returnTo)}`
+                                        `/recipe/${meal.id}?returnTo=${encodeURIComponent(returnTo)}`,
                                       );
                                     }}
                                   >
@@ -609,7 +567,7 @@ export function MealSwapModal({
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Horizontal partition */}
                   {filteredLocalMeals.length > 0 && (
                     <div className="border-t border-border my-6 pt-2">
@@ -625,10 +583,16 @@ export function MealSwapModal({
               {(isSearchActive ? filteredLocalMeals : localMeals).length > 0 ? (
                 <>
                   <div className="mb-4">
-                    <h3 className="font-medium text-base dark:text-gray-200">Database Recipes</h3>
+                    <h3 className="font-medium text-base dark:text-gray-200">
+                      Database Recipes
+                    </h3>
                     <p className="text-sm text-muted-foreground dark:text-gray-400">
-                      {(isSearchActive ? filteredLocalMeals : localMeals).length}{" "}
-                      {(isSearchActive ? filteredLocalMeals : localMeals).length === 1
+                      {
+                        (isSearchActive ? filteredLocalMeals : localMeals)
+                          .length
+                      }{" "}
+                      {(isSearchActive ? filteredLocalMeals : localMeals)
+                        .length === 1
                         ? "recipe"
                         : "recipes"}{" "}
                       available
@@ -640,123 +604,124 @@ export function MealSwapModal({
                     role="grid"
                     aria-label={`Available ${mealType.toLowerCase()} meals`}
                   >
-                    {(isSearchActive ? filteredLocalMeals : localMeals).map((meal, index) => (
-                      <BlurFade key={meal.id} delay={index * 0.05} inView>
-                        <Card
-                          className="h-full cursor-pointer group relative overflow-hidden hover:shadow-lg transition-all duration-200 max-w-[320px] mx-auto dark:bg-gray-800 dark:border-gray-700"
-                          role="gridcell"
-                          tabIndex={0}
-                          onClick={() => {
-                            onMealSelect(meal);
-                            onClose();
-                            logTelemetry("meal_swap_selected", {
-                              mealId: meal.id,
-                              mealType,
-                            });
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
+                    {(isSearchActive ? filteredLocalMeals : localMeals).map(
+                      (meal, index) => (
+                        <BlurFade key={meal.id} delay={index * 0.05} inView>
+                          <Card
+                            className="h-full cursor-pointer group relative overflow-hidden hover:shadow-lg transition-all duration-200 max-w-[320px] mx-auto dark:bg-gray-800 dark:border-gray-700"
+                            role="gridcell"
+                            tabIndex={0}
+                            onClick={() => {
                               onMealSelect(meal);
                               onClose();
-                            }
-                          }}
-                          onMouseEnter={() => {
-                            fetchIngredientsForMeal(meal.id, meal.name);
-                            setHoveredMeal(meal.id);
-                          }}
-                          onMouseLeave={() => setHoveredMeal(null)}
-                          aria-label={`Select ${meal.name}, ${meal.calories} calories`}
-                        >
-                          <div className="relative">
-                            <div className="w-full h-48 overflow-hidden">
-                              <Image
-                                src={meal.image || "/placeholder.svg"}
-                                alt={meal.name}
-                                fill
-                                className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                              <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={async (e) => {
-                                    e.stopPropagation();
-                                    const returnTo =
-                                      typeof window !== "undefined"
-                                        ? window.location.pathname
-                                        : "/dashboard/meal-plans";
-                                    try {
-                                      await fetch(
-                                        `/api/recipes/${meal.id}`,
-                                        { method: "GET" }
+                              logTelemetry("meal_swap_selected", {
+                                mealId: meal.id,
+                                mealType,
+                              });
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                onMealSelect(meal);
+                                onClose();
+                              }
+                            }}
+                            onMouseEnter={() => {
+                              fetchIngredientsForMeal(meal.id, meal.name);
+                              setHoveredMeal(meal.id);
+                            }}
+                            onMouseLeave={() => setHoveredMeal(null)}
+                            aria-label={`Select ${meal.name}, ${meal.calories} calories`}
+                          >
+                            <div className="relative">
+                              <div className="w-full h-48 overflow-hidden">
+                                <Image
+                                  src={meal.image || "/placeholder.svg"}
+                                  alt={meal.name}
+                                  fill
+                                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={async (e) => {
+                                      e.stopPropagation();
+                                      const returnTo =
+                                        typeof window !== "undefined"
+                                          ? window.location.pathname
+                                          : "/dashboard/meal-plans";
+                                      try {
+                                        await fetch(`/api/recipes/${meal.id}`, {
+                                          method: "GET",
+                                        });
+                                      } catch {
+                                        // ignore
+                                      }
+                                      onClose();
+                                      router.push(
+                                        `/recipe/${meal.id}?returnTo=${encodeURIComponent(returnTo)}`,
                                       );
-                                    } catch {
-                                      // ignore
-                                    }
-                                    onClose();
-                                    router.push(
-                                      `/recipe/${meal.id}?returnTo=${encodeURIComponent(returnTo)}`
-                                    );
-                                  }}
-                                >
-                                  View
-                                </Button>
-                              </div>
-                            </div>
-
-                            {hoveredMeal === meal.id && (
-                              <div className="absolute inset-0 bg-black/80 flex flex-col justify-center p-4">
-                                <h4 className="text-white font-semibold text-sm mb-2">
-                                  Ingredients
-                                </h4>
-                                <div className="space-y-1 max-h-32 overflow-y-auto">
-                                  {(
-                                    ingredientsMap[meal.id] ||
-                                    generateIngredients(meal.name)
-                                  ).map((ingredient, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="flex items-center gap-2 text-white/90 text-xs"
-                                    >
-                                      <div className="w-1 h-1 bg-green-400 rounded-full flex-shrink-0" />
-                                      <span>{ingredient}</span>
-                                    </div>
-                                  ))}
+                                    }}
+                                  >
+                                    View
+                                  </Button>
                                 </div>
                               </div>
-                            )}
-                          </div>
 
-                          <CardContent className="p-4 flex-1 flex flex-col">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors dark:text-gray-100">
-                                {meal.name}
-                              </h3>
-                              <p className="text-sm text-muted-foreground line-clamp-2 mb-3 dark:text-gray-300">
-                                {meal.description}
-                              </p>
+                              {hoveredMeal === meal.id && (
+                                <div className="absolute inset-0 bg-black/80 flex flex-col justify-center p-4">
+                                  <h4 className="text-white font-semibold text-sm mb-2">
+                                    Ingredients
+                                  </h4>
+                                  <div className="space-y-1 max-h-32 overflow-y-auto">
+                                    {(
+                                      ingredientsMap[meal.id] ||
+                                      generateIngredients(meal.name)
+                                    ).map((ingredient, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="flex items-center gap-2 text-white/90 text-xs"
+                                      >
+                                        <div className="w-1 h-1 bg-green-400 rounded-full flex-shrink-0" />
+                                        <span>{ingredient}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </div>
 
-                            <div className="flex items-center justify-between pt-2 border-t dark:border-gray-700">
-                              <span className="text-xs text-muted-foreground font-medium dark:text-gray-400">
-                                Calories
-                              </span>
-                              <div className="flex items-baseline gap-1">
-                                <span className="font-bold text-foreground dark:text-gray-200">
-                                  {meal.calories}
-                                </span>
-                                <span className="text-xs text-muted-foreground dark:text-gray-400">
-                                  kcal
-                                </span>
+                            <CardContent className="p-4 flex-1 flex flex-col">
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors dark:text-gray-100">
+                                  {meal.name}
+                                </h3>
+                                <p className="text-sm text-muted-foreground line-clamp-2 mb-3 dark:text-gray-300">
+                                  {meal.description}
+                                </p>
                               </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </BlurFade>
-                    ))}
+
+                              <div className="flex items-center justify-between pt-2 border-t dark:border-gray-700">
+                                <span className="text-xs text-muted-foreground font-medium dark:text-gray-400">
+                                  Calories
+                                </span>
+                                <div className="flex items-baseline gap-1">
+                                  <span className="font-bold text-foreground dark:text-gray-200">
+                                    {meal.calories}
+                                  </span>
+                                  <span className="text-xs text-muted-foreground dark:text-gray-400">
+                                    kcal
+                                  </span>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </BlurFade>
+                      ),
+                    )}
                   </div>
                 </>
               ) : (
@@ -787,7 +752,7 @@ export function MealSwapModal({
                       ? (() => {
                           const totalPages = Math.max(
                             1,
-                            Math.ceil(totalResults / pageSize)
+                            Math.ceil(totalResults / pageSize),
                           );
                           return `Page ${page + 1} of ${totalPages}`;
                         })()
@@ -808,9 +773,9 @@ export function MealSwapModal({
                       totalResults > 0
                         ? Math.min(
                             Math.ceil(totalResults / pageSize) - 1,
-                            p + 1
+                            p + 1,
                           )
-                        : p + 1
+                        : p + 1,
                     )
                   }
                 >

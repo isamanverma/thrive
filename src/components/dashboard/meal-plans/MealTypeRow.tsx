@@ -1,15 +1,15 @@
 import type {
   DraggedItem,
+  Dish,
   DropZone,
   MealPlanItem,
   MealTypeCapitalized,
   WeeklyMeals,
 } from "./types";
 
-import { MealPlanCard } from "@/components/dashboard/MealPlanCard";
-import { Plus } from "lucide-react";
+import { MealSlotCard } from "./MealSlotCard";
+import { Plus, Coffee, UtensilsCrossed, Cookie, Utensils } from "lucide-react";
 import React from "react";
-import { motion } from "framer-motion";
 
 interface MealTypeRowProps {
   mealType: MealTypeCapitalized;
@@ -17,180 +17,100 @@ interface MealTypeRowProps {
   draggedItem: DraggedItem | null;
   activeDropZone: DropZone | null;
   todayIndex: number;
-  onDragStart: (
-    e: React.DragEvent,
-    meal: MealPlanItem,
-    mealType: string,
-    dayIndex: number
-  ) => void;
-  onDragEnd: () => void;
-  onDragOver: (e: React.DragEvent, mealType: string, dayIndex: number) => void;
-  onDragLeave: (e: React.DragEvent) => void;
-  onDrop: (e: React.DragEvent, mealType: string, dayIndex: number) => void;
-  onRecipeClick: (
-    recipe: MealPlanItem,
-    mealType: string,
-    dayIndex?: number
-  ) => void;
-  onEmptySlotClick?: (mealType: string, dayIndex: number) => void;
+  onSlotClick: (mealType: string, dayIndex: number) => void;
+  onEmptySlotClick: (mealType: string, dayIndex: number) => void;
 }
 
-const mealTypeStyles = {
+const mealTypeStyles: Record<
+  MealTypeCapitalized,
+  {
+    bg: string;
+    accentBg: string;
+    accentText: string;
+    accentBorder: string;
+    icon: React.ElementType;
+  }
+> = {
   Breakfast: {
-    // semantic classes allow tuning in CSS (including dark-mode desaturation)
-    bg: "meal-row--breakfast bg-orange-50",
-    indicatorBg: "meal-indicator--breakfast bg-orange-100",
-    indicatorDot: "meal-indicator-dot--breakfast bg-orange-500",
-    // keep original gradient/dropzone classes for familiar behavior
-    dropZone: "from-orange-100 to-orange-200 ring-orange-300",
-    hover: "hover:bg-orange-50/30",
-    shadow: "0 8px 25px rgba(255, 165, 0, 0.18)",
+    bg: "bg-orange-500/5",
+    accentBg: "bg-orange-500/10",
+    accentText: "text-orange-600",
+    accentBorder: "border-orange-500/20",
+    icon: Coffee,
   },
   Lunch: {
-    bg: "meal-row--lunch bg-blue-50",
-    indicatorBg: "meal-indicator--lunch bg-blue-100",
-    indicatorDot: "meal-indicator-dot--lunch bg-blue-500",
-    dropZone: "from-blue-100 to-blue-200 ring-blue-300",
-    hover: "hover:bg-blue-50/30",
-    shadow: "0 8px 25px rgba(59, 130, 246, 0.18)",
+    bg: "bg-blue-500/5",
+    accentBg: "bg-blue-500/10",
+    accentText: "text-blue-600",
+    accentBorder: "border-blue-500/20",
+    icon: UtensilsCrossed,
   },
   Snack: {
-    bg: "meal-row--snack bg-purple-50",
-    indicatorBg: "meal-indicator--snack bg-purple-100",
-    indicatorDot: "meal-indicator-dot--snack bg-purple-500",
-    dropZone: "from-purple-100 to-purple-200 ring-purple-300",
-    hover: "hover:bg-purple-50/30",
-    shadow: "0 8px 25px rgba(147, 51, 234, 0.18)",
+    bg: "bg-orange-500/5",
+    accentBg: "bg-orange-500/10",
+    accentText: "text-orange-600",
+    accentBorder: "border-orange-500/20",
+    icon: Cookie,
   },
   Dinner: {
-    bg: "meal-row--dinner bg-red-50",
-    indicatorBg: "meal-indicator--dinner bg-red-100",
-    indicatorDot: "meal-indicator-dot--dinner bg-red-500",
-    dropZone: "from-red-100 to-red-200 ring-red-300",
-    hover: "hover:bg-red-50/30",
-    shadow: "0 8px 25px rgba(239, 68, 68, 0.18)",
+    bg: "bg-red-500/5",
+    accentBg: "bg-red-500/10",
+    accentText: "text-red-600",
+    accentBorder: "border-red-500/20",
+    icon: Utensils,
   },
 };
 
-export function MealTypeRow({
+function MealTypeRowInner({
   mealType,
   weeklyMeals,
-  draggedItem,
-  activeDropZone,
   todayIndex,
-  onDragStart,
-  onDragEnd,
-  onDragOver,
-  onDragLeave,
-  onDrop,
-  onRecipeClick,
+  onSlotClick,
   onEmptySlotClick,
 }: MealTypeRowProps) {
   const styles = mealTypeStyles[mealType];
+  const Icon = styles.icon;
   const mealKey = mealType.toLowerCase() as keyof (typeof weeklyMeals)[0];
 
   return (
-    <motion.div
-      className={`${styles.bg} border-b`}
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4, delay: 0.1 }}
+    <div
+      className={`grid grid-cols-[40px_repeat(7,1fr)] gap-x-2 ${styles.bg} rounded-xl h-full min-h-0 py-1.5`}
     >
-      <div
-        className="grid gap-1"
-        style={{
-          gridTemplateColumns: "70px repeat(7, 1fr)",
-          minHeight: "200px",
-          maxHeight: "200px",
-        }}
-      >
-        <div
-          className={`p-2 flex items-center justify-center ${styles.indicatorBg}`}
-        >
-          <div className="flex flex-col items-center gap-1">
-            <div
-              className={`w-3 h-3 ${styles.indicatorDot} rounded-full`}
-            ></div>
-            <span className="text-xs font-medium text-foreground">
-              {mealType}
-            </span>
-          </div>
-        </div>
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => {
-          const dayMeals = weeklyMeals[index];
-          const meal = dayMeals?.[mealKey];
-          const isDropZone =
-            activeDropZone?.mealType === mealType &&
-            activeDropZone?.dayIndex === index;
-
-          return (
-            <motion.div
-              key={`${mealType.toLowerCase()}-${index}`}
-              className={`p-1 transition-all duration-300 rounded-lg relative h-full flex items-stretch ${
-                isDropZone
-                  ? `bg-gradient-to-r ${styles.dropZone} ring-4 ring-opacity-60 shadow-lg`
-                  : styles.hover
-              }`}
-              data-today={index === todayIndex}
-              onDragOver={(e) => onDragOver(e, mealType, index)}
-              onDragLeave={onDragLeave}
-              onDrop={(e) => onDrop(e, mealType, index)}
-              layout
-              animate={
-                isDropZone
-                  ? {
-                      scale: 1.02,
-                      boxShadow: styles.shadow,
-                      transition: {
-                        duration: 0.2,
-                        ease: "easeOut",
-                      },
-                    }
-                  : {
-                      scale: 1,
-                      boxShadow: "none",
-                    }
-              }
-            >
-              {meal ? (
-                <div className="w-full h-full">
-                  <MealPlanCard
-                    meal={meal}
-                    mealType={mealType}
-                    dayIndex={index}
-                    isDraggable={true}
-                    showMealTypeLabel={false}
-                    onCardClick={onRecipeClick}
-                    onDragStart={onDragStart}
-                    onDragEnd={onDragEnd}
-                    isDragging={
-                      draggedItem?.dayIndex === index &&
-                      draggedItem?.mealType === mealType
-                    }
-                  />
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() =>
-                    onEmptySlotClick && onEmptySlotClick(mealType, index)
-                  }
-                  className="group w-full h-full bg-muted rounded-xl border-2 border-dashed border-border flex items-center justify-center text-muted-foreground text-sm hover:bg-muted transition-colors"
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-50 text-purple-700">
-                      <Plus className="w-3 h-3" />
-                    </div>
-                    <span className="text-xs">
-                      Add {mealType.toLowerCase()}
-                    </span>
-                  </div>
-                </button>
-              )}
-            </motion.div>
-          );
-        })}
+      {/* Meal type marker — icon only */}
+      <div className="flex items-center justify-center h-full">
+        <Icon className={`w-4 h-4 ${styles.accentText}`} />
       </div>
-    </motion.div>
+
+      {/* Day cells */}
+      {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => {
+        const dayMeals = weeklyMeals[index];
+        const meal = dayMeals?.[mealKey] as MealPlanItem | undefined;
+        const dishes: Dish[] = meal?.dishes || [];
+
+        return (
+          <div key={`${mealType.toLowerCase()}-${index}`} className="h-full">
+            {dishes.length > 0 ? (
+              <MealSlotCard
+                dishes={dishes}
+                mealType={mealType}
+                dayIndex={index}
+                onClick={() => onSlotClick(mealType, index)}
+                isSquare
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => onEmptySlotClick(mealType, index)}
+                className={`w-full h-full rounded-xl border-2 border-dashed ${styles.accentBorder} flex items-center justify-center p-3 text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground/70`}
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 }
+
+export const MealTypeRow = React.memo(MealTypeRowInner);

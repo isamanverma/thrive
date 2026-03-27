@@ -5,35 +5,54 @@ interface DailyStatsCardProps {
 }
 
 export function DailyStatsCard({ stats }: DailyStatsCardProps) {
+  const items = [
+    {
+      label: "Total",
+      value: stats.totalCalories,
+      unit: "kcal",
+      color: "text-amber-600",
+    },
+    {
+      label: "Left",
+      value: stats.caloriesLeft,
+      unit: "kcal",
+      color: "text-amber-600",
+    },
+    {
+      label: "Protein",
+      value: `${stats.protein}g`,
+      unit: null,
+      color: "text-sky-600",
+    },
+    {
+      label: "Carbs",
+      value: `${stats.carbs}g`,
+      unit: null,
+      color: "text-orange-500",
+    },
+    {
+      label: "Fat",
+      value: `${stats.fat}g`,
+      unit: null,
+      color: "text-rose-500",
+    },
+  ];
+
   return (
-    <div className="bg-card rounded-lg p-6 mb-8 shadow-sm">
-      <div className="grid grid-cols-5 gap-6">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Total Calories</p>
-          <p className="text-3xl font-bold text-purple-600">
-            {stats.totalCalories}
-          </p>
-          <p className="text-xs text-muted-foreground">Goal: {stats.goal} kcal</p>
+    <div className="flex items-baseline gap-8 mb-6 px-1">
+      <span className="text-xs font-semibold text-foreground/60 uppercase tracking-wider">
+        Today
+      </span>
+      {items.map((item) => (
+        <div key={item.label} className="flex items-baseline gap-1.5">
+          <span className={`text-2xl font-bold tabular-nums ${item.color}`}>
+            {item.value}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {item.unit ?? item.label.toLowerCase()}
+          </span>
         </div>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Calories Left</p>
-          <p className="text-3xl font-bold text-purple-600">
-            {stats.caloriesLeft}
-          </p>
-        </div>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Protein</p>
-          <p className="text-3xl font-bold text-blue-600">{stats.protein}g</p>
-        </div>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Carbs</p>
-          <p className="text-3xl font-bold text-orange-600">{stats.carbs}g</p>
-        </div>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Fat</p>
-          <p className="text-3xl font-bold text-purple-600">{stats.fat}g</p>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

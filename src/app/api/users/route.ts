@@ -104,10 +104,19 @@ export async function GET(request: NextRequest) {
     // Check database connection before proceeding
     const isDbConnected = await checkDatabaseConnection();
     if (!isDbConnected) {
-      console.warn('Database connection check failed — returning exists:false fallback');
-      // When DB is down, treat user as not existing so client can continue onboarding/login flow.
+      console.warn('Database connection check failed — returning fallback "exists:true" with minimal user');
+      // When DB is down, return a fallback that indicates the user exists so the client can avoid forcing onboarding.
+      // Provide minimal user shape so client-side checks treat the user as present.
       return NextResponse.json(
-        { exists: false, fallback: true },
+        {
+          exists: true,
+          fallback: true,
+          user: {
+            clerkId,
+            email: '',
+            name: '',
+          },
+        },
         { status: 200 }
       );
     }

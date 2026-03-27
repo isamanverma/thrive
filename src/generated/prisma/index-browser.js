@@ -163,6 +163,15 @@ exports.Prisma.MealPlanItemScalarFieldEnum = {
   cachedRecipeId: 'cachedRecipeId'
 };
 
+exports.Prisma.MealDishScalarFieldEnum = {
+  id: 'id',
+  mealPlanItemId: 'mealPlanItemId',
+  recipeId: 'recipeId',
+  quantity: 'quantity',
+  unit: 'unit',
+  order: 'order'
+};
+
 exports.Prisma.ProgressScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -257,6 +266,7 @@ exports.Prisma.ModelName = {
   UserRecipe: 'UserRecipe',
   MealPlan: 'MealPlan',
   MealPlanItem: 'MealPlanItem',
+  MealDish: 'MealDish',
   Progress: 'Progress',
   Recipe: 'Recipe',
   RecipeIngredient: 'RecipeIngredient'

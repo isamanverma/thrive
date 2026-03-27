@@ -55,7 +55,7 @@ export function RecipeInstructions({
               <Link
                 href={sourceUrl}
                 target="_blank"
-                className="text-green-600 hover:text-green-700 underline font-medium"
+                className="text-green-600 hover:text-orange-700 underline font-medium"
               >
                 View original recipe
               </Link>

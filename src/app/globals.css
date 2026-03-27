@@ -1,15 +1,48 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --primary-color: #16a34a;
-  --secondary-color: #f0fdf4;
+  --primary-color: #f97316;
+  --secondary-color: #fff7ed;
   --background-color: #ffffff;
   --text-primary: #1a1a1a;
   --text-secondary: #4a4a4a;
-  --accent-color: #dcfce7;
+  --accent-color: #fed7aa;
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.553 0.195 38.402);
+  --primary-foreground: oklch(0.98 0.016 73.684);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  --chart-1: oklch(0.837 0.128 66.29);
+  --chart-2: oklch(0.705 0.213 47.604);
+  --chart-3: oklch(0.646 0.222 41.116);
+  --chart-4: oklch(0.553 0.195 38.402);
+  --chart-5: oklch(0.47 0.157 37.304);
+  --radius: 0.45rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.646 0.222 41.116);
+  --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
 }
 
 body {
@@ -18,7 +51,7 @@ body {
   color: var(--foreground, var(--text-primary));
 }
 
-.prose ol>li::marker {
+.prose ol > li::marker {
   font-weight: 800;
   color: var(--primary-color);
 }
@@ -26,7 +59,7 @@ body {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -61,6 +94,10 @@ body {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --font-heading: var(--font-heading);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 :root {
@@ -71,8 +108,8 @@ body {
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.553 0.195 38.402);
+  --primary-foreground: oklch(0.98 0.016 73.684);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
@@ -90,8 +127,8 @@ body {
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.21 0.006 285.885);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.646 0.222 41.116);
+  --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
   --sidebar-accent: oklch(0.967 0.001 286.375);
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
@@ -99,13 +136,13 @@ body {
 }
 
 :root {
-  --primary-color: #22c55e;
-  --secondary-color: #f0fdf4;
+  --primary-color: #f97316;
+  --secondary-color: #fff7ed;
   --background-color: var(--background, #ffffff);
   --text-primary: var(--foreground, #1a1a1a);
   --text-secondary: var(--muted-foreground, #4a4a4a);
-  --accent-color: #dcfce7;
-  --font-plus-jakarta-sans: 'Plus Jakarta Sans', sans-serif;
+  --accent-color: #fed7aa;
+  --font-plus-jakarta-sans: "Plus Jakarta Sans", sans-serif;
 }
 
 .button_primary {
@@ -116,11 +153,13 @@ body {
   transition: background-color 0.15s ease-in-out;
 }
 .button_primary:hover {
-  background-color: #16a34a;
+  background-color: #ea580c;
 }
 .button_primary:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--primary-color), 0 0 0 4px rgba(34, 197, 94, 0.5);
+  box-shadow:
+    0 0 0 2px var(--primary-color),
+    0 0 0 4px rgba(249, 115, 22, 0.45);
 }
 .button_secondary {
   background-color: var(--secondary-color);
@@ -136,52 +175,54 @@ body {
 }
 .button_secondary:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--primary-color), 0 0 0 4px rgba(34, 197, 94, 0.5);
+  box-shadow:
+    0 0 0 2px var(--primary-color),
+    0 0 0 4px rgba(249, 115, 22, 0.45);
 }
 
 .dark {
   /* Page / canvas */
-  --background: #1a1b1e;
-  --foreground: #f0f0f0;
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
 
   /* Cards and surfaces */
-  --card: #222327;
-  --card-foreground: #f0f0f0;
-  --popover: #222327;
-  --popover-foreground: #f0f0f0;
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.985 0 0);
 
   /* Brand / accents */
-  --primary: #8c5cff;
-  --primary-foreground: #ffffff;
-  --secondary: #2a2c33;
-  --secondary-foreground: #8c5cff;
-  --muted: #2a2c33;
-  --muted-foreground: #f0f0f0;
-  --accent: #2a2c33;
-  --accent-foreground: #8c5cff;
+  --primary: oklch(0.47 0.157 37.304);
+  --primary-foreground: oklch(0.98 0.016 73.684);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: oklch(0.274 0.006 286.033);
+  --accent-foreground: oklch(0.985 0 0);
 
   /* Inputs / borders / rings */
-  --destructive: #ff6b6b;
-  --border: #33353a;
-  --input: #222327;
-  --ring: #8c5cff;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.552 0.016 285.938);
 
   /* Charts (leave defaults or tweak as needed) */
-  --chart-1: #f59e0b;
-  --chart-2: #3b82f6;
-  --chart-3: #a78bfa;
-  --chart-4: #10b981;
-  --chart-5: #ef4444;
+  --chart-1: oklch(0.837 0.128 66.29);
+  --chart-2: oklch(0.705 0.213 47.604);
+  --chart-3: oklch(0.646 0.222 41.116);
+  --chart-4: oklch(0.553 0.195 38.402);
+  --chart-5: oklch(0.47 0.157 37.304);
 
   /* Sidebar specific tokens per request */
-  --sidebar: #161618;
-  --sidebar-foreground: #f0f0f0;
-  --sidebar-primary: #8c5cff;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #2a2c33;
-  --sidebar-accent-foreground: #8c5cff;
-  --sidebar-border: #33353a;
-  --sidebar-ring: #8c5cff;
+  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.705 0.213 47.604);
+  --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
+  --sidebar-accent: oklch(0.274 0.006 286.033);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.552 0.016 285.938);
 
   /* compat mappings for legacy variable usage so text/background switch correctly */
   --background-color: var(--background);
@@ -196,6 +237,10 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    @apply font-sans;
+    scroll-padding-top: 5rem;
+  }
 }
 
 /* Recipe Explorer Animations */
@@ -205,7 +250,9 @@ body {
 
 .card-hover-animation:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .stagger-animation {
@@ -224,7 +271,7 @@ body {
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
 }
@@ -245,82 +292,58 @@ body {
   line-clamp: 3;
 }
 
-/* 3D Flip Card Styles */
-.perspective-1000 {
-  perspective: 1000px;
-}
-
-.transform-style-preserve-3d {
-  transform-style: preserve-3d;
-}
-
-.backface-hidden {
-  backface-visibility: hidden;
-}
-
-.rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
-.group:hover .group-hover\:rotate-y-180 {
-  transform: rotateY(180deg);
-}
-/* Meal Plans — minimal Kanban card styles (adjusted for stronger depth) */
+/* Meal Plans — minimal Kanban card styles */
 .meal-card {
   @apply bg-card rounded-xl border border-border overflow-hidden transition-all duration-200;
   min-height: 160px;
   display: flex;
   flex-direction: column;
-
-  /* stronger, black-based shadow to give depth against the page */
-  box-shadow: 0 12px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
-  /* subtle darker border so cards sit 'above' the canvas */
-  border-color: rgba(0,0,0,0.06);
+  box-shadow:
+    0 1px 3px oklch(from var(--foreground) l c h / 0.06),
+    0 1px 2px oklch(from var(--foreground) l c h / 0.04);
 }
 .dark .meal-card {
   @apply bg-card text-card-foreground border-border;
 }
 
-/* Card outline override: force card borders to the requested shade so cards read with a consistent outline */
+/* Card outline override: force card borders to the border token */
 [data-slot="card"],
 .meal-card,
 .meal-modal {
-  border-color: #33353a !important;
+  border-color: var(--border);
 }
-/* Reusable surface helper that makes a surface use a slightly black-tinted background
-   and stronger black shadow to create visual depth for popovers, drawers, modals.
-   Apply the class `surface-depth` on components (popovers, sheets, drawers, modals)
-   that should read as 'deeper' against the page. */
+/* Reusable surface helper using theme tokens for visual depth */
 .surface-depth {
-  /* keep semantic token but mix a touch of black for perceived depth */
-  background-color: color-mix(in srgb, var(--card) 88%, black 12%);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.18), 0 6px 14px rgba(0,0,0,0.06);
-  border-color: rgba(0,0,0,0.08);
+  background-color: var(--card);
+  box-shadow:
+    0 4px 12px oklch(from var(--foreground) l c h / 0.08),
+    0 2px 4px oklch(from var(--foreground) l c h / 0.04);
+  border-color: var(--border);
 }
 
-/* Force dashboard/card foreground to the requested light shade (dark mode only) */
+/* Force dashboard/card foreground to card-foreground token (dark mode only) */
 .dark .bg-card,
 .dark [data-slot="card"],
 .dark .meal-card,
 .dark .meal-modal {
-  color: #f0f0f0 !important;
+  color: var(--card-foreground);
 }
 
-/* modal tweaks for minimal look (preserve existing look but increase depth) */
+/* modal tweaks for minimal look */
 .meal-modal {
   @apply bg-card rounded-lg shadow-lg p-4;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
-  border-color: rgba(0,0,0,0.06);
+  box-shadow: 0 4px 12px oklch(from var(--foreground) l c h / 0.08);
+  border-color: var(--border);
 }
 
-/* Ensure popovers/sheet/drawer components can opt-in to the stronger depth */
+/* Ensure popovers/sheet/drawer components use theme tokens */
 .popover.surface-depth,
 .sheet.surface-depth,
 .drawer.surface-depth,
 .bg-popover.surface-depth {
-  background-color: color-mix(in srgb, var(--popover) 88%, black 12%) !important;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.18) !important;
-  border-color: rgba(0,0,0,0.08) !important;
+  background-color: var(--popover);
+  box-shadow: 0 4px 12px oklch(from var(--foreground) l c h / 0.08);
+  border-color: var(--border);
 }
 
 /* Image container enforces a consistent aspect ratio (4:3) and lets the img fill */
@@ -331,7 +354,8 @@ body {
   padding-top: 75%;
   overflow: hidden;
 }
-.meal-card__image > .relative { /* inner wrapper used by components */
+.meal-card__image > .relative {
+  /* inner wrapper used by components */
   position: absolute;
   inset: 0;
 }
@@ -343,11 +367,6 @@ body {
 .meal-card__calories {
   @apply text-2xl sm:text-3xl font-extrabold text-foreground;
   line-height: 1;
-}
-
-/* Modal tweaks for minimal look */
-.meal-modal {
-  @apply bg-card rounded-lg shadow-lg p-4;
 }
 
 /* Macro tags (small minimalist pills) */
@@ -365,66 +384,206 @@ body {
   @apply text-muted-foreground bg-muted border-border;
 }
 
-/* Dark-mode compatibility mappings
-   These override common Tailwind light-only utility classes when the .dark
-   class is applied so components immediately respect theme tokens without
-   changing every usage across the codebase.
-*/
-.dark .bg-card { background-color: var(--card) !important; color: var(--card-foreground) !important; }
-.dark .bg-muted,
-.dark .bg-muted { background-color: var(--muted) !important; color: var(--muted-foreground) !important; }
-.dark .bg-input,
-.dark .bg-input { background-color: var(--input) !important; color: var(--muted-foreground) !important; }
+/* Dark-mode compatibility mappings */
+.dark .bg-card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
+.dark .bg-muted {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+}
+.dark .bg-input {
+  background-color: var(--input);
+  color: var(--muted-foreground);
+}
 
-.dark .text-foreground,
-.dark .text-foreground,
-.dark .text-foreground { color: var(--foreground) !important; }
+.dark .text-foreground {
+  color: var(--foreground);
+}
 
-.dark .text-muted-foreground,
-.dark .text-muted-foreground,
-.dark .text-muted-foreground { color: var(--muted-foreground) !important; }
+.dark .text-muted-foreground {
+  color: var(--muted-foreground);
+}
 
-.dark .border-border,
-.dark .border-border,
-.dark .border-border { border-color: var(--border) !important; }
+.dark .border-border {
+  border-color: var(--border);
+}
 
-/* Hover utility overrides (common patterns) */
-.dark .hover\:bg-muted:hover,
-.dark .hover\:bg-muted:hover,
-.dark .hover\:bg-input:hover { background-color: var(--muted) !important; }
+/* Hover utility overrides */
+.dark .hover\:bg-muted:hover {
+  background-color: var(--muted);
+}
 
-/* Simple handling for fraction opacity classes like bg-card/10 used as overlays.
-   Use attribute selector to catch any classes that include bg-card/ and map to a
-   subtle overlay in dark mode.
-*/
-.dark [class*="bg-card/"] { background-color: rgba(255,255,255,0.06) !important; color: inherit !important; }
+/* Fraction opacity overlays in dark mode */
+.dark [class*="bg-card/"] {
+  background-color: oklch(from var(--card) l c h / 0.06);
+  color: inherit;
+}
 
-/* Ensure elements that relied on white backgrounds use the card token in dark mode */
-.dark .meal-card { background-color: var(--card) !important; color: var(--card-foreground) !important; }
+/* Ensure meal cards use card token in dark mode */
+.dark .meal-card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
 
 /* Desaturate horizontal Kanban row colors in dark mode:
    Use semantic row/indicator classes (added in components) so we can tune
    the visible color while keeping the original light-mode utility classes.
    Adjust the mix percentages to taste (increase second color for stronger tint).
 */
-.dark .meal-row--breakfast { background-color: color-mix(in srgb, var(--card) 88%, #fb923c 6%) !important; }
-.dark .meal-row--lunch { background-color: color-mix(in srgb, var(--card) 88%, #60a5fa 6%) !important; }
-.dark .meal-row--snack { background-color: color-mix(in srgb, var(--card) 88%, #c4b5fd 6%) !important; }
-.dark .meal-row--dinner { background-color: color-mix(in srgb, var(--card) 88%, #f87171 6%) !important; }
+.dark .meal-row--breakfast {
+  background-color: color-mix(in srgb, var(--card) 88%, #fb923c 6%) !important;
+}
+.dark .meal-row--lunch {
+  background-color: color-mix(in srgb, var(--card) 88%, #60a5fa 6%) !important;
+}
+.dark .meal-row--snack {
+  background-color: color-mix(in srgb, var(--card) 88%, #fdba74 6%) !important;
+}
+.dark .meal-row--dinner {
+  background-color: color-mix(in srgb, var(--card) 88%, #f87171 6%) !important;
+}
 
 /* Indicator panels (left column) — slightly lighter than row so labels remain readable */
-.dark .meal-indicator--breakfast { background-color: color-mix(in srgb, var(--card) 82%, #fb923c 8%) !important; }
-.dark .meal-indicator--lunch { background-color: color-mix(in srgb, var(--card) 82%, #60a5fa 8%) !important; }
-.dark .meal-indicator--snack { background-color: color-mix(in srgb, var(--card) 82%, #c4b5fd 8%) !important; }
-.dark .meal-indicator--dinner { background-color: color-mix(in srgb, var(--card) 82%, #f87171 8%) !important; }
+.dark .meal-indicator--breakfast {
+  background-color: color-mix(in srgb, var(--card) 82%, #fb923c 8%) !important;
+}
+.dark .meal-indicator--lunch {
+  background-color: color-mix(in srgb, var(--card) 82%, #60a5fa 8%) !important;
+}
+.dark .meal-indicator--snack {
+  background-color: color-mix(in srgb, var(--card) 82%, #fdba74 8%) !important;
+}
+.dark .meal-indicator--dinner {
+  background-color: color-mix(in srgb, var(--card) 82%, #f87171 8%) !important;
+}
 
 /* Small indicator dot — use a muted foreground mix so dots remain visible but desaturated */
-.dark .meal-indicator-dot--breakfast { background-color: color-mix(in srgb, var(--card-foreground) 78%, #fb923c 12%) !important; }
-.dark .meal-indicator-dot--lunch { background-color: color-mix(in srgb, var(--card-foreground) 78%, #60a5fa 12%) !important; }
-.dark .meal-indicator-dot--snack { background-color: color-mix(in srgb, var(--card-foreground) 78%, #c4b5fd 12%) !important; }
-.dark .meal-indicator-dot--dinner { background-color: color-mix(in srgb, var(--card-foreground) 78%, #f87171 12%) !important; }
+.dark .meal-indicator-dot--breakfast {
+  background-color: color-mix(
+    in srgb,
+    var(--card-foreground) 78%,
+    #fb923c 12%
+  ) !important;
+}
+.dark .meal-indicator-dot--lunch {
+  background-color: color-mix(
+    in srgb,
+    var(--card-foreground) 78%,
+    #60a5fa 12%
+  ) !important;
+}
+.dark .meal-indicator-dot--snack {
+  background-color: color-mix(
+    in srgb,
+    var(--card-foreground) 78%,
+    #fdba74 12%
+  ) !important;
+}
+.dark .meal-indicator-dot--dinner {
+  background-color: color-mix(
+    in srgb,
+    var(--card-foreground) 78%,
+    #f87171 12%
+  ) !important;
+}
 
 /* Keep dropzone gradient readable but slightly toned down in dark mode */
-.dark .meal-row--breakfast [class*="from-"], .dark .meal-row--breakfast [class*="to-"] {
+.dark .meal-row--breakfast [class*="from-"],
+.dark .meal-row--breakfast [class*="to-"] {
   /* no-op here, but available for per-row dropzone overrides if needed */
+}
+
+/* Desaturated meal type accents in dark mode */
+.dark .text-orange-600 {
+  color: oklch(0.7 0.12 55) !important;
+}
+.dark .text-blue-600 {
+  color: oklch(0.7 0.1 250) !important;
+}
+.dark .text-red-600 {
+  color: oklch(0.7 0.12 25) !important;
+}
+.dark .bg-orange-500\/5 {
+  background-color: oklch(0.7 0.12 55 / 0.06) !important;
+}
+.dark .bg-orange-500\/10 {
+  background-color: oklch(0.7 0.12 55 / 0.1) !important;
+}
+.dark .bg-blue-500\/5 {
+  background-color: oklch(0.7 0.1 250 / 0.06) !important;
+}
+.dark .bg-blue-500\/10 {
+  background-color: oklch(0.7 0.1 250 / 0.1) !important;
+}
+.dark .bg-red-500\/5 {
+  background-color: oklch(0.7 0.12 25 / 0.06) !important;
+}
+.dark .bg-red-500\/10 {
+  background-color: oklch(0.7 0.12 25 / 0.1) !important;
+}
+.dark .border-orange-500\/20 {
+  border-color: oklch(0.7 0.12 55 / 0.15) !important;
+}
+.dark .border-blue-500\/20 {
+  border-color: oklch(0.7 0.1 250 / 0.15) !important;
+}
+.dark .border-red-500\/20 {
+  border-color: oklch(0.7 0.12 25 / 0.15) !important;
+}
+.dark .bg-orange-400 {
+  background-color: oklch(0.7 0.12 55) !important;
+}
+.dark .bg-blue-400 {
+  background-color: oklch(0.7 0.1 250) !important;
+}
+.dark .bg-red-400 {
+  background-color: oklch(0.7 0.12 25) !important;
+}
+
+/* ── Problem section floating cards ──────────────────── */
+@keyframes float-1 {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+@keyframes float-2 {
+  0%,
+  100% {
+    transform: translateY(0) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-1.5deg);
+  }
+}
+@keyframes float-3 {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0.5deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-0.5deg);
+  }
+}
+.problem-float-1 {
+  animation: float-1 3.2s ease-in-out infinite;
+}
+.problem-float-2 {
+  animation: float-2 3.8s ease-in-out infinite 0.4s;
+}
+.problem-float-3 {
+  animation: float-3 4.2s ease-in-out infinite 0.8s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .problem-float-1,
+  .problem-float-2,
+  .problem-float-3 {
+    animation: none;
+  }
 }

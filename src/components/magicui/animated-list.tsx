@@ -18,7 +18,8 @@ export function AnimatedListItem({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <motion.div {...animations} layout className="mx-auto w-full">
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <motion.div {...(animations as any)} layout className="mx-auto w-full">
       {children}
     </motion.div>
   );

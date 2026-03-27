@@ -1,25 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { PrismaClient } from "@/generated/prisma";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 
-const prisma = new PrismaClient();
+interface DishInput {
+  recipeId: string;
+  name: string;
+  calories?: number;
+  image?: string;
+  description?: string;
+  quantity: number;
+  unit: string;
+  nutrition?: unknown;
+}
 
-// POST: Update a single meal in the current meal plan
+// POST: Update a single meal slot with multiple dishes
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
-    const { dayIndex, mealType, meal, action = "set" } = body;
+    const { dayIndex, mealType, dishes, action = "set" } = body;
 
     // Validate input
     if (typeof dayIndex !== "number" || dayIndex < 0 || dayIndex > 6) {
-      return NextResponse.json({ error: "Invalid dayIndex. Must be 0-6" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid dayIndex. Must be 0-6" },
+        { status: 400 },
+      );
     }
 
     if (!mealType || typeof mealType !== "string") {
@@ -27,11 +39,20 @@ export async function POST(request: NextRequest) {
     }
 
     if (action !== "set" && action !== "remove") {
-      return NextResponse.json({ error: "Invalid action. Must be 'set' or 'remove'" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid action. Must be 'set' or 'remove'" },
+        { status: 400 },
+      );
     }
 
-    if (action === "set" && (!meal || !meal.id || !meal.name)) {
-      return NextResponse.json({ error: "Invalid meal data for set action" }, { status: 400 });
+    if (
+      action === "set" &&
+      (!dishes || !Array.isArray(dishes) || dishes.length === 0)
+    ) {
+      return NextResponse.json(
+        { error: "dishes array is required for set action" },
+        { status: 400 },
+      );
     }
 
     // Find user in database
@@ -46,7 +67,8 @@ export async function POST(request: NextRequest) {
     // Calculate current week (Monday to Sunday)
     const currentDate = new Date();
     const startOfWeek = new Date(currentDate);
-    const mondayOffset = currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
+    const mondayOffset =
+      currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
     startOfWeek.setDate(currentDate.getDate() + mondayOffset);
     startOfWeek.setHours(0, 0, 0, 0);
 
@@ -58,12 +80,8 @@ export async function POST(request: NextRequest) {
     let mealPlan = await prisma.mealPlan.findFirst({
       where: {
         userId: user.id,
-        startDate: {
-          lte: endOfWeek,
-        },
-        endDate: {
-          gte: startOfWeek,
-        },
+        startDate: { lte: endOfWeek },
+        endDate: { gte: startOfWeek },
       },
     });
 
@@ -77,83 +95,138 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Convert frontend dayIndex (0-6) to database dayOfWeek (1-7)
     const dayOfWeek = dayIndex + 1;
 
     if (action === "remove") {
-      // Remove the meal
-      await prisma.mealPlanItem.deleteMany({
+      // Find existing item and delete its dishes, then delete the item
+      const existingItem = await prisma.mealPlanItem.findUnique({
         where: {
-          mealPlanId: mealPlan.id,
-          dayOfWeek: dayOfWeek,
-          mealType: mealType.toLowerCase(),
+          mealPlanId_dayOfWeek_mealType: {
+            mealPlanId: mealPlan.id,
+            dayOfWeek,
+            mealType: mealType.toLowerCase(),
+          },
         },
       });
+
+      if (existingItem) {
+        await prisma.mealDish.deleteMany({
+          where: { mealPlanItemId: existingItem.id },
+        });
+        await prisma.mealPlanItem.delete({
+          where: { id: existingItem.id },
+        });
+      }
 
       return NextResponse.json({
         success: true,
         action: "removed",
         mealPlanId: mealPlan.id,
       });
-    } else {
-      // Set/update the meal
-      // First, try to find or create the recipe
-      let recipe = await prisma.recipe.findFirst({
+    }
+
+    // Set/update the meal with dishes
+    // First, remove existing item + dishes for this slot
+    const existingItem = await prisma.mealPlanItem.findUnique({
+      where: {
+        mealPlanId_dayOfWeek_mealType: {
+          mealPlanId: mealPlan.id,
+          dayOfWeek,
+          mealType: mealType.toLowerCase(),
+        },
+      },
+    });
+
+    if (existingItem) {
+      await prisma.mealDish.deleteMany({
+        where: { mealPlanItemId: existingItem.id },
+      });
+      await prisma.mealPlanItem.delete({
+        where: { id: existingItem.id },
+      });
+    }
+
+    // Use first dish's recipe as the primary cachedRecipe for the slot
+    const firstDish = dishes[0] as DishInput;
+    let primaryRecipe = await prisma.recipe.findFirst({
+      where: {
+        OR: [{ sourceId: firstDish.recipeId }, { id: firstDish.recipeId }],
+      },
+    });
+
+    if (!primaryRecipe) {
+      primaryRecipe = await prisma.recipe.create({
+        data: {
+          title: firstDish.name,
+          description: firstDish.description || null,
+          imageUrl: firstDish.image || null,
+          sourceType: "EXTERNAL_API",
+          sourceId: firstDish.recipeId,
+          nutrition: firstDish.calories
+            ? { calories: firstDish.calories }
+            : undefined,
+          isPublic: true,
+        },
+      });
+    }
+
+    // Create the MealPlanItem
+    const mealPlanItem = await prisma.mealPlanItem.create({
+      data: {
+        mealPlanId: mealPlan.id,
+        dayOfWeek,
+        mealType: mealType.toLowerCase(),
+        cachedRecipeId: primaryRecipe.id,
+        sourceId: firstDish.recipeId,
+      },
+    });
+
+    // Create all dishes
+    for (let i = 0; i < dishes.length; i++) {
+      const dish = dishes[i] as DishInput;
+
+      let dishRecipe = await prisma.recipe.findFirst({
         where: {
-          OR: [
-            { sourceId: meal.id.toString() },
-            { id: meal.id.toString() },
-          ],
+          OR: [{ sourceId: dish.recipeId }, { id: dish.recipeId }],
         },
       });
 
-      if (!recipe) {
-        recipe = await prisma.recipe.create({
+      if (!dishRecipe) {
+        dishRecipe = await prisma.recipe.create({
           data: {
-            title: meal.name,
-            description: meal.description || null,
-            imageUrl: meal.image || null,
+            title: dish.name,
+            description: dish.description || null,
+            imageUrl: dish.image || null,
             sourceType: "EXTERNAL_API",
-            sourceId: meal.id.toString(),
-            nutrition: meal.calories ? { calories: meal.calories } : undefined,
+            sourceId: dish.recipeId,
+            nutrition: dish.calories ? { calories: dish.calories } : undefined,
             isPublic: true,
           },
         });
       }
 
-      // Remove existing meal for this slot
-      await prisma.mealPlanItem.deleteMany({
-        where: {
-          mealPlanId: mealPlan.id,
-          dayOfWeek: dayOfWeek,
-          mealType: mealType.toLowerCase(),
-        },
-      });
-
-      // Create new meal plan item
-      const mealPlanItem = await prisma.mealPlanItem.create({
+      await prisma.mealDish.create({
         data: {
-          mealPlanId: mealPlan.id,
-          dayOfWeek: dayOfWeek,
-          mealType: mealType.toLowerCase(),
-          cachedRecipeId: recipe.id,
-          sourceId: meal.id.toString(),
+          mealPlanItemId: mealPlanItem.id,
+          recipeId: dishRecipe.id,
+          quantity: dish.quantity || 1,
+          unit: dish.unit || "serving",
+          order: i,
         },
-      });
-
-      return NextResponse.json({
-        success: true,
-        action: "set",
-        mealPlanId: mealPlan.id,
-        mealPlanItemId: mealPlanItem.id,
       });
     }
-    
+
+    return NextResponse.json({
+      success: true,
+      action: "set",
+      mealPlanId: mealPlan.id,
+      mealPlanItemId: mealPlanItem.id,
+    });
   } catch (error) {
     console.error("Error updating meal:", error);
     return NextResponse.json(
       { error: "Failed to update meal" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

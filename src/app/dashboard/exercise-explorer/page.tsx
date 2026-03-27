@@ -35,7 +35,7 @@ export default function ExerciseExplorerPage() {
 
       {/* Category tabs */}
       <div className="flex space-x-4 border-b overflow-x-auto">
-        <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium whitespace-nowrap">
+        <button className="px-4 py-2 border-b-2 border-green-500 text-orange-500 font-medium whitespace-nowrap">
           All Exercises
         </button>
         <button className="px-4 py-2 text-muted-foreground hover:text-foreground whitespace-nowrap">
@@ -158,7 +158,7 @@ export default function ExerciseExplorerPage() {
                     <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500" />
                   </button>
                   <button className="p-1 hover:bg-muted rounded">
-                    <Play className="w-5 h-5 text-purple-500" />
+                    <Play className="w-5 h-5 text-orange-500" />
                   </button>
                 </div>
               </div>
@@ -207,10 +207,10 @@ export default function ExerciseExplorerPage() {
                   </div>
                 </div>
                 <div className="flex space-x-2 pt-2">
-                  <button className="flex-1 bg-purple-500 text-white py-2 rounded-md hover:bg-green-700 transition-colors text-sm">
+                  <button className="flex-1 bg-orange-500 text-white py-2 rounded-md hover:bg-orange-700 transition-colors text-sm">
                     Start Exercise
                   </button>
-                  <button className="px-4 py-2 border border-purple-500 text-purple-500 rounded-md hover:bg-green-50 transition-colors text-sm">
+                  <button className="px-4 py-2 border border-orange-500 text-orange-500 rounded-md hover:bg-orange-50 transition-colors text-sm">
                     Add to Plan
                   </button>
                 </div>

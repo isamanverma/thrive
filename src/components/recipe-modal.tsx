@@ -286,10 +286,10 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                 )}
                                 {carbs && (
                                   <div className="p-3 bg-green-50 rounded-lg">
-                                    <div className="text-2xl font-bold text-purple-500">
+                                    <div className="text-2xl font-bold text-orange-500">
                                       {Math.round(carbs.amount)}g
                                     </div>
-                                    <div className="text-sm text-purple-500">
+                                    <div className="text-sm text-orange-500">
                                       Carbs
                                     </div>
                                   </div>

@@ -189,7 +189,7 @@ export function DateSelector({
             <div className="w-px h-4 bg-input mx-2"></div>
             <button
               onClick={navigateToToday}
-              className="text-xs text-green-600 hover:text-green-700 font-medium px-2 py-1 rounded hover:bg-green-50 transition-colors whitespace-nowrap"
+              className="text-xs text-green-600 hover:text-orange-700 font-medium px-2 py-1 rounded hover:bg-orange-50 transition-colors whitespace-nowrap"
             >
               Today
             </button>
@@ -242,7 +242,7 @@ export function DateSelector({
             <div className="mt-3 pt-3 border-t border-border">
               <button
                 onClick={navigateToToday}
-                className="w-full text-sm text-green-600 hover:text-green-700 font-medium py-2 px-3 rounded-lg hover:bg-green-50 active:bg-green-100 transition-colors"
+                className="w-full text-sm text-green-600 hover:text-orange-700 font-medium py-2 px-3 rounded-lg hover:bg-orange-50 active:bg-orange-100 transition-colors"
               >
                 Go to Today
               </button>

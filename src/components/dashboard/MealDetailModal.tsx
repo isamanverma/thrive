@@ -28,7 +28,7 @@ const getMealTypeStyles = (mealType: string) => {
   const styles = {
     Breakfast: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700",
     Lunch: "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
-    Snack: "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-700",
+    Snack: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700",
     Dinner: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-700",
   };
   return styles[mealType as keyof typeof styles] || styles.Lunch;
@@ -222,7 +222,7 @@ export function MealDetailModal({
           <div className="flex w-full flex-col sm:flex-row gap-3">
             <Button
               variant="outline"
-              className="flex-1 bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100 hover:border-purple-300"
+              className="flex-1 bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100 hover:border-orange-300"
               onClick={handleSwapClick}
             >
               <ArrowUpDown className="w-4 h-4 mr-2" />

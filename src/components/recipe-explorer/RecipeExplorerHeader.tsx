@@ -44,13 +44,13 @@ export function RecipeExplorerHeader({
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={loading}
-          className="w-full rounded-lg border border-border bg-card py-2 pl-10 pr-10 text-sm placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
+          className="w-full rounded-lg border border-border bg-card py-2 pl-10 pr-10 text-sm placeholder-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
         />
         <Button
           onClick={onSearchSubmit}
           disabled={loading}
           size="sm"
-          className="absolute inset-y-0 right-1 my-1 flex items-center justify-center rounded-md px-3 bg-purple-500 text-white hover:bg-purple-700 transition-colors"
+          className="absolute inset-y-0 right-1 my-1 flex items-center justify-center rounded-md px-3 bg-orange-500 text-white hover:bg-orange-700 transition-colors"
         >
           {loading ? (
             <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent" />

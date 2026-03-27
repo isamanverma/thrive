@@ -149,8 +149,8 @@ export function RecipeModal({
                 <ShimmerButton
                   onClick={() => onAddToMealPlan(recipe.id)}
                   className={cn(
-                    "flex w-full items-center justify-center gap-2 rounded-lg bg-purple-500 px-4 py-3",
-                    "text-base font-bold text-white hover:bg-purple-700 transition-colors"
+                    "flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-3",
+                    "text-base font-bold text-white hover:bg-orange-700 transition-colors"
                   )}
                 >
                   <Plus className="h-5 w-5" />
@@ -164,7 +164,7 @@ export function RecipeModal({
                     "flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3",
                     "text-base font-bold transition-colors",
                     isSaved
-                      ? "bg-green-50 border-green-200 text-purple-700 hover:bg-green-100"
+                      ? "bg-green-50 border-green-200 text-orange-700 hover:bg-orange-100"
                       : "hover:bg-accent"
                   )}
                 >

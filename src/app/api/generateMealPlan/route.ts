@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-import { auth } from '@clerk/nextjs/server';
-import { prisma } from '@/lib/prisma';
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
 
 interface MealPlanRequest {
   startDate: string;
@@ -45,24 +45,31 @@ export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body: MealPlanRequest = await request.json();
-    const { startDate, diet, intolerances, targetCalories, excludeIngredients, includeIngredients } = body;
+    const {
+      startDate,
+      diet,
+      intolerances,
+      targetCalories,
+      excludeIngredients,
+      includeIngredients,
+    } = body;
 
     if (!startDate) {
       return NextResponse.json(
-        { error: 'Start date is required' },
-        { status: 400 }
+        { error: "Start date is required" },
+        { status: 400 },
       );
     }
 
     const apiKey = process.env.SPOONACULAR_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'Spoonacular API key not configured' },
-        { status: 500 }
+        { error: "Spoonacular API key not configured" },
+        { status: 500 },
       );
     }
 
@@ -75,26 +82,33 @@ export async function POST(request: NextRequest) {
     // Build Spoonacular meal plan API URL
     const params = new URLSearchParams({
       apiKey,
-      timeFrame: 'week',
+      timeFrame: "week",
     });
 
     if (diet || (user && user.diet_preference)) {
-      params.append('diet', diet || user!.diet_preference!);
+      params.append("diet", diet || user!.diet_preference!);
     }
-    if (intolerances) params.append('exclude', intolerances);
-    if (targetCalories) params.append('targetCalories', targetCalories.toString());
-    if (excludeIngredients) params.append('excludeIngredients', excludeIngredients);
-    if (includeIngredients) params.append('includeIngredients', includeIngredients);
+    if (intolerances) params.append("exclude", intolerances);
+    if (targetCalories)
+      params.append("targetCalories", targetCalories.toString());
+    if (excludeIngredients)
+      params.append("excludeIngredients", excludeIngredients);
+    if (includeIngredients)
+      params.append("includeIngredients", includeIngredients);
 
     const spoonacularUrl = `https://api.spoonacular.com/mealplanner/generate?${params.toString()}`;
 
     const response = await fetch(spoonacularUrl);
-    
+
     if (!response.ok) {
-      console.error('Spoonacular API error:', response.status, response.statusText);
+      console.error(
+        "Spoonacular API error:",
+        response.status,
+        response.statusText,
+      );
       return NextResponse.json(
-        { error: 'Failed to generate meal plan from Spoonacular' },
-        { status: response.status }
+        { error: "Failed to generate meal plan from Spoonacular" },
+        { status: response.status },
       );
     }
 
@@ -105,10 +119,26 @@ export async function POST(request: NextRequest) {
     const endDate = new Date(startDateObj);
     endDate.setDate(endDate.getDate() + 6);
 
+    // Resolve internal DB user ID for meal plan creation
+    const dbUser = await prisma.user.findUnique({
+      where: { clerkId: userId },
+      select: { id: true },
+    });
+
+    if (!dbUser) {
+      return NextResponse.json(
+        {
+          error:
+            "User not found in database. Please complete onboarding first.",
+        },
+        { status: 404 },
+      );
+    }
+
     // Create meal plan in database
     const mealPlan = await prisma.mealPlan.create({
       data: {
-        userId: user ? await getUserIdFromClerkId(userId) : '',
+        userId: dbUser.id,
         startDate: startDateObj,
         endDate: endDate,
         constraints: {
@@ -123,20 +153,32 @@ export async function POST(request: NextRequest) {
 
     // Transform and save meal plan items
     const mealPlanItems = [];
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    
+    const days = [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ];
+
     for (let dayIndex = 0; dayIndex < days.length; dayIndex++) {
       const dayName = days[dayIndex] as keyof typeof mealPlanData.week;
       const dayMeals = mealPlanData.week[dayName];
-      
+
       if (dayMeals && dayMeals.meals) {
         // Spoonacular returns all meals for the day, we'll assign them to breakfast, lunch, dinner
-        const mealTypes = ['breakfast', 'lunch', 'dinner'];
-        
-        for (let mealIndex = 0; mealIndex < Math.min(dayMeals.meals.length, 3); mealIndex++) {
+        const mealTypes = ["breakfast", "lunch", "dinner"];
+
+        for (
+          let mealIndex = 0;
+          mealIndex < Math.min(dayMeals.meals.length, 3);
+          mealIndex++
+        ) {
           const meal = dayMeals.meals[mealIndex];
           const mealType = mealTypes[mealIndex];
-          
+
           const mealPlanItem = await prisma.mealPlanItem.create({
             data: {
               mealPlanId: mealPlan.id,
@@ -145,7 +187,7 @@ export async function POST(request: NextRequest) {
               mealType: mealType,
             },
           });
-          
+
           mealPlanItems.push({
             ...mealPlanItem,
             recipe: {
@@ -166,7 +208,7 @@ export async function POST(request: NextRequest) {
                 totalTime: meal.readyInMinutes,
                 servings: meal.servings,
                 sourceId: meal.id.toString(),
-                sourceType: 'SPOONACULAR',
+                sourceType: "SPOONACULAR",
                 updatedAt: new Date(),
               },
               create: {
@@ -175,7 +217,7 @@ export async function POST(request: NextRequest) {
                 totalTime: meal.readyInMinutes,
                 servings: meal.servings,
                 sourceId: meal.id.toString(),
-                sourceType: 'SPOONACULAR',
+                sourceType: "SPOONACULAR",
                 // ingredients, instructions and tags are omitted here because
                 // nested create types require specific shapes. They can be
                 // populated later when detailed recipe data is available.
@@ -184,7 +226,7 @@ export async function POST(request: NextRequest) {
               },
             });
           } catch (cacheError) {
-            console.error('Error caching meal plan recipe:', cacheError);
+            console.error("Error caching meal plan recipe:", cacheError);
             // Continue without caching
           }
         }
@@ -199,35 +241,20 @@ export async function POST(request: NextRequest) {
       items: mealPlanItems,
       nutrition: mealPlanData.week,
     });
-
   } catch (error) {
-    console.error('Meal plan generation error:', error);
+    console.error("Meal plan generation error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
-}
-
-// Helper function to get user ID from Clerk ID
-async function getUserIdFromClerkId(clerkId: string): Promise<string> {
-  const user = await prisma.user.findUnique({
-    where: { clerkId },
-    select: { id: true },
-  });
-  
-  if (!user) {
-    throw new Error('User not found');
-  }
-  
-  return user.id;
 }
 
 export async function GET() {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const userInDb = await prisma.user.findUnique({
@@ -236,7 +263,7 @@ export async function GET() {
     });
 
     if (!userInDb) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Get user's meal plans
@@ -255,22 +282,18 @@ export async function GET() {
               },
             },
           },
-          orderBy: [
-            { dayOfWeek: 'asc' },
-            { mealType: 'asc' },
-          ],
+          orderBy: [{ dayOfWeek: "asc" }, { mealType: "asc" }],
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json({ mealPlans });
-
   } catch (error) {
-    console.error('Get meal plans error:', error);
+    console.error("Get meal plans error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }

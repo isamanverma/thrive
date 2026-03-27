@@ -19,7 +19,7 @@ export default function SavedRecipesPage() {
 
       {/* Filter tabs */}
       <div className="flex space-x-4 border-b">
-        <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium">
+        <button className="px-4 py-2 border-b-2 border-green-500 text-orange-500 font-medium">
           All Recipes
         </button>
         <button className="px-4 py-2 text-muted-foreground hover:text-foreground">
@@ -128,7 +128,7 @@ export default function SavedRecipesPage() {
               </div>
 
               <div className="flex space-x-2">
-                <button className="flex-1 bg-purple-500 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
+                <button className="flex-1 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm">
                   View Recipe
                 </button>
                 <button className="px-3 py-2 border border-border rounded-lg hover:bg-muted transition-colors text-sm">
@@ -145,7 +145,7 @@ export default function SavedRecipesPage() {
         <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
         <h3 className="text-lg font-medium text-foreground mb-2">No saved recipes yet</h3>
         <p className="text-muted-foreground mb-4">Start exploring recipes and save your favorites!</p>
-        <button className="bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+        <button className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors">
           Explore Recipes
         </button>
       </div> */}

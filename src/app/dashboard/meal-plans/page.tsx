@@ -1,293 +1,296 @@
 "use client";
 
-import { MealDetailModal } from "@/components/dashboard/MealDetailModal";
-import { MealSwapModal } from "@/components/dashboard/MealSwapModal";
 import {
   MealPlanHeader,
-  DateNavigation,
   WeeklyStatsCard,
   DailyStatsCard,
   WeeklyMealGrid,
   DailyMealGrid,
   useMealPlanData,
-  type MealPlanItem,
 } from "@/components/dashboard/meal-plans";
+import { MealDrawer } from "@/components/dashboard/meal-plans/MealDrawer";
+import type {
+  Dish,
+  MealTypeCapitalized,
+} from "@/components/dashboard/meal-plans/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import type React from "react";
-import { useState } from "react";
-
-const dailyStats = {
-  totalCalories: 1550,
-  caloriesLeft: 450,
-  protein: 110,
-  carbs: 135,
-  fat: 55,
-  goal: 2000,
-};
+import React, { useState, useCallback } from "react";
 
 export default function MealPlansPage() {
   const {
     viewMode,
     currentDate,
-    currentDayIndex, // Add currentDayIndex here
+    currentDayIndex,
     weeklyMeals,
     draggedItem,
     activeDropZone,
-    sampleMeals,
     weeklyStats,
+    dailyStats,
     isLoading,
+    isRefreshing,
     setViewMode,
     setDraggedItem,
     setActiveDropZone,
     navigateDate,
-    updateSingleMeal,
+    updateMealDishes,
     swapMeals,
   } = useMealPlanData();
 
-  const [swapModalOpen, setSwapModalOpen] = useState(false);
-  const [swapMealType, setSwapMealType] = useState<string>("");
-  const [swapDayIndex, setSwapDayIndex] = useState<number>(0);
-  const [recipeDetailOpen, setRecipeDetailOpen] = useState(false);
-  const [selectedRecipe, setSelectedRecipe] = useState<MealPlanItem | null>(
-    null
+  // Drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerMealType, setDrawerMealType] =
+    useState<MealTypeCapitalized>("Breakfast");
+  const [drawerDayIndex, setDrawerDayIndex] = useState(0);
+  const [drawerDishes, setDrawerDishes] = useState<Dish[]>([]);
+
+  const dayLabels = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  const handleSlotClick = useCallback(
+    (mealType: string, dayIndex: number) => {
+      const mealKey = mealType.toLowerCase() as keyof (typeof weeklyMeals)[0];
+      const meal = weeklyMeals[dayIndex]?.[mealKey];
+      const dishes: Dish[] = (meal as { dishes?: Dish[] })?.dishes || [];
+
+      setDrawerMealType(mealType as MealTypeCapitalized);
+      setDrawerDayIndex(dayIndex);
+      setDrawerDishes(dishes);
+      setDrawerOpen(true);
+    },
+    [weeklyMeals],
   );
-  const [selectedMealType, setSelectedMealType] = useState<string>("");
 
-  const handleRegenerate = () => {
-    // TODO: Implement regenerate logic
-    console.log("Regenerating meal plan...");
-  };
+  const handleEmptySlotClick = useCallback(
+    (mealType: string, dayIndex: number) => {
+      setDrawerMealType(mealType as MealTypeCapitalized);
+      setDrawerDayIndex(dayIndex);
+      setDrawerDishes([]);
+      setDrawerOpen(true);
+    },
+    [],
+  );
 
-  const handleSwapClick = (mealType: string, dayIndex?: number) => {
-    setSwapMealType(mealType);
-    // Use nullish coalescing so a dayIndex of 0 is preserved
-    setSwapDayIndex(dayIndex ?? 0);
-    setSwapModalOpen(true);
-  };
+  const handleDrawerSave = useCallback(
+    (dishes: Dish[]) => {
+      updateMealDishes(drawerDayIndex, drawerMealType, dishes);
+    },
+    [drawerDayIndex, drawerMealType, updateMealDishes],
+  );
 
-  const handleRecipeSelect = (recipe: MealPlanItem) => {
-    // Guard: ensure a swap target was selected
-    if (!swapMealType) {
-      console.warn(
-        "handleRecipeSelect called but swapMealType is empty. Aborting."
-      );
-      setSwapModalOpen(false);
-      return;
-    }
+  // Drag and drop handlers (simplified — operate on whole meal slots now)
+  const handleDragStart = useCallback(
+    (e: React.DragEvent, mealType: string, dayIndex: number) => {
+      const mealKey = mealType.toLowerCase() as keyof (typeof weeklyMeals)[0];
+      const meal = weeklyMeals[dayIndex]?.[mealKey];
+      if (!meal) return;
+      setDraggedItem({ meal, mealType, dayIndex });
+      e.dataTransfer.setData("mealId", String(meal.id));
+      e.dataTransfer.setData("mealType", mealType);
+      e.dataTransfer.setData("dayIndex", dayIndex.toString());
+      e.dataTransfer.effectAllowed = "move";
+    },
+    [weeklyMeals, setDraggedItem],
+  );
 
-    // Use the new updateSingleMeal function for better persistence
-    updateSingleMeal(swapDayIndex, swapMealType, recipe);
-    setSwapModalOpen(false);
-  };
-
-  const handleRecipeClick = (
-    recipe: MealPlanItem,
-    mealType: string,
-    dayIndex?: number
-  ) => {
-    setSelectedRecipe(recipe);
-    setSelectedMealType(mealType);
-    if (dayIndex !== undefined) {
-      setSwapDayIndex(dayIndex);
-    }
-    setRecipeDetailOpen(true);
-  };
-
-  const handleDeleteMeal = () => {
-    // remove the selectedRecipe from weeklyMeals using selectedMealType and swapDayIndex
-    if (!selectedRecipe) return;
-
-    // Use the new updateSingleMeal function to remove the meal
-    updateSingleMeal(swapDayIndex, selectedMealType, null);
-
-    // close modal
-    setRecipeDetailOpen(false);
-    setSelectedRecipe(null);
-  };
-
-  const handleEmptySlotClick = (mealType: string, dayIndex: number) => {
-    // Open the swap modal to let user fill the empty slot
-    setSwapMealType(mealType);
-    setSwapDayIndex(dayIndex);
-    setSwapModalOpen(true);
-  };
-
-  const handleDragStart = (
-    e: React.DragEvent,
-    meal: MealPlanItem,
-    mealType: string,
-    dayIndex: number
-  ) => {
-    setDraggedItem({ meal, mealType, dayIndex });
-    e.dataTransfer.setData("mealId", meal.id.toString());
-    e.dataTransfer.setData("mealType", mealType);
-    e.dataTransfer.setData("dayIndex", dayIndex.toString());
-    e.dataTransfer.effectAllowed = "move";
-  };
-
-  const handleDragEnd = () => {
+  const handleDragEnd = useCallback(() => {
     setDraggedItem(null);
     setActiveDropZone(null);
-  };
+  }, [setDraggedItem, setActiveDropZone]);
 
-  const handleDragOver = (
-    e: React.DragEvent,
-    mealType: string,
-    dayIndex: number
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = "move";
+  const handleDragOver = useCallback(
+    (e: React.DragEvent, mealType: string, dayIndex: number) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.dataTransfer.dropEffect = "move";
+      if (
+        draggedItem &&
+        (draggedItem.mealType !== mealType || draggedItem.dayIndex !== dayIndex)
+      ) {
+        setActiveDropZone({ mealType, dayIndex });
+      }
+    },
+    [draggedItem, setActiveDropZone],
+  );
 
-    if (
-      draggedItem &&
-      (draggedItem.mealType !== mealType || draggedItem.dayIndex !== dayIndex)
-    ) {
-      setActiveDropZone({ mealType, dayIndex });
-    }
-  };
+  const handleDragLeave = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      const isInside =
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom;
+      if (!isInside) {
+        setActiveDropZone(null);
+      }
+    },
+    [setActiveDropZone],
+  );
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const isInside =
-      e.clientX >= rect.left &&
-      e.clientX <= rect.right &&
-      e.clientY >= rect.top &&
-      e.clientY <= rect.bottom;
+  const handleDrop = useCallback(
+    (e: React.DragEvent, targetMealType: string, targetDayIndex: number) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    if (!isInside) {
-      setActiveDropZone(null);
-    }
-  };
+      if (!draggedItem) return;
+      if (
+        draggedItem.dayIndex === targetDayIndex &&
+        draggedItem.mealType === targetMealType
+      ) {
+        setDraggedItem(null);
+        setActiveDropZone(null);
+        return;
+      }
 
-  const handleDrop = (
-    e: React.DragEvent,
-    targetMealType: string,
-    targetDayIndex: number
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!draggedItem) return;
-
-    if (
-      draggedItem.dayIndex === targetDayIndex &&
-      draggedItem.mealType === targetMealType
-    ) {
+      swapMeals(
+        draggedItem.dayIndex,
+        draggedItem.mealType,
+        targetDayIndex,
+        targetMealType,
+      );
       setDraggedItem(null);
       setActiveDropZone(null);
-      return;
-    }
-
-    const sourceDayIndex = draggedItem.dayIndex;
-    const sourceMealType = draggedItem.mealType;
-
-    setDraggedItem(null);
-    setActiveDropZone(null);
-
-    // Use the new swapMeals function for better persistence
-    swapMeals(sourceDayIndex, sourceMealType, targetDayIndex, targetMealType);
-  };
+    },
+    [draggedItem, swapMeals, setDraggedItem, setActiveDropZone],
+  );
 
   return (
-    <div className="min-h-screen bg-muted p-6">
+    <div className="w-full max-w-none px-4 pt-2 h-full min-h-0 flex flex-col overflow-hidden">
       <MealPlanHeader
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        onRegenerate={handleRegenerate}
-      />
-
-      <DateNavigation
-        viewMode={viewMode}
         currentDate={currentDate}
+        onViewModeChange={setViewMode}
         onNavigate={navigateDate}
       />
 
       {isLoading ? (
         viewMode === "weekly" ? (
           <>
-            <div className="mb-4 grid grid-cols-2 gap-4">
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-20 w-full" />
+            <div className="mb-6 flex items-baseline gap-8 px-1">
+              <Skeleton className="h-3 w-14" />
+              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-20" />
             </div>
-
-            <div
-              className="grid grid-cols-4 gap-3"
-              style={{ gridAutoRows: "minmax(14rem, auto)" }}
-            >
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="rounded-xl overflow-hidden">
-                  <Skeleton className="h-full w-full rounded-xl" />
-                </div>
+            <div className="grid grid-cols-[40px_repeat(7,1fr)] gap-2">
+              <Skeleton className="h-8 w-10 rounded-lg" />
+              {Array.from({ length: 7 }).map((_, i) => (
+                <Skeleton key={`head-${i}`} className="h-8 w-full rounded-lg" />
+              ))}
+              {Array.from({ length: 4 }).map((_, row) => (
+                <React.Fragment key={`row-${row}`}>
+                  <Skeleton className="h-20 w-10 rounded-xl" />
+                  {Array.from({ length: 7 }).map((_, col) => (
+                    <Skeleton
+                      key={`cell-${row}-${col}`}
+                      className="h-20 w-full rounded-xl"
+                    />
+                  ))}
+                </React.Fragment>
               ))}
             </div>
           </>
         ) : (
           <>
-            <div className="mb-4">
-              <Skeleton className="h-20 w-48" />
+            <div className="mb-6 flex items-baseline gap-8 px-1">
+              <Skeleton className="h-3 w-12" />
+              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-20" />
             </div>
-
-            <div
-              className="grid grid-cols-4 gap-3"
-              style={{ gridAutoRows: "minmax(14rem, auto)" }}
-            >
+            <div className="grid grid-cols-4 gap-2">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="rounded-xl overflow-hidden">
-                  <Skeleton className="h-full w-full rounded-xl" />
-                </div>
+                <Skeleton key={i} className="aspect-square w-full rounded-xl" />
               ))}
             </div>
           </>
         )
       ) : viewMode === "weekly" ? (
-        <div className="bg-card rounded-lg overflow-hidden shadow-sm">
-          <div className="p-6">
-            <WeeklyStatsCard stats={weeklyStats} />
+        <div className="relative flex flex-1 min-h-0 flex-col overflow-hidden">
+          <WeeklyStatsCard stats={weeklyStats} />
+          <div className="flex-1 min-h-0">
             <WeeklyMealGrid
               weeklyMeals={weeklyMeals}
               draggedItem={draggedItem}
               activeDropZone={activeDropZone}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onRecipeClick={handleRecipeClick}
               currentDayIndex={currentDayIndex}
+              onSlotClick={handleSlotClick}
               onEmptySlotClick={handleEmptySlotClick}
             />
           </div>
+          {isRefreshing && (
+            <div className="absolute inset-0 z-10 pointer-events-none rounded-xl bg-background/45 backdrop-blur-[1px] animate-in fade-in-0 duration-200">
+              <div className="p-2 pt-12">
+                <Skeleton className="h-3 w-16 mb-4" />
+                <div className="grid grid-cols-[40px_repeat(7,1fr)] gap-2">
+                  <Skeleton className="h-8 w-10 rounded-lg" />
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <Skeleton
+                      key={`refresh-head-${i}`}
+                      className="h-8 w-full rounded-lg"
+                    />
+                  ))}
+                  {Array.from({ length: 4 }).map((_, row) => (
+                    <React.Fragment key={`refresh-row-${row}`}>
+                      <Skeleton className="h-20 w-10 rounded-xl" />
+                      {Array.from({ length: 7 }).map((_, col) => (
+                        <Skeleton
+                          key={`refresh-cell-${row}-${col}`}
+                          className="h-20 w-full rounded-xl"
+                        />
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
-        <>
+        <div className="relative">
           <DailyStatsCard stats={dailyStats} />
           <DailyMealGrid
-            sampleMeals={sampleMeals}
-            onRecipeClick={handleRecipeClick}
             weeklyMeals={weeklyMeals}
+            onSlotClick={handleSlotClick}
             onEmptySlotClick={handleEmptySlotClick}
             currentDayIndex={currentDayIndex}
           />
-        </>
+          {isRefreshing && (
+            <div className="absolute inset-0 z-10 pointer-events-none rounded-xl bg-background/45 backdrop-blur-[1px] animate-in fade-in-0 duration-200">
+              <div className="p-2 pt-12">
+                <Skeleton className="h-3 w-12 mb-4" />
+                <div className="grid grid-cols-4 gap-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton
+                      key={`daily-refresh-${i}`}
+                      className="aspect-square w-full rounded-xl"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
-      <MealDetailModal
-        isOpen={recipeDetailOpen}
-        onClose={() => setRecipeDetailOpen(false)}
-        meal={selectedRecipe}
-        mealType={selectedMealType}
-        dayIndex={swapDayIndex}
-        onSwapClick={handleSwapClick}
-        onDelete={handleDeleteMeal}
-      />
-
-      <MealSwapModal
-        isOpen={swapModalOpen}
-        onClose={() => setSwapModalOpen(false)}
-        mealType={swapMealType}
-        onMealSelect={handleRecipeSelect}
+      <MealDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        mealType={drawerMealType}
+        dayLabel={dayLabels[drawerDayIndex] || ""}
+        initialDishes={drawerDishes}
+        onSave={handleDrawerSave}
       />
     </div>
   );

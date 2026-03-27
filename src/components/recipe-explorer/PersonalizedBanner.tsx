@@ -26,7 +26,7 @@ export function PersonalizedBanner({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <p className="text-sm text-foreground">
-              <span className="font-semibold text-purple-700 dark:text-green-400">
+              <span className="font-semibold text-orange-700 dark:text-green-400">
                 Just for you!
               </span>{" "}
               We&apos;ve tailored these recipes based on your preferences.
@@ -36,7 +36,7 @@ export function PersonalizedBanner({
             <ShimmerButton
               className={cn(
                 "flex items-center gap-2 rounded-lg bg-card px-3 py-1.5 text-xs font-medium shadow-sm",
-                "hover:bg-green-50 transition-all duration-200",
+                "hover:bg-orange-50 transition-all duration-200",
                 "dark:bg-green-900/50 dark:hover:bg-green-900/70",
                 loading && "opacity-75 cursor-not-allowed"
               )}
@@ -45,11 +45,11 @@ export function PersonalizedBanner({
             >
               <RefreshCw
                 className={cn(
-                  "h-3 w-3 text-purple-500 dark:text-green-400",
+                  "h-3 w-3 text-orange-500 dark:text-green-400",
                   loading && "animate-spin"
                 )}
               />
-              <span className="text-purple-700 dark:text-green-300">
+              <span className="text-orange-700 dark:text-green-300">
                 {loading ? "Regenerating..." : "Regenerate"}
               </span>
             </ShimmerButton>

@@ -13,7 +13,8 @@ const PENDING_TIMESTAMP_KEY = 'pendingUserDataTimestamp';
 const PENDING_RETRY_COUNT_KEY = 'pendingUserDataRetryCount';
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_INTERVAL = 5 * 60 * 1000; // 5 minutes
-const DATA_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+// Make pending-data expiry configurable via NEXT_PUBLIC_PENDING_DATA_EXPIRY_MS (ms). Default to 30 days.
+const DATA_EXPIRY = Number(process.env.NEXT_PUBLIC_PENDING_DATA_EXPIRY_MS) || 30 * 24 * 60 * 60 * 1000; // 30 days
 
 export function storePendingUserData(userData: UserData): void {
   if (typeof window === 'undefined') return;
@@ -79,9 +80,11 @@ export function shouldRetrySync(): boolean {
   const { timestamp, retryCount } = pendingData;
   const timeSinceLastAttempt = Date.now() - timestamp;
   
+  // Allow immediate retry on first saved attempt (retryCount === 0) when user reopens the app,
+  // otherwise enforce RETRY_INTERVAL between retries.
   return (
     retryCount < MAX_RETRY_ATTEMPTS &&
-    timeSinceLastAttempt >= RETRY_INTERVAL
+    (retryCount === 0 || timeSinceLastAttempt >= RETRY_INTERVAL)
   );
 }
 
@@ -145,8 +148,9 @@ export function initializeUserDataSync(): void {
   
   // Check for pending data on app initialization
   const pendingData = getPendingUserData();
-  if (pendingData && shouldRetrySync()) {
-    // Attempt sync after a short delay
+  // Attempt sync on app start if there's pending data.
+  // If this is the first attempt (retryCount === 0) allow immediate retry; otherwise rely on shouldRetrySync.
+  if (pendingData && (pendingData.retryCount === 0 || shouldRetrySync())) {
     setTimeout(() => {
       attemptUserDataSync();
     }, 2000);

@@ -43,7 +43,7 @@ export function RecipeCard({
           "transition-all duration-300 hover:shadow-xl hover:-translate-y-1",
           "rounded-xl"
         )}
-        gradientTo="#a78bfa20"
+        gradientTo="#fdba7420"
       >
         {/* Recipe Image */}
         <div className="relative w-full aspect-video overflow-hidden">
@@ -86,7 +86,7 @@ export function RecipeCard({
           <h3
             className={cn(
               "text-sm font-bold text-foreground line-clamp-2 mb-2",
-              "group-hover:text-purple-500 transition-colors duration-200"
+              "group-hover:text-orange-500 transition-colors duration-200"
             )}
           >
             {recipe.title}
@@ -155,7 +155,7 @@ export function RecipeCard({
                 e.stopPropagation();
                 onView(recipe.id);
               }}
-              className="h-7 w-7 p-0 rounded-full bg-muted text-muted-foreground hover:bg-input hover:text-purple-500 transition-all duration-200"
+              className="h-7 w-7 p-0 rounded-full bg-muted text-muted-foreground hover:bg-input hover:text-orange-500 transition-all duration-200"
             >
               <Eye className="h-3 w-3" />
             </Button>

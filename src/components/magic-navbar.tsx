@@ -25,7 +25,7 @@ const navigationLinks = [
 
 export default function MagicNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn, user, isLoaded } = useUser();
   const router = useRouter();
 
   const handleSignInClick = () => {
@@ -97,7 +97,7 @@ export default function MagicNavbar() {
 
           {/* Right side - Auth buttons */}
           <div className="flex items-center gap-2">
-            {isSignedIn ? (
+            {!isLoaded ? null : isSignedIn ? (
               <Button
                 variant="ghost"
                 size="sm"
@@ -107,25 +107,27 @@ export default function MagicNavbar() {
                 Dashboard
               </Button>
             ) : (
-              <SignInButton mode="modal">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-sm font-medium"
-                >
-                  Sign In
-                </Button>
-              </SignInButton>
+              <>
+                <SignInButton mode="modal">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-sm font-medium"
+                  >
+                    Sign In
+                  </Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <ShimmerButton
+                    className="h-9 px-4 text-sm"
+                    shimmerColor="#ffffff"
+                    background="linear-gradient(135deg, #10b981 0%, #059669 100%)"
+                  >
+                    Get Started
+                  </ShimmerButton>
+                </SignUpButton>
+              </>
             )}
-            <SignUpButton mode="modal">
-              <ShimmerButton
-                className="h-9 px-4 text-sm"
-                shimmerColor="#ffffff"
-                background="linear-gradient(135deg, #10b981 0%, #059669 100%)"
-              >
-                Get Started
-              </ShimmerButton>
-            </SignUpButton>
           </div>
         </div>
 

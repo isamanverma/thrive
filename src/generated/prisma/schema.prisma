@@ -53,16 +53,30 @@ model MealPlan {
 }
 
 model MealPlanItem {
-  id             String   @id @default(uuid())
+  id             String     @id @default(uuid())
   mealPlanId     String
   sourceId       String? // External recipe ID (e.g., spoonacularId)
   dayOfWeek      Int // 1-7 (Monday to Sunday)
   mealType       String // "breakfast", "lunch", "dinner"
-  mealPlan       MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
-  cachedRecipe   Recipe?  @relation(fields: [cachedRecipeId], references: [id])
+  mealPlan       MealPlan   @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  cachedRecipe   Recipe?    @relation(fields: [cachedRecipeId], references: [id])
   cachedRecipeId String?
+  dishes         MealDish[]
 
   @@unique([mealPlanId, dayOfWeek, mealType])
+}
+
+model MealDish {
+  id             String       @id @default(uuid())
+  mealPlanItemId String
+  recipeId       String
+  quantity       Float        @default(1)
+  unit           String       @default("serving")
+  order          Int          @default(0)
+  mealPlanItem   MealPlanItem @relation(fields: [mealPlanItemId], references: [id], onDelete: Cascade)
+  recipe         Recipe       @relation(fields: [recipeId], references: [id])
+
+  @@index([mealPlanItemId])
 }
 
 model Progress {
@@ -110,6 +124,7 @@ model Recipe {
   createdBy     User?          @relation(fields: [createdById], references: [id], onDelete: Cascade)
   userRecipes   UserRecipe[] // Tracks user interactions (liked/saved/cooked)
   mealPlanItems MealPlanItem[] // For meal planning integration
+  mealDishes    MealDish[]
 
   // Indexes for performance
   @@index([title])

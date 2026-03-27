@@ -19,7 +19,7 @@ export default function SavedExercisesPage() {
 
       {/* Filter tabs */}
       <div className="flex space-x-4 border-b overflow-x-auto">
-        <button className="px-4 py-2 border-b-2 border-green-500 text-purple-500 font-medium whitespace-nowrap">
+        <button className="px-4 py-2 border-b-2 border-green-500 text-orange-500 font-medium whitespace-nowrap">
           All Exercises
         </button>
         <button className="px-4 py-2 text-muted-foreground hover:text-foreground whitespace-nowrap">
@@ -183,10 +183,10 @@ export default function SavedExercisesPage() {
                   </div>
                 </div>
                 <div className="flex space-x-2 pt-2">
-                  <button className="flex-1 bg-purple-500 text-white py-2 rounded-md hover:bg-green-700 transition-colors text-sm">
+                  <button className="flex-1 bg-orange-500 text-white py-2 rounded-md hover:bg-orange-700 transition-colors text-sm">
                     Start Exercise
                   </button>
-                  <button className="px-4 py-2 border border-purple-500 text-purple-500 rounded-md hover:bg-green-50 transition-colors text-sm dark:border-purple-400 dark:text-purple-400 dark:hover:bg-muted">
+                  <button className="px-4 py-2 border border-orange-500 text-orange-500 rounded-md hover:bg-orange-50 transition-colors text-sm dark:border-orange-400 dark:text-orange-400 dark:hover:bg-muted">
                     Add to Plan
                   </button>
                 </div>
@@ -206,7 +206,7 @@ export default function SavedExercisesPage() {
           <p className="text-muted-foreground mb-6">
             Start exploring exercises and save your favorites to see them here.
           </p>
-          <button className="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+          <button className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors">
             Explore Exercises
           </button>
         </div>
@@ -220,7 +220,7 @@ export default function SavedExercisesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <button className="flex items-center space-x-3 p-4 bg-card rounded-lg hover:shadow-md transition-shadow text-left">
             <div className="bg-green-100 p-2 rounded-lg dark:bg-green-900 dark:text-green-200">
-              <Play className="w-5 h-5 text-purple-500 dark:text-purple-200" />
+              <Play className="w-5 h-5 text-orange-500 dark:text-orange-200" />
             </div>
             <div>
               <h4 className="font-medium text-foreground">Create Workout</h4>
@@ -241,8 +241,8 @@ export default function SavedExercisesPage() {
             </div>
           </button>
           <button className="flex items-center space-x-3 p-4 bg-card rounded-lg hover:shadow-md transition-shadow text-left">
-            <div className="bg-purple-100 p-2 rounded-lg dark:bg-purple-900 dark:text-purple-200">
-              <Zap className="w-5 h-5 text-purple-600 dark:text-purple-200" />
+            <div className="bg-orange-100 p-2 rounded-lg dark:bg-orange-900 dark:text-orange-200">
+              <Zap className="w-5 h-5 text-orange-600 dark:text-orange-200" />
             </div>
             <div>
               <h4 className="font-medium text-foreground">Quick Workout</h4>

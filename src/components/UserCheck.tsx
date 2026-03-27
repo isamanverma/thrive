@@ -1,11 +1,16 @@
 "use client";
 
-import { attemptUserDataSync, clearPendingUserData, getPendingUserData } from "@/lib/user-sync";
+import {
+  attemptUserDataSync,
+  clearPendingUserData,
+  getPendingUserData,
+} from "@/lib/user-sync";
 import { useEffect, useState } from "react";
 
 import { getUserByClerkId } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 interface UserCheckProps {
   children: React.ReactNode;
@@ -28,34 +33,68 @@ export default function UserCheck({ children }: UserCheckProps) {
 
       try {
         setError(null);
-        
+
         // Check for pending user data from onboarding
         const pendingData = getPendingUserData();
-        
+
         if (pendingData) {
           console.log("Found pending user data, allowing dashboard access");
           setUserExists(true);
           setIsCheckingUser(false);
-          
+
           // Attempt to sync in the background
           attemptUserDataSync().then((success) => {
             if (success) {
               console.log("Background sync successful");
             }
           });
-          
+
           return;
         }
 
+        // First attempt to get canonical user record
         const existingUser = await getUserByClerkId(user.id);
 
         if (!existingUser) {
+          // If DB was temporarily unavailable the server may return a fallback.
+          // Query the raw endpoint to inspect fallback flag before forcing onboarding.
+          try {
+            const rawRes = await fetch(
+              `/api/users?clerkId=${encodeURIComponent(user.id)}`,
+              {
+                headers: { "Cache-Control": "no-cache" },
+              },
+            );
+            if (rawRes.ok) {
+              const payload = await rawRes.json().catch(() => ({}));
+              if (payload && payload.fallback) {
+                // Treat as existing temporarily and attempt background sync.
+                console.log(
+                  "Database fallback detected — treating user as existing and attempting background sync",
+                );
+                setUserExists(true);
+                setIsCheckingUser(false);
+                attemptUserDataSync().then((success) => {
+                  if (success) {
+                    console.log("Background sync successful after fallback");
+                  }
+                });
+                return;
+              }
+            }
+          } catch (e) {
+            console.warn("Failed to fetch fallback payload:", e);
+          }
+
           // Check if we're already on onboarding page to prevent loops
-          if (window.location.pathname === "/onboarding") {
+          if (
+            typeof window !== "undefined" &&
+            window.location.pathname === "/onboarding"
+          ) {
             setIsCheckingUser(false);
             return;
           }
-          
+
           // User doesn't exist in DB, redirect to onboarding
           console.log("User not found in database, redirecting to onboarding");
           router.push("/onboarding");
@@ -64,7 +103,7 @@ export default function UserCheck({ children }: UserCheckProps) {
 
         // Clear any pending data if user exists in DB
         clearPendingUserData();
-        
+
         setUserExists(true);
         setRetryCount(0); // Reset retry count on success
       } catch (error) {
@@ -85,7 +124,7 @@ export default function UserCheck({ children }: UserCheckProps) {
               () => {
                 setRetryCount((prev) => prev + 1);
               },
-              2000 * (retryCount + 1)
+              2000 * (retryCount + 1),
             ); // Increasing delay
             return;
           }
@@ -93,18 +132,23 @@ export default function UserCheck({ children }: UserCheckProps) {
           // Check for pending user data during DB issues
           const pendingData = getPendingUserData();
           if (pendingData) {
-            console.log("Database unavailable but found pending user data, allowing access");
+            console.log(
+              "Database unavailable but found pending user data, allowing access",
+            );
             setUserExists(true);
             setIsCheckingUser(false);
             return;
           }
-          
+
           setError(
-            "Service temporarily unavailable. Please try again in a moment."
+            "Service temporarily unavailable. Please try again in a moment.",
           );
         } else {
           // For other errors, check if we're already on onboarding to prevent loops
-          if (typeof window !== "undefined" && window.location.pathname !== "/onboarding") {
+          if (
+            typeof window !== "undefined" &&
+            window.location.pathname !== "/onboarding"
+          ) {
             router.push("/onboarding");
             return;
           }
@@ -147,7 +191,7 @@ export default function UserCheck({ children }: UserCheckProps) {
               setIsCheckingUser(true);
               setRetryCount(0);
             }}
-            className="bg-purple-500 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors"
+            className="bg-orange-500 hover:bg-orange-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
             Try Again
           </button>
@@ -159,11 +203,21 @@ export default function UserCheck({ children }: UserCheckProps) {
   // Show loading while checking authentication or user existence
   if (!isLoaded || isCheckingUser) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-lg font-medium text-foreground">Loading...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#fffaf5]">
+        <div className="relative w-48 h-48 mb-6">
+          <div className="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-20" />
+          <Image
+            src="/thrive mascots/bgRemoved/meditating Background Removed.png"
+            alt="Loading"
+            fill
+            className="relative z-10 object-contain animate-bounce"
+            style={{ animationDuration: "1.5s" }}
+            priority
+          />
         </div>
+        <p className="text-zinc-600 font-medium animate-pulse">
+          Getting things ready...
+        </p>
       </div>
     );
   }

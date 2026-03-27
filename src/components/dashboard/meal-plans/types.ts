@@ -1,9 +1,24 @@
+export interface Dish {
+  recipeId: string;
+  sourceId?: string;
+  name: string;
+  calories: number;
+  image?: string;
+  description?: string;
+  quantity: number;
+  unit: string;
+  nutrition?: unknown;
+}
+
 export interface MealPlanItem {
   id: number;
   name: string;
   calories?: number;
   image?: string;
   description?: string;
+  nutrition?: unknown;
+  // New: array of dishes for multi-dish support
+  dishes?: Dish[];
 }
 
 export interface WeeklyMeals {
@@ -46,3 +61,14 @@ export interface DropZone {
 export type ViewMode = "weekly" | "daily";
 export type MealType = "breakfast" | "lunch" | "snack" | "dinner";
 export type MealTypeCapitalized = "Breakfast" | "Lunch" | "Snack" | "Dinner";
+
+export const DISH_UNITS = [
+  "serving",
+  "bowl",
+  "cup",
+  "piece",
+  "plate",
+  "glass",
+] as const;
+
+export type DishUnit = (typeof DISH_UNITS)[number];
