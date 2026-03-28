@@ -47,6 +47,8 @@ function resolveCalories(nutrition: unknown): number {
 }
 
 // GET: Load current user's active meal plan
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth();
@@ -100,100 +102,97 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // If no meal plan exists, create an empty one
+    // If found, return cached data immediately without transformation delays
+    if (mealPlan) {
+      const weeklyMeals: Record<number, Record<string, MealItem>> = {};
+
+      for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+        weeklyMeals[dayIndex] = {};
+      }
+
+      mealPlan.mealPlanItems.forEach((item) => {
+        const dayIndex = item.dayOfWeek - 1;
+        const mealType = item.mealType.toLowerCase();
+
+        if (dayIndex < 0 || dayIndex >= 7) return;
+
+        const dishes: DishPayload[] = item.dishes.map((dish) => {
+          const calories = resolveCalories(dish.recipe.nutrition);
+          return {
+            recipeId: dish.recipeId,
+            sourceId: dish.recipe.sourceId || undefined,
+            name: dish.recipe.title,
+            calories: Math.round(calories * dish.quantity) || 0,
+            image: dish.recipe.imageUrl || dish.recipe.fallbackImageUrl || "",
+            description: dish.recipe.description || "",
+            quantity: dish.quantity,
+            unit: dish.unit,
+            nutrition: dish.recipe.nutrition || undefined,
+          };
+        });
+
+        if (dishes.length === 0 && item.cachedRecipe) {
+          const calories = resolveCalories(item.cachedRecipe.nutrition);
+          dishes.push({
+            recipeId: item.cachedRecipe.id,
+            sourceId: item.cachedRecipe.sourceId || undefined,
+            name: item.cachedRecipe.title,
+            calories: Math.round(calories) || 0,
+            image:
+              item.cachedRecipe.imageUrl ||
+              item.cachedRecipe.fallbackImageUrl ||
+              "",
+            description: item.cachedRecipe.description || "",
+            quantity: 1,
+            unit: "serving",
+            nutrition: item.cachedRecipe.nutrition || undefined,
+          });
+        }
+
+        const totalCalories = dishes.reduce(
+          (sum, d) => sum + (d.calories || 0),
+          0,
+        );
+        const firstName = dishes[0]?.name || "";
+        const firstImage = dishes[0]?.image || "";
+
+        weeklyMeals[dayIndex][mealType] = {
+          id: parseInt(item.cachedRecipe?.sourceId || item.id),
+          name:
+            dishes.length > 1
+              ? `${firstName} +${dishes.length - 1}`
+              : firstName,
+          calories: totalCalories,
+          image: firstImage,
+          description: dishes[0]?.description || "",
+          dishes,
+        };
+      });
+
+      return NextResponse.json({
+        mealPlanId: mealPlan.id,
+        weeklyMeals,
+        startDate: mealPlan.startDate,
+        endDate: mealPlan.endDate,
+      });
+    }
+
+    // If no meal plan exists, create an empty one and return
     if (!mealPlan) {
-      mealPlan = await prisma.mealPlan.create({
+      await prisma.mealPlan.create({
         data: {
           userId: user.id,
           startDate: startOfWeek,
           endDate: endOfWeek,
         },
-        include: {
-          mealPlanItems: {
-            include: {
-              cachedRecipe: true,
-              dishes: {
-                include: { recipe: true },
-                orderBy: { order: "asc" },
-              },
-            },
-          },
-        },
+      });
+      return NextResponse.json({
+        mealPlanId: null,
+        weeklyMeals: {},
+        startDate: startOfWeek.toISOString(),
+        endDate: endOfWeek.toISOString(),
       });
     }
-
-    // Transform to frontend format
-    const weeklyMeals: Record<number, Record<string, MealItem>> = {};
-
-    for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-      weeklyMeals[dayIndex] = {};
-    }
-
-    mealPlan.mealPlanItems.forEach((item) => {
-      const dayIndex = item.dayOfWeek - 1;
-      const mealType = item.mealType.toLowerCase();
-
-      if (dayIndex < 0 || dayIndex >= 7) return;
-
-      // Build dishes array from MealDish records
-      const dishes: DishPayload[] = item.dishes.map((dish) => {
-        const calories = resolveCalories(dish.recipe.nutrition);
-        return {
-          recipeId: dish.recipeId,
-          sourceId: dish.recipe.sourceId || undefined,
-          name: dish.recipe.title,
-          calories: Math.round(calories * dish.quantity) || 0,
-          image: dish.recipe.imageUrl || dish.recipe.fallbackImageUrl || "",
-          description: dish.recipe.description || "",
-          quantity: dish.quantity,
-          unit: dish.unit,
-          nutrition: dish.recipe.nutrition || undefined,
-        };
-      });
-
-      // Fallback: if no dishes but has cachedRecipe, create a single dish from it
-      if (dishes.length === 0 && item.cachedRecipe) {
-        const calories = resolveCalories(item.cachedRecipe.nutrition);
-        dishes.push({
-          recipeId: item.cachedRecipe.id,
-          sourceId: item.cachedRecipe.sourceId || undefined,
-          name: item.cachedRecipe.title,
-          calories: Math.round(calories) || 0,
-          image:
-            item.cachedRecipe.imageUrl ||
-            item.cachedRecipe.fallbackImageUrl ||
-            "",
-          description: item.cachedRecipe.description || "",
-          quantity: 1,
-          unit: "serving",
-          nutrition: item.cachedRecipe.nutrition || undefined,
-        });
-      }
-
-      const totalCalories = dishes.reduce(
-        (sum, d) => sum + (d.calories || 0),
-        0,
-      );
-      const firstName = dishes[0]?.name || "";
-      const firstImage = dishes[0]?.image || "";
-
-      weeklyMeals[dayIndex][mealType] = {
-        id: parseInt(item.cachedRecipe?.sourceId || item.id),
-        name:
-          dishes.length > 1 ? `${firstName} +${dishes.length - 1}` : firstName,
-        calories: totalCalories,
-        image: firstImage,
-        description: dishes[0]?.description || "",
-        dishes,
-      };
-    });
-
-    return NextResponse.json({
-      mealPlanId: mealPlan.id,
-      weeklyMeals,
-      startDate: mealPlan.startDate,
-      endDate: mealPlan.endDate,
-    });
   } catch (error) {
     console.error("Error loading meal plan:", error);
     return NextResponse.json(

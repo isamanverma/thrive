@@ -48,18 +48,22 @@ function MealSlotCardInner({
   const remaining = dishes.length - visibleDishes.length;
 
   const cardClass = isSquare
-    ? `border-2 border-dashed ${accents.border} bg-card p-2.5 h-full w-full overflow-hidden flex flex-col justify-between`
+    ? `border-2 border-dashed ${accents.border} bg-card p-2.5 h-full min-h-0 w-full overflow-hidden flex flex-col justify-between`
     : "border border-border/50 bg-card p-2.5";
+
+  const innerClass = isSquare
+    ? "flex flex-col h-full min-h-0"
+    : "flex flex-col gap-1.5 flex-1 min-h-0";
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`w-full rounded-xl cursor-pointer transition-colors hover:bg-muted/50 text-left ${cardClass}`}
+      className={`w-full rounded-xl cursor-pointer transition-colors hover:bg-muted/50 text-left self-stretch ${cardClass}`}
     >
       {isSquare ? (
-        <div className="flex flex-col h-full">
-          <div className="flex-1 flex flex-col gap-0.5 overflow-hidden">
+        <div className="flex flex-col h-full min-h-0">
+          <div className="flex flex-col gap-0.5 overflow-hidden min-h-0">
             {visibleDishes.map((dish, i) => (
               <div key={i} className="flex items-center gap-1.5">
                 <div

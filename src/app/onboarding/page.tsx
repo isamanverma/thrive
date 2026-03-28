@@ -4,60 +4,79 @@ import { AnimatePresence, motion } from "framer-motion";
 import { clearPendingUserData, storePendingUserData } from "@/lib/user-sync";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Citrus } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
+import { Check } from "lucide-react";
 
 type QuestionType = "number" | "single-choice" | "multi-choice";
 
 interface Question {
   id: number;
   question: string;
+  subtext?: string;
   name: keyof FormDataState;
   type: QuestionType;
   options?: string[];
+  mascot?: string;
 }
 
 interface FormDataState {
   age?: number;
   weight?: number;
   height?: number;
-  fitnessGoal?: string;
+  fitnessGoal?: string[];
   activityLevel?: string;
-  dietType?: string;
+  dietType?: string[];
 }
 
 const questions: Question[] = [
-  { id: 1, question: "What's your age?", name: "age", type: "number" },
+  {
+    id: 1,
+    question: "How old are you?",
+    subtext: "We use this to calculate your daily calorie needs",
+    name: "age",
+    type: "number",
+    mascot: "/thrive mascots/bgRemoved/thinking Background Removed.png",
+  },
   {
     id: 2,
-    question: "What's your weight (kg)?",
+    question: "What's your weight?",
+    subtext: "In kilograms - this helps us personalize your meal plans",
     name: "weight",
     type: "number",
+    mascot:
+      "/thrive mascots/bgRemoved/looking at fridge Background Removed.png",
   },
   {
     id: 3,
-    question: "What's your height (cm)?",
+    question: "How tall are you?",
+    subtext: "In centimeters - needed to calculate your metabolism",
     name: "height",
     type: "number",
+    mascot: "/thrive mascots/bgRemoved/running happily Background Removed.png",
   },
   {
     id: 4,
-    question: "What's your main fitness goal?",
+    question: "What are your fitness goals?",
+    subtext: "Select all that apply",
     name: "fitnessGoal",
-    type: "single-choice",
+    type: "multi-choice",
     options: [
       "Lose Weight",
       "Build Muscle",
       "Improve Endurance",
       "Stay Healthy",
+      "Gain Strength",
+      "Improve Flexibility",
     ],
+    mascot: "/thrive mascots/bgRemoved/jogging Background Removed.png",
   },
   {
     id: 5,
     question: "What's your activity level?",
+    subtext: "Be honest - this affects your calorie recommendations",
     name: "activityLevel",
     type: "single-choice",
     options: [
@@ -65,25 +84,54 @@ const questions: Question[] = [
       "Lightly Active",
       "Moderately Active",
       "Very Active",
+      "Athlete",
     ],
+    mascot: "/thrive mascots/bgRemoved/running happily Background Removed.png",
   },
   {
     id: 6,
-    question: "What type of diet do you follow?",
+    question: "What diets do you follow?",
+    subtext: "Select all that apply - we'll customize recipes accordingly",
     name: "dietType",
-    type: "single-choice",
-    options: ["Vegetarian", "Non-Vegetarian", "Vegan", "Pescatarian"],
+    type: "multi-choice",
+    options: [
+      "None",
+      "Vegetarian",
+      "Vegan",
+      "Pescatarian",
+      "Keto",
+      "Paleo",
+      "Gluten-Free",
+    ],
+    mascot: "/thrive mascots/bgRemoved/eating salad Background Removed.png",
   },
 ];
 
 export default function OnboardingPage() {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [formData, setFormData] = useState<FormDataState>({});
+  const [formData, setFormData] = useState<FormDataState>({
+    age: 25,
+    fitnessGoal: [],
+    dietType: [],
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentQuestion = questions[step];
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      fetch(`/api/users?clerkId=${encodeURIComponent(user.id)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.id) {
+            router.push("/dashboard");
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isLoaded, user, router]);
 
   const handleSubmit = useCallback(async () => {
     if (!user) {
@@ -100,8 +148,8 @@ export default function OnboardingPage() {
         name: user.fullName || user.firstName || "",
         age: formData.age,
         weight: formData.weight,
-        goals: formData.fitnessGoal,
-        diet_preference: formData.dietType || "Non-Vegetarian",
+        goals: formData.fitnessGoal?.join(", "),
+        diet_preference: formData.dietType?.join(", ") || "None",
         activityLevel: formData.activityLevel,
         height: formData.height,
       };
@@ -120,25 +168,13 @@ export default function OnboardingPage() {
       }
 
       const result = await response.json();
-      console.log("User save response:", result);
 
-      // Handle fallback scenario when database is temporarily unavailable
       if (result.fallback) {
-        console.log("Database temporarily unavailable, storing data locally");
-        // Store user data locally for retry later using the sync utility
         storePendingUserData(userData);
-
-        // Show a more user-friendly notification
-        console.log(
-          "Your profile has been temporarily saved and will be synchronized when the service is available.",
-        );
       } else {
-        console.log("User saved successfully:", result.id);
-        // Clear any pending data on successful save
         clearPendingUserData();
       }
 
-      // Redirect to dashboard after successful save or fallback
       router.push("/dashboard");
     } catch (error) {
       console.error("Failed to save user:", error);
@@ -169,7 +205,6 @@ export default function OnboardingPage() {
     return false;
   };
 
-  // ✅ Always focus numeric inputs after step change (with slight delay for animation)
   useEffect(() => {
     if (currentQuestion.type === "number") {
       const timer = setTimeout(() => {
@@ -177,15 +212,14 @@ export default function OnboardingPage() {
           inputRef.current.focus();
           inputRef.current.select();
         }
-      }, 350); // matches motion animation timing
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [step, currentQuestion]);
 
-  // Global keyboard handling
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (isSubmitting) return; // Disable keyboard during submission
+      if (isSubmitting) return;
 
       const num = Number(e.key);
 
@@ -199,13 +233,40 @@ export default function OnboardingPage() {
         const selectedOption = currentQuestion.options![num - 1];
         setFormData((prev) => {
           if (currentQuestion.type === "single-choice") {
-            const already = prev[currentQuestion.name] === selectedOption;
+            const already =
+              prev[currentQuestion.name as keyof FormDataState] ===
+              selectedOption;
             return {
               ...prev,
               [currentQuestion.name]: already ? undefined : selectedOption,
             };
           }
-          // Multi-choice logic commented out since we only have single-choice questions now
+          if (currentQuestion.type === "multi-choice") {
+            const arr =
+              (prev[currentQuestion.name as keyof FormDataState] as string[]) ||
+              [];
+            const already = arr.includes(selectedOption);
+
+            // Handle "None" option specially
+            if (selectedOption === "None") {
+              return {
+                ...prev,
+                [currentQuestion.name]: already ? [] : ["None"],
+              };
+            }
+
+            // If selecting any other option, remove "None" first
+            let newArr = arr.filter((v) => v !== "None");
+            if (already) {
+              newArr = newArr.filter((v) => v !== selectedOption);
+            } else {
+              newArr = [...newArr, selectedOption];
+            }
+            return {
+              ...prev,
+              [currentQuestion.name]: newArr,
+            };
+          }
           return prev;
         });
       }
@@ -240,13 +301,14 @@ export default function OnboardingPage() {
 
   if (isSubmitting) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#fffaf5]">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-orange-50 via-white to-amber-50">
         <div className="relative w-48 h-48 mb-6">
           <div className="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-20" />
           <Image
             src="/thrive mascots/bgRemoved/cooking Background Removed.png"
             alt="Setting up"
             fill
+            sizes="192px"
             className="relative z-10 object-contain animate-bounce"
             style={{ animationDuration: "1.5s" }}
             priority
@@ -260,25 +322,30 @@ export default function OnboardingPage() {
   }
 
   return (
-    <section className="mx-auto min-h-screen max-w-7xl p-5 flex flex-col bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50 via-white to-amber-50">
       {/* Navbar */}
-      <nav className="flex justify-between items-center h-16">
-        <div className="flex flex-row items-center">
-          <div className="m-2 rounded-md bg-orange-500 p-1 shadow-md">
-            <Citrus color="white" strokeWidth={1.5} />
-          </div>
-          <h1 className="text-xl font-semibold">Thrive AI</h1>
+      <header className="flex justify-between items-center h-16 px-6 max-w-2xl mx-auto w-full">
+        <div className="flex flex-row items-center gap-2">
+          <Image
+            src="/logo.png"
+            alt="Thrive Logo"
+            width={36}
+            height={36}
+            className="object-contain rounded-lg"
+            priority
+          />
+          <h1 className="text-xl font-bold text-orange-600">Thrive</h1>
         </div>
         <SignOutButton>
-          <button className="bg-red-500 text-white rounded-full px-4 py-2 text-sm hover:bg-red-600">
+          <button className="text-sm text-muted-foreground hover:text-red-500 transition-colors font-medium">
             Sign Out
           </button>
         </SignOutButton>
-      </nav>
+      </header>
 
       {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex justify-between text-xs text-muted-foreground mb-2">
+      <div className="px-6 max-w-2xl mx-auto w-full mt-2">
+        <div className="flex justify-between text-xs text-muted-foreground mb-2 font-medium">
           <span>
             Step {step + 1} of {questions.length}
           </span>
@@ -286,137 +353,199 @@ export default function OnboardingPage() {
             {Math.round(((step + 1) / questions.length) * 100)}% Complete
           </span>
         </div>
-        <div className="w-full bg-input rounded-full h-2">
-          <div
-            className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((step + 1) / questions.length) * 100}%` }}
-          ></div>
+        <div className="w-full bg-orange-100 rounded-full h-1.5 overflow-hidden">
+          <motion.div
+            className="bg-orange-500 h-1.5 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${((step + 1) / questions.length) * 100}%` }}
+            transition={{ duration: 0.3 }}
+          />
         </div>
       </div>
 
-      {/* Progressive Form */}
-      <main className="flex flex-1 items-center justify-center">
-        <div className="w-full max-w-xl">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentQuestion.id}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
-              className="w-full bg-card rounded-lg shadow-lg p-8"
-            >
-              <h2 className="text-2xl font-semibold mb-6 text-foreground">
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col items-center justify-center p-6">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentQuestion.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="w-full max-w-md"
+          >
+            {/* Mascot */}
+            <div className="flex justify-center mb-8">
+              <div className="relative w-28 h-28">
+                <Image
+                  src={
+                    currentQuestion.mascot ||
+                    "/thrive mascots/bgRemoved/saying hello Background Removed.png"
+                  }
+                  alt="Mascot"
+                  fill
+                  sizes="112px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Question */}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-zinc-900">
                 {currentQuestion.question}
               </h2>
-
-              {currentQuestion.type === "number" && (
-                <input
-                  ref={inputRef}
-                  type="number"
-                  min={1}
-                  className="w-full border border-border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-orange-500 text-lg"
-                  value={formData[currentQuestion.name] ?? ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      [currentQuestion.name]: e.target.value
-                        ? Math.max(1, Number(e.target.value))
-                        : undefined,
-                    }))
-                  }
-                  placeholder="Enter a value"
-                />
+              {currentQuestion.subtext && (
+                <p className="text-sm text-zinc-600 mt-2">
+                  {currentQuestion.subtext}
+                </p>
               )}
+            </div>
 
-              {currentQuestion.type === "single-choice" && (
-                <div className="flex flex-col gap-3">
-                  {currentQuestion.options!.map((opt, idx) => (
-                    <div
-                      key={opt}
-                      onClick={() =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          [currentQuestion.name]:
-                            prev[currentQuestion.name] === opt
-                              ? undefined
-                              : opt,
-                        }))
-                      }
-                      className={`px-4 py-3 border rounded-lg cursor-pointer transition ${
-                        formData[currentQuestion.name] === opt
-                          ? "bg-orange-500 text-white border-orange-500"
-                          : "border-border hover:bg-muted hover:border-green-300"
-                      }`}
-                    >
-                      {idx + 1}. {opt}
-                    </div>
-                  ))}
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Press 1, 2, 3... to select/unselect. Press Enter to
-                    continue.
+            {/* Input based on type */}
+            <div>
+              {currentQuestion.type === "number" && (
+                <div className="relative">
+                  <input
+                    ref={inputRef}
+                    type="number"
+                    min={1}
+                    className="w-full border-b-2 border-orange-200 bg-transparent py-3 px-2 focus:outline-none focus:border-orange-500 text-2xl text-center font-medium text-zinc-900"
+                    value={
+                      formData[currentQuestion.name as keyof FormDataState] ??
+                      ""
+                    }
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        [currentQuestion.name]: e.target.value
+                          ? Math.max(1, Number(e.target.value))
+                          : undefined,
+                      }))
+                    }
+                    placeholder="0"
+                  />
+                  <p className="text-center text-xs text-zinc-500 mt-4">
+                    Press Enter to continue
                   </p>
                 </div>
               )}
 
-              {/* Multi-choice logic commented out since we only have single-choice questions now
-              {currentQuestion.type === "multi-choice" && (
-                <div className="flex flex-col gap-3">
+              {(currentQuestion.type === "single-choice" ||
+                currentQuestion.type === "multi-choice") && (
+                <div className="space-y-2">
                   {currentQuestion.options!.map((opt, idx) => {
                     const arr =
-                      (formData[currentQuestion.name] as string[]) || [];
+                      currentQuestion.type === "multi-choice"
+                        ? (formData[
+                            currentQuestion.name as keyof FormDataState
+                          ] as string[]) || []
+                        : [];
+                    const isSelected =
+                      currentQuestion.type === "single-choice"
+                        ? formData[
+                            currentQuestion.name as keyof FormDataState
+                          ] === opt
+                        : arr.includes(opt);
+
                     return (
-                      <div
+                      <button
                         key={opt}
-                        onClick={() =>
-                          setFormData((prev) => {
-                            const already = arr.includes(opt);
-                            return {
+                        type="button"
+                        onClick={() => {
+                          if (currentQuestion.type === "single-choice") {
+                            setFormData((prev) => ({
                               ...prev,
-                              [currentQuestion.name]: already
-                                ? arr.filter((v) => v !== opt)
-                                : [...arr, opt],
-                            };
-                          })
-                        }
-                        className={`px-4 py-3 border rounded-lg cursor-pointer transition ${
-                          arr.includes(opt)
-                            ? "bg-orange-500 text-white border-orange-500"
-                            : "border-border hover:bg-muted hover:border-green-300"
+                              [currentQuestion.name]: isSelected
+                                ? undefined
+                                : opt,
+                            }));
+                          } else {
+                            setFormData((prev) => {
+                              const arr =
+                                (prev[
+                                  currentQuestion.name as keyof FormDataState
+                                ] as string[]) || [];
+                              const already = arr.includes(opt);
+
+                              // Handle "None" option specially - it should deselect everything else
+                              if (opt === "None") {
+                                return {
+                                  ...prev,
+                                  [currentQuestion.name]: already
+                                    ? []
+                                    : ["None"],
+                                };
+                              }
+
+                              // If selecting any other option, remove "None" first
+                              let newArr = arr.filter((v) => v !== "None");
+                              if (already) {
+                                newArr = newArr.filter((v) => v !== opt);
+                              } else {
+                                newArr = [...newArr, opt];
+                              }
+                              return {
+                                ...prev,
+                                [currentQuestion.name]: newArr,
+                              };
+                            });
+                          }
+                        }}
+                        className={`w-full px-4 py-3 rounded-lg border text-left font-medium transition-colors flex items-center justify-between ${
+                          isSelected
+                            ? "border-orange-500 bg-orange-50 text-orange-700"
+                            : "border-orange-100 hover:border-orange-300 hover:bg-orange-50/30 text-zinc-700"
                         }`}
                       >
-                        {idx + 1}. {opt}
-                      </div>
+                        <span>
+                          <span className="text-orange-500 font-bold mr-2">
+                            {idx + 1}.
+                          </span>
+                          {opt}
+                        </span>
+                        {isSelected && (
+                          <Check className="w-4 h-4 text-orange-500" />
+                        )}
+                      </button>
                     );
                   })}
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Press 1, 2, 3... to toggle options. Press Enter to continue.
+                  <p className="text-center text-xs text-zinc-500 mt-4">
+                    Press 1-{currentQuestion.options!.length} to select • Enter
+                    to continue
                   </p>
                 </div>
               )}
-              */}
+            </div>
 
-              {/* Navigation */}
-              <div className="flex justify-between mt-8">
-                <button
-                  onClick={handlePrev}
-                  disabled={step === 0}
-                  className="px-6 py-2 rounded-lg border border-border text-muted-foreground disabled:opacity-50 hover:bg-muted"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={handleNext}
-                  disabled={!isAnswered(currentQuestion)}
-                  className="px-6 py-2 rounded-lg bg-orange-500 text-white disabled:opacity-50 hover:bg-orange-700 font-medium"
-                >
-                  {step === questions.length - 1 ? "Complete Setup" : "Next"}
-                </button>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+            {/* Navigation */}
+            <div className="flex justify-between mt-10">
+              <button
+                onClick={handlePrev}
+                disabled={step === 0}
+                className="px-6 py-2.5 rounded-lg border border-orange-200 text-orange-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-orange-50 font-medium transition-colors"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={!isAnswered(currentQuestion)}
+                className="px-8 py-2.5 rounded-lg bg-orange-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 font-medium transition-colors"
+              >
+                {step === questions.length - 1 ? "Complete" : "Continue"}
+              </button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </main>
-    </section>
+
+      {/* Footer hint */}
+      <div className="text-center pb-6">
+        <p className="text-xs text-muted-foreground">
+          ← → arrow keys to navigate
+        </p>
+      </div>
+    </div>
   );
 }

@@ -54,7 +54,10 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
       </div>
 
       {/* Meal type rows */}
-      <div className="grid grid-rows-4 gap-y-2 mt-1 flex-1 min-h-0 auto-rows-fr">
+      <div
+        className="grid grid-rows-4 gap-y-2 mt-1 flex-1 min-h-0"
+        style={{ gridTemplateRows: "1fr 1fr 1fr 1fr" }}
+      >
         {mealTypes.map((mealType) => (
           <MealTypeRow
             key={mealType}

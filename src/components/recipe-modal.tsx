@@ -87,7 +87,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
       } catch (error) {
         console.error("Error fetching recipe:", error);
         setError(
-          error instanceof Error ? error.message : "Failed to fetch recipe"
+          error instanceof Error ? error.message : "Failed to fetch recipe",
         );
       } finally {
         setLoading(false);
@@ -208,6 +208,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                         src={recipe.image}
                         alt={recipe.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -338,7 +339,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                           {step.step}
                                         </p>
                                       </div>
-                                    )
+                                    ),
                                   )}
                                 </div>
                               </CardContent>
@@ -385,7 +386,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                         <div className="w-8 h-8 bg-card rounded-lg flex items-center justify-center overflow-hidden">
                                           <Image
                                             src={getIngredientImageUrl(
-                                              ingredient
+                                              ingredient,
                                             )}
                                             alt={ingredient.name}
                                             width={24}
@@ -396,7 +397,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                                 e.target as HTMLImageElement;
                                               if (
                                                 !target.src.includes(
-                                                  "placeholder"
+                                                  "placeholder",
                                                 )
                                               ) {
                                                 const altName =
@@ -405,10 +406,10 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                                     .replace(/\s+/g, "-")
                                                     .replace(
                                                       /[^a-z0-9-]/g,
-                                                      ""
+                                                      "",
                                                     ) || "ingredient";
                                                 target.src = `https://spoonacular.com/cdn/ingredients_100x100/${altName}.png`;
-  
+
                                                 target.onerror = () => {
                                                   target.src =
                                                     "https://via.placeholder.com/32x32/f3f4f6/9ca3af?text=🥘";
@@ -427,7 +428,7 @@ export function RecipeModal({ recipeId, isOpen, onClose }: RecipeModalProps) {
                                           </div>
                                         </div>
                                       </div>
-                                    )
+                                    ),
                                   )}
                                 </div>
                               </CardContent>

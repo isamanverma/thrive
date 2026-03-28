@@ -62,6 +62,7 @@ export function RecipeIngredients({ ingredients }: RecipeIngredientsProps) {
                   src={getIngredientImageUrl(ingredient)}
                   alt={ingredient.name}
                   fill
+                  sizes="96px"
                   className="object-contain rounded-full"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

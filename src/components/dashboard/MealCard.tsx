@@ -52,6 +52,7 @@ export function MealCard({
             src={meal.image}
             alt={meal.name}
             fill
+            sizes="64px"
             className="object-cover"
           />
         </div>

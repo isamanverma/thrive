@@ -9,6 +9,7 @@ export default function Loading() {
           src="/thrive mascots/bgRemoved/meditating Background Removed.png"
           alt="Loading"
           fill
+          sizes="192px"
           className="relative z-10 object-contain animate-bounce"
           style={{ animationDuration: "1.5s" }}
           priority

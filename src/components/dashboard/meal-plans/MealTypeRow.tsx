@@ -74,7 +74,7 @@ function MealTypeRowInner({
 
   return (
     <div
-      className={`grid grid-cols-[40px_repeat(7,1fr)] gap-x-2 ${styles.bg} rounded-xl h-full min-h-0 py-1.5`}
+      className={`grid grid-cols-[40px_repeat(7,1fr)] gap-x-2 ${styles.bg} rounded-xl h-full min-h-0 py-1.5 items-stretch`}
     >
       {/* Meal type marker — icon only */}
       <div className="flex items-center justify-center h-full">
@@ -88,7 +88,10 @@ function MealTypeRowInner({
         const dishes: Dish[] = meal?.dishes || [];
 
         return (
-          <div key={`${mealType.toLowerCase()}-${index}`} className="h-full">
+          <div
+            key={`${mealType.toLowerCase()}-${index}`}
+            className="h-full min-h-0 overflow-hidden"
+          >
             {dishes.length > 0 ? (
               <MealSlotCard
                 dishes={dishes}
@@ -101,7 +104,7 @@ function MealTypeRowInner({
               <button
                 type="button"
                 onClick={() => onEmptySlotClick(mealType, index)}
-                className={`w-full h-full rounded-xl border-2 border-dashed ${styles.accentBorder} flex items-center justify-center p-3 text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground/70`}
+                className={`w-full h-full min-h-0 rounded-xl border-2 border-dashed ${styles.accentBorder} flex items-center justify-center p-3 text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground/70`}
               >
                 <Plus className="w-4 h-4" />
               </button>

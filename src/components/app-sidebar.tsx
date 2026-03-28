@@ -2,13 +2,11 @@
 
 import {
   Bell,
-  BookOpen,
   ChefHat,
   Dumbbell,
   Heart,
   Home,
   Moon,
-  Search,
   Settings,
   Sun,
   User,
@@ -133,11 +131,6 @@ const items = [
     icon: ChefHat,
   },
   {
-    title: "Recipe Explorer",
-    url: "/dashboard/recipe-explorer",
-    icon: BookOpen,
-  },
-  {
     title: "Saved Recipes",
     url: "/dashboard/saved-recipes",
     icon: Heart,
@@ -146,11 +139,6 @@ const items = [
     title: "Exercise Plans",
     url: "/dashboard/exercise-plans",
     icon: Dumbbell,
-  },
-  {
-    title: "Exercise Explorer",
-    url: "/dashboard/exercise-explorer",
-    icon: Search,
   },
   {
     title: "Saved Exercises",

@@ -42,46 +42,17 @@ function VideoClip({
   fallbackSrc: string;
   active?: boolean;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [useFallback, setUseFallback] = useState(false);
-
-  useEffect(() => {
-    if (!videoRef.current) return;
-
-    if (active) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => setUseFallback(true));
-      return;
-    }
-
-    videoRef.current.pause();
-  }, [active]);
-
-  if (useFallback) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Image
-          src={fallbackSrc}
-          alt=""
-          width={280}
-          height={280}
-          className="h-48 w-48 object-contain"
-        />
-      </div>
-    );
-  }
-
   return (
-    <video
-      ref={videoRef}
-      src={src}
-      poster={fallbackSrc}
-      muted
-      loop
-      playsInline
-      onError={() => setUseFallback(true)}
-      className="absolute inset-0 h-full w-full object-cover"
-    />
+    <div className="absolute inset-0 flex items-center justify-center p-8">
+      <Image
+        src={fallbackSrc}
+        alt=""
+        fill
+        sizes="(max-width: 768px) 100vw, 400px"
+        className="object-contain"
+        priority={active}
+      />
+    </div>
   );
 }
 

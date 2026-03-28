@@ -24,12 +24,6 @@ function getBreadcrumbItems(pathname: string, recipeTitle?: string) {
 
       // Handle recipe routes specially
       if (routeName === "recipe" && segments.length > 2) {
-        // Add recipe explorer
-        items.push({
-          title: "Recipe Explorer",
-          href: "/dashboard/recipe-explorer",
-        });
-
         // Add the specific recipe name
         const recipeName = recipeTitle || "Recipe";
         items.push({ title: recipeName, href: pathname });

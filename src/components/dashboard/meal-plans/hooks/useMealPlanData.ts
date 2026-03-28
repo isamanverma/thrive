@@ -14,7 +14,7 @@ import {
   swapMealsAPI,
   updateMealDishesAPI,
 } from "@/lib/mealPlanClient";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export function useMealPlanData() {
   const [viewMode, setViewMode] = useState<ViewMode>("weekly");
@@ -424,6 +424,12 @@ export function useMealPlanData() {
     }
     setCurrentDate(newDate);
   };
+
+  const weeklyStats = useMemo(() => calculateWeeklyStats(), [weeklyMeals]);
+  const dailyStats = useMemo(
+    () => calculateDailyStats(),
+    [weeklyMeals, currentDate],
+  );
 
   return {
     // State

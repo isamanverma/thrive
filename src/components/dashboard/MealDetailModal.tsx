@@ -26,10 +26,14 @@ interface MealDetailModalProps {
 
 const getMealTypeStyles = (mealType: string) => {
   const styles = {
-    Breakfast: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700",
-    Lunch: "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
-    Snack: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700",
-    Dinner: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-700",
+    Breakfast:
+      "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700",
+    Lunch:
+      "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
+    Snack:
+      "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700",
+    Dinner:
+      "bg-red-100 text-red-700 border-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-700",
   };
   return styles[mealType as keyof typeof styles] || styles.Lunch;
 };
@@ -136,6 +140,7 @@ export function MealDetailModal({
               src={meal.image || "/placeholder.svg"}
               alt={meal.name}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
             />
           </div>
@@ -235,7 +240,7 @@ export function MealDetailModal({
               <Heart className="w-4 h-4 mr-2" />
               Add to Favorites
             </Button>
-            <Button 
+            <Button
               className="flex-1"
               onClick={async () => {
                 if (meal?.id) {

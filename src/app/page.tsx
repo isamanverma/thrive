@@ -6,10 +6,13 @@ import HowItWorksSection from "@/components/landing/sections/HowItWorksSection";
 import WeekGlanceSection from "@/components/landing/sections/WeekGlanceSection";
 import BeforeAfterSection from "@/components/landing/sections/BeforeAfterSection";
 import FinalCTASection from "@/components/landing/sections/FinalCTASection";
+import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function LandingPage() {
+  const { isSignedIn, isLoaded } = useUser();
+
   return (
     <div className="min-h-[100dvh] bg-[#fffaf5] text-foreground">
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_16%_9%,rgba(251,146,60,0.10),transparent_32%),radial-gradient(circle_at_84%_5%,rgba(251,191,36,0.08),transparent_30%)]" />
@@ -17,27 +20,43 @@ export default function LandingPage() {
       <header className="sticky top-0 z-30 border-b border-orange-200/70 bg-[#fffaf5]/95 backdrop-blur-md">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
           <Link href="/" className="inline-flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl border border-orange-200 bg-orange-50">
-              <div className="h-2.5 w-2.5 rounded-full bg-orange-500" />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="Thrive Logo"
+              width={36}
+              height={36}
+              className="object-contain rounded-lg"
+              priority
+            />
             <span className="text-xl font-semibold tracking-tight text-zinc-900">
               Thrive
             </span>
           </Link>
 
           <nav className="flex items-center gap-2">
-            <Link
-              href="/sign-in"
-              className="rounded-full px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-orange-50"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/sign-up"
-              className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
-            >
-              Start free
-            </Link>
+            {isLoaded && isSignedIn ? (
+              <Link
+                href="/dashboard"
+                className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  className="rounded-full px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-orange-50"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+                >
+                  Start free
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </header>
@@ -58,14 +77,8 @@ export default function LandingPage() {
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/sign-up"
-                  className="rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
-                >
-                  Build my week
-                </Link>
-                <Link
                   href="/dashboard"
-                  className="rounded-full border border-orange-200 bg-white px-6 py-3 text-sm font-medium text-zinc-700 transition-colors hover:bg-orange-50"
+                  className="rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
                 >
                   Preview dashboard
                 </Link>

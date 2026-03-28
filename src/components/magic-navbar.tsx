@@ -67,7 +67,7 @@ export default function MagicNavbar() {
                   alt="Thrive Logo"
                   width={40}
                   height={40}
-                  className="object-contain mr-2"
+                  className="object-contain mr-2 rounded-lg"
                   priority
                 />
                 <span className="text-lg font-semibold text-foreground">

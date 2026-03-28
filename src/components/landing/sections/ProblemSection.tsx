@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useInView } from "@/hooks/useInView";
 
 const scatteredCards = [
@@ -86,9 +87,14 @@ export default function ProblemSection() {
 
             {/* ── Unified Thrive card ────────────────── */}
             <div className="mt-5 flex w-[220px] flex-col items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50/80 px-6 py-7 shadow-[0_16px_50px_-20px_rgba(234,88,12,0.20)]">
-              <div className="grid h-12 w-12 place-items-center rounded-xl border border-orange-200 bg-white">
-                <div className="h-3.5 w-3.5 rounded-full bg-orange-500" />
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Thrive Logo"
+                width={48}
+                height={48}
+                className="object-contain rounded-lg"
+                priority
+              />
               <p className="text-base font-semibold text-zinc-900">Thrive</p>
               <p className="-mt-1 text-[11px] text-zinc-500">one system</p>
 

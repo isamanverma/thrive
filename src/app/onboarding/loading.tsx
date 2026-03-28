@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <section className="mx-auto min-h-screen max-w-7xl p-5 flex flex-col bg-gradient-to-br from-green-50 to-blue-50">
+    <section className="mx-auto min-h-screen max-w-7xl p-5 flex flex-col bg-gradient-to-br from-orange-50 to-amber-50">
       {/* Navbar */}
       <nav className="flex justify-between items-center h-16">
         <div className="flex flex-row items-center gap-2">

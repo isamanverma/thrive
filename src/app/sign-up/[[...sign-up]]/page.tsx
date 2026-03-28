@@ -15,6 +15,7 @@ export default function Page() {
             src="/thrive mascots/bgRemoved/showing plan Background Removed.png"
             alt="Thrive Mascot"
             fill
+            sizes="(max-width: 1024px) 0px, 50vw"
             className="object-contain drop-shadow-xl"
             priority
           />

@@ -191,6 +191,7 @@ function MealPlanCardInner({
               src={meal.image || "/placeholder.svg"}
               alt={meal.name}
               fill
+              sizes="(max-width: 640px) 30vw, 120px"
               className="object-cover transition-transform duration-200 hover:scale-105"
             />
           </div>
