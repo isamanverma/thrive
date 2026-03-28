@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { dayIndex, mealType, dishes, action = "set" } = body;
+    const { dayIndex, mealType, dishes, action = "set", date } = body;
 
     // Validate input
     if (typeof dayIndex !== "number" || dayIndex < 0 || dayIndex > 6) {
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate current week (Monday to Sunday)
-    const currentDate = new Date();
+    const currentDate = date ? new Date(date) : new Date();
     const startOfWeek = new Date(currentDate);
     const mondayOffset =
       currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
@@ -162,9 +162,9 @@ export async function POST(request: NextRequest) {
           imageUrl: firstDish.image || null,
           sourceType: "EXTERNAL_API",
           sourceId: firstDish.recipeId,
-          nutrition: firstDish.calories
-            ? { calories: firstDish.calories }
-            : undefined,
+          nutrition:
+            (firstDish.nutrition as object) ||
+            (firstDish.calories ? { calories: firstDish.calories } : undefined),
           isPublic: true,
         },
       });
@@ -199,7 +199,9 @@ export async function POST(request: NextRequest) {
             imageUrl: dish.image || null,
             sourceType: "EXTERNAL_API",
             sourceId: dish.recipeId,
-            nutrition: dish.calories ? { calories: dish.calories } : undefined,
+            nutrition:
+              (dish.nutrition as object) ||
+              (dish.calories ? { calories: dish.calories } : undefined),
             isPublic: true,
           },
         });

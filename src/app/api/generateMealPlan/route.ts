@@ -151,8 +151,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Transform and save meal plan items
-    const mealPlanItems = [];
+    // Collect all recipe IDs to fetch nutrition in bulk
     const days = [
       "monday",
       "tuesday",
@@ -162,6 +161,37 @@ export async function POST(request: NextRequest) {
       "saturday",
       "sunday",
     ];
+    const allRecipeIds: number[] = [];
+    for (const dayName of days) {
+      const dayMeals =
+        mealPlanData.week[dayName as keyof typeof mealPlanData.week];
+      if (dayMeals?.meals) {
+        for (const meal of dayMeals.meals) {
+          allRecipeIds.push(meal.id);
+        }
+      }
+    }
+
+    // Fetch per-recipe nutrition from Spoonacular in bulk
+    const nutritionMap = new Map<number, unknown>();
+    if (allRecipeIds.length > 0) {
+      try {
+        const bulkUrl = `https://api.spoonacular.com/recipes/informationBulk?ids=${allRecipeIds.join(",")}&includeNutrition=true&apiKey=${apiKey}`;
+        const bulkResponse = await fetch(bulkUrl);
+        if (bulkResponse.ok) {
+          const bulkData = await bulkResponse.json();
+          for (const recipe of bulkData) {
+            nutritionMap.set(recipe.id, recipe.nutrition || null);
+          }
+        }
+      } catch (bulkError) {
+        console.error("Error fetching bulk nutrition:", bulkError);
+        // Continue without nutrition data
+      }
+    }
+
+    // Transform and save meal plan items
+    const mealPlanItems = [];
 
     for (let dayIndex = 0; dayIndex < days.length; dayIndex++) {
       const dayName = days[dayIndex] as keyof typeof mealPlanData.week;
@@ -201,6 +231,7 @@ export async function POST(request: NextRequest) {
 
           // Cache recipe data for future use
           try {
+            const recipeNutrition = nutritionMap.get(meal.id) || undefined;
             await prisma.recipe.upsert({
               where: { id: `spoonacular-${meal.id}` },
               update: {
@@ -209,6 +240,7 @@ export async function POST(request: NextRequest) {
                 servings: meal.servings,
                 sourceId: meal.id.toString(),
                 sourceType: "SPOONACULAR",
+                nutrition: recipeNutrition as object | undefined,
                 updatedAt: new Date(),
               },
               create: {
@@ -218,9 +250,7 @@ export async function POST(request: NextRequest) {
                 servings: meal.servings,
                 sourceId: meal.id.toString(),
                 sourceType: "SPOONACULAR",
-                // ingredients, instructions and tags are omitted here because
-                // nested create types require specific shapes. They can be
-                // populated later when detailed recipe data is available.
+                nutrition: recipeNutrition as object | undefined,
                 isPublic: true,
                 savedCount: 0,
               },

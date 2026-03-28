@@ -1,8 +1,11 @@
 export { MealPlanHeader } from "./MealPlanHeader";
 export { WeeklyStatsCard } from "./WeeklyStatsCard";
 export { DailyStatsCard } from "./DailyStatsCard";
+export { NutritionSummary } from "./NutritionSummary";
 export { WeeklyMealGrid } from "./WeeklyMealGrid";
 export { DailyMealGrid } from "./DailyMealGrid";
+export { MealItem } from "./MealItem";
+export { WeeklyMacroChart } from "./WeeklyMacroChart";
 export { MealTypeRow } from "./MealTypeRow";
 export { MealSlotCard } from "./MealSlotCard";
 export { MealDrawer } from "./MealDrawer";

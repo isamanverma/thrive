@@ -3,11 +3,11 @@
 import {
   MealPlanHeader,
   WeeklyStatsCard,
-  DailyStatsCard,
   WeeklyMealGrid,
   DailyMealGrid,
   useMealPlanData,
 } from "@/components/dashboard/meal-plans";
+import { NutritionSummary } from "@/components/dashboard/meal-plans/NutritionSummary";
 import { MealDrawer } from "@/components/dashboard/meal-plans/MealDrawer";
 import type {
   Dish,
@@ -200,21 +200,26 @@ export default function MealPlansPage() {
             </div>
           </>
         ) : (
-          <>
-            <div className="mb-6 flex items-baseline gap-8 px-1">
-              <Skeleton className="h-3 w-12" />
-              <Skeleton className="h-8 w-24" />
-              <Skeleton className="h-8 w-24" />
-              <Skeleton className="h-8 w-20" />
-              <Skeleton className="h-8 w-20" />
-              <Skeleton className="h-8 w-20" />
-            </div>
-            <div className="grid grid-cols-4 gap-2">
+          <div className="flex flex-1 gap-4">
+            <div className="flex-1 space-y-1">
               {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="aspect-square w-full rounded-xl" />
+                <Skeleton key={i} className="h-8 w-full rounded-md" />
               ))}
             </div>
-          </>
+            <div className="w-[340px] shrink-0 hidden lg:block">
+              <div className="rounded-xl border border-border/50 bg-card/40 p-4">
+                <div className="flex gap-4 items-center">
+                  <Skeleton className="h-[140px] w-[140px] rounded-full shrink-0" />
+                  <div className="flex-1 space-y-3">
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         )
       ) : viewMode === "weekly" ? (
         <div className="relative flex flex-1 min-h-0 flex-col overflow-hidden">
@@ -258,25 +263,47 @@ export default function MealPlansPage() {
           )}
         </div>
       ) : (
-        <div className="relative">
-          <DailyStatsCard stats={dailyStats} />
-          <DailyMealGrid
-            weeklyMeals={weeklyMeals}
-            onSlotClick={handleSlotClick}
-            onEmptySlotClick={handleEmptySlotClick}
-            currentDayIndex={currentDayIndex}
-          />
+        <div className="relative flex flex-1 min-h-0 gap-4">
+          {/* Left: Meal timeline */}
+          <div className="flex-1 min-w-0">
+            <DailyMealGrid
+              weeklyMeals={weeklyMeals}
+              onSlotClick={handleSlotClick}
+              onEmptySlotClick={handleEmptySlotClick}
+              currentDayIndex={currentDayIndex}
+            />
+          </div>
+          {/* Right: Nutrition summary */}
+          <div className="w-[340px] shrink-0 hidden lg:block">
+            <NutritionSummary
+              stats={dailyStats}
+              weeklyMeals={weeklyMeals}
+              currentDayIndex={currentDayIndex}
+            />
+          </div>
           {isRefreshing && (
             <div className="absolute inset-0 z-10 pointer-events-none rounded-xl bg-background/45 backdrop-blur-[1px] animate-in fade-in-0 duration-200">
-              <div className="p-2 pt-12">
-                <Skeleton className="h-3 w-12 mb-4" />
-                <div className="grid grid-cols-4 gap-2">
+              <div className="flex gap-4 p-2 pt-4">
+                <div className="flex-1 space-y-1">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <Skeleton
                       key={`daily-refresh-${i}`}
-                      className="aspect-square w-full rounded-xl"
+                      className="h-8 w-full rounded-md"
                     />
                   ))}
+                </div>
+                <div className="w-[340px] shrink-0 hidden lg:block">
+                  <div className="rounded-xl border border-border/50 bg-card/40 p-4">
+                    <div className="flex gap-4 items-center">
+                      <Skeleton className="h-[140px] w-[140px] rounded-full shrink-0" />
+                      <div className="flex-1 space-y-3">
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-full" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

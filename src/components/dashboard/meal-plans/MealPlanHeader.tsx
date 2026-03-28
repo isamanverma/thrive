@@ -44,7 +44,8 @@ export function MealPlanHeader({
   };
 
   return (
-    <div className="flex items-center justify-between mb-6">
+    <div className="relative flex items-center justify-center mb-6">
+      {/* Date nav — centered */}
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
@@ -54,7 +55,7 @@ export function MealPlanHeader({
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
-        <h1 className="text-lg font-semibold text-foreground tracking-tight min-w-[280px] text-center">
+        <h1 className="text-lg font-semibold text-foreground tracking-tight min-w-[240px] text-center">
           {viewMode === "weekly"
             ? formatWeekRange(currentDate)
             : formatDayDate(currentDate)}
@@ -69,18 +70,8 @@ export function MealPlanHeader({
         </Button>
       </div>
 
-      <div className="flex rounded-lg border border-border/60 overflow-hidden">
-        <button
-          type="button"
-          onClick={() => onViewModeChange("weekly")}
-          className={`px-4 py-1.5 text-xs font-medium transition-colors ${
-            viewMode === "weekly"
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-          }`}
-        >
-          Week
-        </button>
+      {/* Day/Week switch — extreme right */}
+      <div className="absolute right-0 flex rounded-lg border border-border/60 overflow-hidden">
         <button
           type="button"
           onClick={() => onViewModeChange("daily")}
@@ -91,6 +82,17 @@ export function MealPlanHeader({
           }`}
         >
           Day
+        </button>
+        <button
+          type="button"
+          onClick={() => onViewModeChange("weekly")}
+          className={`px-4 py-1.5 text-xs font-medium transition-colors ${
+            viewMode === "weekly"
+              ? "bg-primary text-primary-foreground"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+          }`}
+        >
+          Week
         </button>
       </div>
     </div>

@@ -13,8 +13,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { sourceDayIndex, sourceMealType, targetDayIndex, targetMealType } =
-      body;
+    const {
+      sourceDayIndex,
+      sourceMealType,
+      targetDayIndex,
+      targetMealType,
+      date,
+    } = body;
 
     // Validate input
     if (
@@ -63,7 +68,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate current week (Monday to Sunday)
-    const currentDate = new Date();
+    const currentDate = date ? new Date(date) : new Date();
     const startOfWeek = new Date(currentDate);
     const mondayOffset =
       currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();

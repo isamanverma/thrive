@@ -17,7 +17,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export function useMealPlanData() {
-  const [viewMode, setViewMode] = useState<ViewMode>("weekly");
+  const [viewMode, setViewMode] = useState<ViewMode>("daily");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [draggedItem, setDraggedItem] = useState<DraggedItem | null>(null);
   const [activeDropZone, setActiveDropZone] = useState<DropZone | null>(null);
@@ -181,8 +181,10 @@ export function useMealPlanData() {
             description: d.description,
             quantity: d.quantity,
             unit: d.unit,
+            nutrition: d.nutrition,
           })),
           dishes.length > 0 ? "set" : "remove",
+          currentDate,
         );
       } catch (error) {
         console.error("Failed to update meal dishes, reloading...", error);
@@ -247,7 +249,7 @@ export function useMealPlanData() {
 
       try {
         invalidateMealPlanCache(currentDate);
-        await swapMealsAPI(srcIdx, srcKey, tgtIdx, tgtKey);
+        await swapMealsAPI(srcIdx, srcKey, tgtIdx, tgtKey, currentDate);
       } catch (error) {
         console.error("Failed to swap meals in database, reverting...", error);
         if (originalMeals) {
@@ -385,10 +387,10 @@ export function useMealPlanData() {
 
     const divisor = daysWithData || 1;
     return {
-      avgCalories: Math.round(totalCalories / 7),
-      avgProtein: Math.round(totalProtein / 7),
-      avgCarbs: Math.round(totalCarbs / 7),
-      avgFat: Math.round(totalFat / 7),
+      avgCalories: Math.round(totalCalories / divisor),
+      avgProtein: Math.round(totalProtein / divisor),
+      avgCarbs: Math.round(totalCarbs / divisor),
+      avgFat: Math.round(totalFat / divisor),
     };
   };
 
@@ -450,8 +452,8 @@ export function useMealPlanData() {
     setActiveDropZone,
 
     // Computed values
-    weeklyStats: calculateWeeklyStats(),
-    dailyStats: calculateDailyStats(),
+    weeklyStats,
+    dailyStats,
 
     // Functions
     navigateDate,

@@ -114,26 +114,26 @@ export async function fetchCurrentMealPlan(
   }
 
   const reqPromise = (async () => {
-  try {
-    const params = new URLSearchParams();
-    if (date) {
-      params.set("date", date.toISOString().split("T")[0]);
+    try {
+      const params = new URLSearchParams();
+      if (date) {
+        params.set("date", date.toISOString().split("T")[0]);
+      }
+      const query = params.toString();
+      const res = await fetch(
+        `/api/meal-plans/current${query ? `?${query}` : ""}`,
+      );
+      const payload = await safeJson(res);
+      if (!res.ok) return { ok: false, error: payload };
+      const data = payload as MealPlanResponse;
+      mealPlanCache.set(key, { ts: Date.now(), data });
+      return { ok: true, data };
+    } catch (err) {
+      console.error("fetchCurrentMealPlan error:", err);
+      return { ok: false, error: err };
+    } finally {
+      mealPlanInflight.delete(key);
     }
-    const query = params.toString();
-    const res = await fetch(
-      `/api/meal-plans/current${query ? `?${query}` : ""}`,
-    );
-    const payload = await safeJson(res);
-    if (!res.ok) return { ok: false, error: payload };
-    const data = payload as MealPlanResponse;
-    mealPlanCache.set(key, { ts: Date.now(), data });
-    return { ok: true, data };
-  } catch (err) {
-    console.error("fetchCurrentMealPlan error:", err);
-    return { ok: false, error: err };
-  } finally {
-    mealPlanInflight.delete(key);
-  }
   })();
 
   mealPlanInflight.set(key, reqPromise);
@@ -166,13 +166,23 @@ export async function updateMealDishesAPI(
   mealType: string,
   dishes: DishItem[],
   action: "set" | "remove" = "set",
+  date?: Date,
 ) {
   try {
     invalidateMealPlanCache();
+    const body: Record<string, unknown> = {
+      dayIndex,
+      mealType,
+      dishes,
+      action,
+    };
+    if (date) {
+      body.date = date.toISOString().split("T")[0];
+    }
     const res = await fetch("/api/meal-plans/update-meal", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dayIndex, mealType, dishes, action }),
+      body: JSON.stringify(body),
     });
     const payload = await safeJson(res);
     if (!res.ok) throw payload;
@@ -188,18 +198,23 @@ export async function swapMealsAPI(
   sourceMealType: string,
   targetDayIndex: number,
   targetMealType: string,
+  date?: Date,
 ) {
   try {
     invalidateMealPlanCache();
+    const body: Record<string, unknown> = {
+      sourceDayIndex,
+      sourceMealType,
+      targetDayIndex,
+      targetMealType,
+    };
+    if (date) {
+      body.date = date.toISOString().split("T")[0];
+    }
     const res = await fetch("/api/meal-plans/swap-meals", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sourceDayIndex,
-        sourceMealType,
-        targetDayIndex,
-        targetMealType,
-      }),
+      body: JSON.stringify(body),
     });
     const payload = await safeJson(res);
     if (!res.ok) throw payload;

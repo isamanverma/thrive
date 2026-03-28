@@ -313,9 +313,9 @@ export async function POST(request: NextRequest) {
               imageUrl: meal.image || null,
               sourceType: "EXTERNAL_API",
               sourceId: meal.id?.toString() || null,
-              nutrition: meal.calories
-                ? { calories: meal.calories }
-                : undefined,
+              nutrition:
+                (meal.nutrition as object) ||
+                (meal.calories ? { calories: meal.calories } : undefined),
               isPublic: true,
             },
           });
@@ -354,9 +354,9 @@ export async function POST(request: NextRequest) {
                   imageUrl: dish.image || null,
                   sourceType: "EXTERNAL_API",
                   sourceId: dish.recipeId,
-                  nutrition: dish.calories
-                    ? { calories: dish.calories }
-                    : undefined,
+                  nutrition:
+                    (dish.nutrition as object) ||
+                    (dish.calories ? { calories: dish.calories } : undefined),
                   isPublic: true,
                 },
               });
