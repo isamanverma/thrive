@@ -82,7 +82,12 @@ function MealSectionHeader({
         config.hoverBg,
       )}
     >
-      <span className={cn("h-2.5 w-2.5 rounded-full shrink-0", config.dot)} />
+      <span
+        className={cn(
+          "h-2.5 w-2.5 rounded-full shrink-0 border-2 border-background",
+          config.dot,
+        )}
+      />
       <span className={cn("text-[13px] font-semibold", config.label)}>
         {type}
       </span>
@@ -168,7 +173,7 @@ export function DailyMealGrid({
       {/* Meal flow with timeline spine */}
       <div className="relative">
         {/* Vertical timeline line */}
-        <div className="absolute left-[13px] top-4 bottom-4 w-px bg-border/40" />
+        <div className="absolute left-[13px] top-4 bottom-4 w-px bg-border/80" />
 
         <div className="space-y-3">
           {mealTypes.map((type, mealIdx) => {
@@ -197,7 +202,7 @@ export function DailyMealGrid({
                   >
                     <span
                       className={cn(
-                        "h-2 w-2 rounded-full shrink-0 border-2 border-dashed",
+                        "h-2.5 w-2.5 rounded-full shrink-0 border-2 border-dashed",
                         type === "Breakfast" && "border-orange-400/50",
                         type === "Lunch" && "border-blue-400/50",
                         type === "Snack" && "border-amber-400/50",

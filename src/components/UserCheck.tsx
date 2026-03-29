@@ -203,12 +203,12 @@ export default function UserCheck({ children }: UserCheckProps) {
   // Show loading while checking authentication or user existence
   if (!isLoaded || isCheckingUser) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#fffaf5]">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
         <div className="relative w-48 h-48 mb-6">
-          <div className="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-20" />
+          <div className="absolute inset-0 bg-primary/10 rounded-full animate-ping" />
           <Image
-            src="/thrive mascots/bgRemoved/meditating Background Removed.png"
-            alt="Loading"
+            src="/thrive mascots/bgRemoved/cooking Background Removed.png"
+            alt="Thrive mascot preparing healthy food"
             fill
             sizes="192px"
             className="relative z-10 object-contain animate-bounce"
@@ -216,7 +216,7 @@ export default function UserCheck({ children }: UserCheckProps) {
             priority
           />
         </div>
-        <p className="text-zinc-600 font-medium animate-pulse">
+        <p className="text-muted-foreground font-medium animate-pulse">
           Getting things ready...
         </p>
       </div>

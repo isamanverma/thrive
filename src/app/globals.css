@@ -181,14 +181,14 @@ body {
 }
 
 .dark {
-  /* Page / canvas */
-  --background: oklch(0.141 0.005 285.823);
+  /* Page / canvas — soft black, not jet black */
+  --background: oklch(0.19 0.006 285.823);
   --foreground: oklch(0.985 0 0);
 
   /* Cards and surfaces */
-  --card: oklch(0.21 0.006 285.885);
+  --card: oklch(0.24 0.006 285.885);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
+  --popover: oklch(0.24 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
 
   /* Brand / accents */
@@ -215,7 +215,7 @@ body {
   --chart-5: oklch(0.47 0.157 37.304);
 
   /* Sidebar specific tokens per request */
-  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar: oklch(0.24 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.705 0.213 47.604);
   --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
@@ -228,6 +228,17 @@ body {
   --background-color: var(--background);
   --text-primary: var(--foreground);
   --text-secondary: var(--muted-foreground);
+}
+
+/* Landing page background gradients — boost visibility in dark mode */
+.dark .dark\:bg-gradient-boost {
+  opacity: 0.35;
+}
+
+/* Ensure focus rings remain visible on dark surfaces */
+.dark *:focus-visible {
+  outline: 2px solid oklch(0.7 0.12 55 / 0.6);
+  outline-offset: 2px;
 }
 
 @layer base {
@@ -253,6 +264,12 @@ body {
   box-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dark .card-hover-animation:hover {
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.4),
+    0 10px 10px -5px rgba(0, 0, 0, 0.3);
 }
 
 .stagger-animation {

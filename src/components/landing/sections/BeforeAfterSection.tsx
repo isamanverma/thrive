@@ -174,31 +174,31 @@ export default function BeforeAfterSection() {
   return (
     <section ref={containerRef} className="px-5 py-24 sm:px-6 lg:px-8 lg:py-32">
       <div className="mx-auto w-full max-w-6xl">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
           the shift
         </p>
-        <h2 className="mt-3 max-w-[24ch] text-balance text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-tight text-zinc-900">
+        <h2 className="mt-3 max-w-[24ch] text-balance text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-tight text-foreground">
           what changes with Thrive
         </h2>
 
         <div className="mt-6 hidden lg:block">
           <div className="mb-5 flex items-center gap-4 px-1">
-            <div className="h-px flex-1 bg-zinc-200/80" />
+            <div className="h-px flex-1 bg-border" />
             <div
               ref={bridgeRef}
-              className="origin-center text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-500"
+              className="origin-center text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground"
             >
               chaos to system
             </div>
-            <div className="h-px flex-1 bg-zinc-200/80" />
+            <div className="h-px flex-1 bg-border" />
           </div>
 
           <div className="grid min-h-[66vh] items-center gap-10 md:grid-cols-2 md:gap-14">
             <div
               ref={beforeCardRef}
-              className="rounded-2xl border border-zinc-200/80 bg-white/70 p-7"
+              className="rounded-2xl border border-border bg-card/70 p-7"
             >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 before thrive
               </p>
               <div className="mt-7 space-y-5">
@@ -207,8 +207,12 @@ export default function BeforeAfterSection() {
                     key={item}
                     className="before-item flex items-start gap-3"
                   >
-                    <span className="mt-0.5 text-sm text-zinc-300">×</span>
-                    <span className="text-sm text-zinc-500">{item}</span>
+                    <span className="mt-0.5 text-sm text-muted-foreground/40">
+                      ×
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {item}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -216,17 +220,17 @@ export default function BeforeAfterSection() {
 
             <div
               ref={afterCardRef}
-              className="rounded-2xl border border-orange-200/60 bg-orange-50/55 p-7 shadow-[0_26px_60px_-42px_rgba(249,115,22,0.5)]"
+              className="rounded-2xl border border-primary/20 bg-primary/10 p-7 shadow-[0_26px_60px_-42px_rgba(249,115,22,0.5)] dark:shadow-[0_26px_60px_-42px_rgba(249,115,22,0.35)]"
             >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-600">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
                 after thrive
               </p>
               <div className="mt-7 space-y-5">
                 {afterItems.map((item) => (
                   <div key={item} className="after-item flex items-start gap-3">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary">
                       <svg
-                        className="h-3 w-3 text-white"
+                        className="h-3 w-3 text-primary-foreground"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -239,7 +243,7 @@ export default function BeforeAfterSection() {
                         />
                       </svg>
                     </span>
-                    <span className="text-sm font-medium text-zinc-900">
+                    <span className="text-sm font-medium text-foreground">
                       {item}
                     </span>
                   </div>
@@ -250,30 +254,32 @@ export default function BeforeAfterSection() {
         </div>
 
         <div className="mt-16 grid gap-12 md:grid-cols-2 md:gap-20 lg:hidden">
-          <div className="rounded-2xl border border-zinc-200/80 bg-white/70 p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
+          <div className="rounded-2xl border border-border bg-card/70 p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               before thrive
             </p>
             <div className="mt-7 space-y-5">
               {beforeItems.map((item) => (
                 <div key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 text-sm text-zinc-300">×</span>
-                  <span className="text-sm text-zinc-500">{item}</span>
+                  <span className="mt-0.5 text-sm text-muted-foreground/40">
+                    ×
+                  </span>
+                  <span className="text-sm text-muted-foreground">{item}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-2xl border border-orange-200/60 bg-orange-50/55 p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-600">
+          <div className="rounded-2xl border border-primary/20 bg-primary/10 p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
               after thrive
             </p>
             <div className="mt-7 space-y-5">
               {afterItems.map((item) => (
                 <div key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary">
                     <svg
-                      className="h-3 w-3 text-white"
+                      className="h-3 w-3 text-primary-foreground"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -286,7 +292,7 @@ export default function BeforeAfterSection() {
                       />
                     </svg>
                   </span>
-                  <span className="text-sm font-medium text-zinc-900">
+                  <span className="text-sm font-medium text-foreground">
                     {item}
                   </span>
                 </div>

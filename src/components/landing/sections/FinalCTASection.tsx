@@ -14,8 +14,7 @@ export default function FinalCTASection() {
 
   return (
     <section className="relative overflow-hidden px-5 py-32 sm:px-6 lg:px-8 lg:py-48">
-      <div className="absolute inset-0 bg-gradient-to-b from-orange-50/50 via-transparent to-amber-50/30" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-200/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/30" />
 
       <div className="relative mx-auto max-w-3xl text-center">
         {isSignedIn ? (
@@ -25,24 +24,25 @@ export default function FinalCTASection() {
                 src="/thrive mascots/bgRemoved/thumbs up Background Removed.png"
                 alt="Thrive mascot giving thumbs up"
                 fill
+                sizes="128px"
                 className="object-contain"
                 priority
               />
             </div>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-100 text-orange-700 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 text-primary text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
               Ready to crush this week?
             </div>
-            <p className="text-[clamp(2rem,4.2vw,3.2rem)] font-semibold leading-[1.04] tracking-tight text-zinc-900">
+            <p className="text-[clamp(2rem,4.2vw,3.2rem)] font-semibold leading-[1.04] tracking-tight text-foreground">
               your momentum is building
             </p>
-            <p className="mx-auto mt-5 max-w-[48ch] text-[1.03rem] leading-relaxed text-zinc-600">
+            <p className="mx-auto mt-5 max-w-[48ch] text-[1.03rem] leading-relaxed text-muted-foreground">
               You&apos;ve started something great. Keep the streak alive and
               make this your best week yet.
             </p>
             <Link
               href="/dashboard"
-              className="mt-10 inline-flex items-center gap-2 rounded-full bg-orange-500 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600 hover:scale-105"
+              className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 hover:scale-105"
             >
               Go to Dashboard
               <ArrowRight className="w-4 h-4" />
@@ -55,25 +55,26 @@ export default function FinalCTASection() {
                 src="/thrive mascots/bgRemoved/showing plan Background Removed.png"
                 alt="Thrive mascot showing plan"
                 fill
+                sizes="160px"
                 className="object-contain"
                 priority
               />
             </div>
-            <p className="text-[clamp(2rem,4.2vw,3.2rem)] font-semibold leading-[1.04] tracking-tight text-zinc-900">
+            <p className="text-[clamp(2rem,4.2vw,3.2rem)] font-semibold leading-[1.04] tracking-tight text-foreground">
               your best week starts now
             </p>
-            <p className="mx-auto mt-5 max-w-[48ch] text-[1.03rem] leading-relaxed text-zinc-600">
+            <p className="mx-auto mt-5 max-w-[48ch] text-[1.03rem] leading-relaxed text-muted-foreground">
               Set your targets, choose your rhythm, and let Thrive handle the
               rest.
             </p>
             <Link
               href="/sign-up"
-              className="mt-10 inline-flex items-center gap-2 rounded-full bg-orange-500 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600 hover:scale-105"
+              className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 hover:scale-105"
             >
               Build my first week — free
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <p className="mt-5 text-xs text-zinc-500">
+            <p className="mt-5 text-xs text-muted-foreground">
               Takes ~3 minutes. No setup overhead.
             </p>
           </>

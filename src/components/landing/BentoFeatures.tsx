@@ -86,16 +86,14 @@ function TimelineChart() {
           >
             {item.icon}
           </div>
-          <div className="flex flex-1 items-center justify-between rounded-lg bg-orange-50 px-3 py-2">
+          <div className="flex flex-1 items-center justify-between rounded-lg bg-primary/10 px-3 py-2">
             <div>
-              <span className="text-xs font-semibold text-zinc-900">
+              <span className="text-xs font-semibold text-foreground">
                 {item.label}
               </span>
-              <span className="ml-2 text-[10px] text-orange-600">
-                {item.time}
-              </span>
+              <span className="ml-2 text-[10px] text-primary">{item.time}</span>
             </div>
-            <div className="h-1.5 flex-1 mx-3 rounded-full bg-orange-100 overflow-hidden">
+            <div className="h-1.5 flex-1 mx-3 rounded-full bg-primary/15 overflow-hidden">
               <div
                 className={cn("h-full rounded-full", item.color)}
                 style={{ width: `${65 + i * 5}%` }}
@@ -202,9 +200,9 @@ function DonutChart() {
               className="h-3 w-3 rounded-full"
               style={{ backgroundColor: seg.color }}
             />
-            <span className="text-sm text-zinc-600">
+            <span className="text-sm text-muted-foreground">
               {seg.label}{" "}
-              <span className="font-bold text-zinc-900">{seg.pct}%</span>
+              <span className="font-bold text-foreground">{seg.pct}%</span>
             </span>
           </div>
         ))}
@@ -297,20 +295,20 @@ function BarsChart() {
                 }}
               />
             </div>
-            <span className="mt-1.5 text-[10px] font-medium text-zinc-500">
+            <span className="mt-1.5 text-[10px] font-medium text-muted-foreground">
               {day.day}
             </span>
           </div>
         ))}
       </div>
-      <div className="flex justify-center gap-4 border-t border-orange-100 pt-2 text-[9px]">
-        <span className="flex items-center gap-1 text-zinc-400">
+      <div className="flex justify-center gap-4 border-t border-primary/10 pt-2 text-[9px]">
+        <span className="flex items-center gap-1 text-muted-foreground">
           <div className="h-2 w-2 rounded-full bg-orange-500" /> Perfect
         </span>
-        <span className="flex items-center gap-1 text-zinc-400">
+        <span className="flex items-center gap-1 text-muted-foreground">
           <div className="h-2 w-2 rounded-full bg-orange-400" /> Good
         </span>
-        <span className="flex items-center gap-1 text-zinc-400">
+        <span className="flex items-center gap-1 text-muted-foreground">
           <div className="h-2 w-2 rounded-full bg-orange-300" /> Low
         </span>
       </div>
@@ -400,8 +398,8 @@ function ChecklistChart() {
           className={cn(
             "checklist-item flex items-center gap-3 rounded-lg px-3 py-2 opacity-0",
             item.checked
-              ? "bg-orange-50 border border-orange-200"
-              : "bg-zinc-50 border border-zinc-100",
+              ? "bg-primary/10 border border-primary/20"
+              : "bg-muted border border-border",
           )}
         >
           <div
@@ -431,7 +429,7 @@ function ChecklistChart() {
           <span
             className={cn(
               "flex-1 font-medium",
-              item.checked ? "text-zinc-900" : "text-zinc-400",
+              item.checked ? "text-foreground" : "text-muted-foreground",
             )}
           >
             {item.name}
@@ -440,8 +438,8 @@ function ChecklistChart() {
             className={cn(
               "text-[10px] px-2 py-0.5 rounded-full",
               item.checked
-                ? "bg-orange-100 text-orange-700"
-                : "bg-zinc-100 text-zinc-400",
+                ? "bg-primary/15 text-primary"
+                : "bg-muted text-muted-foreground",
             )}
           >
             {item.category}
@@ -513,7 +511,7 @@ function ComparisonChart() {
     >
       <div className="flex-1 space-y-2">
         <div className="text-center">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
             Before
           </div>
         </div>
@@ -521,17 +519,19 @@ function ComparisonChart() {
           {before.map((item, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
               <div
-                className="before-bar w-4 rounded-t-sm bg-zinc-300 origin-bottom"
+                className="before-bar w-4 rounded-t-sm bg-muted-foreground/30 origin-bottom"
                 style={{ height: `${item.value}%`, transform: "scaleY(0)" }}
               />
-              <span className="text-[9px] text-zinc-400">{item.day}</span>
+              <span className="text-[9px] text-muted-foreground">
+                {item.day}
+              </span>
             </div>
           ))}
         </div>
       </div>
       <div className="flex flex-col items-center gap-2">
         <svg
-          className="arrow-icon h-8 w-8 text-orange-500"
+          className="arrow-icon h-8 w-8 text-primary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -543,11 +543,11 @@ function ComparisonChart() {
             d="M13 7l5 5m0 0l-5 5m5-5H6"
           />
         </svg>
-        <div className="text-[9px] font-medium text-orange-600">REBALANCE</div>
+        <div className="text-[9px] font-medium text-primary">REBALANCE</div>
       </div>
       <div className="flex-1 space-y-2">
         <div className="text-center">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-orange-600">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-primary">
             After
           </div>
         </div>
@@ -555,10 +555,12 @@ function ComparisonChart() {
           {after.map((item, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
               <div
-                className="after-bar w-4 rounded-t-sm bg-orange-500 origin-bottom"
+                className="after-bar w-4 rounded-t-sm bg-primary origin-bottom"
                 style={{ height: `${item.value}%`, transform: "scaleY(0)" }}
               />
-              <span className="text-[9px] text-zinc-500">{item.day}</span>
+              <span className="text-[9px] text-muted-foreground">
+                {item.day}
+              </span>
             </div>
           ))}
         </div>
@@ -665,7 +667,7 @@ function GaugeChart() {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center pt-2">
-          <div className="text-xl font-bold text-zinc-900">High</div>
+          <div className="text-xl font-bold text-foreground">High</div>
         </div>
       </div>
       <div className="mt-2 flex gap-2">
@@ -676,14 +678,14 @@ function GaugeChart() {
         ].map((item, i) => (
           <div
             key={i}
-            className="indicator-pill flex items-center gap-1 rounded-full bg-orange-50 px-2 py-1"
+            className="indicator-pill flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1"
             style={{ opacity: 0, transform: "scale(0)" }}
           >
             <div className={cn("h-1.5 w-1.5 rounded-full", item.color)} />
-            <span className="text-[9px] font-medium text-zinc-600">
+            <span className="text-[9px] font-medium text-muted-foreground">
               {item.label}
             </span>
-            <span className="text-[9px] font-bold text-zinc-900">
+            <span className="text-[9px] font-bold text-foreground">
               {item.value}
             </span>
           </div>
@@ -768,29 +770,29 @@ function FeatureTile({
     <article
       ref={cardRef}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-orange-200 bg-white shadow-md transition-shadow duration-300 hover:shadow-lg",
+        "group relative overflow-hidden rounded-2xl border border-border bg-card shadow-md transition-shadow duration-300 hover:shadow-lg dark:shadow-black/30 dark:hover:shadow-black/40",
         className,
       )}
     >
       <div className="flex h-full flex-col p-5">
-        <h3 className="text-base font-semibold tracking-tight text-zinc-900">
+        <h3 className="text-base font-semibold tracking-tight text-foreground">
           {title}
         </h3>
 
         <div className="relative mt-2 flex-1">
           <div ref={descStatsRef} className="flex flex-col">
-            <p className="max-w-[34ch] text-sm leading-relaxed text-zinc-600">
+            <p className="max-w-[34ch] text-sm leading-relaxed text-muted-foreground">
               {description}
             </p>
             <div className="mt-auto flex flex-wrap gap-2 pt-4">
               {stats.map(([label, value]) => (
                 <div
                   key={label}
-                  className="rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-medium text-zinc-700"
+                  className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-foreground"
                 >
-                  <span className="text-zinc-500">{label}</span>
+                  <span className="text-muted-foreground">{label}</span>
                   {" · "}
-                  <span className="font-semibold text-orange-700">{value}</span>
+                  <span className="font-semibold text-primary">{value}</span>
                 </div>
               ))}
             </div>

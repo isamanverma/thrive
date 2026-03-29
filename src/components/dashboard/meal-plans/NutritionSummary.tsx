@@ -233,7 +233,7 @@ export function NutritionSummary({
       value: Math.min(100, Math.round((stats.fat / MACRO_TARGETS.fat) * 100)),
     },
     {
-      subject: "Calories",
+      subject: "Cals",
       value: Math.min(100, caloriePct),
     },
   ];
@@ -276,11 +276,11 @@ export function NutritionSummary({
       </div>
 
       {/* Radar — using ChartContainer for proper color injection */}
-      <div className="w-full max-w-[240px] mx-auto mb-4">
+      <div className="w-full max-w-[300px] mx-auto mb-4">
         <ChartContainer
           config={radarChartConfig}
           className="aspect-square text-primary"
-          initialDimension={{ width: 240, height: 240 }}
+          initialDimension={{ width: 300, height: 300 }}
         >
           <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="72%">
             <PolarGrid
@@ -292,7 +292,7 @@ export function NutritionSummary({
             <PolarAngleAxis
               dataKey="subject"
               tick={{
-                fontSize: 10,
+                fontSize: 11,
                 fill: "currentColor",
                 fontWeight: 500,
               }}

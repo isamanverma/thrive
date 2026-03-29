@@ -2,9 +2,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <div className="min-h-[100dvh] bg-[#fffaf5]">
+    <div className="min-h-[100dvh] bg-background">
       {/* Header skeleton */}
-      <header className="sticky top-0 z-30 border-b border-orange-200/70 bg-[#fffaf5]/95">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/95">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <Skeleton className="h-9 w-9 rounded-xl" />
@@ -31,7 +31,7 @@ export default function Loading() {
               </div>
             </div>
 
-            <aside className="space-y-6 rounded-[1.8rem] border border-orange-200/80 bg-white p-6 sm:p-7">
+            <aside className="space-y-6 rounded-[1.8rem] border border-border bg-card p-6 sm:p-7">
               <div>
                 <Skeleton className="h-3 w-24" />
                 <div className="mt-3 grid grid-cols-4 gap-3">
@@ -41,7 +41,7 @@ export default function Loading() {
                 </div>
               </div>
 
-              <div className="border-t border-orange-100 pt-6">
+              <div className="border-t border-border pt-6">
                 <Skeleton className="h-5 w-40" />
                 <Skeleton className="h-4 w-full mt-2" />
                 <div className="mt-3 space-y-2">
@@ -51,7 +51,7 @@ export default function Loading() {
                 </div>
               </div>
 
-              <div className="flex items-end justify-between border-t border-orange-100 pt-6">
+              <div className="flex items-end justify-between border-t border-border pt-6">
                 <div>
                   <Skeleton className="h-5 w-28" />
                   <Skeleton className="h-3 w-48 mt-1" />
@@ -102,7 +102,7 @@ export default function Loading() {
       </main>
 
       {/* Footer skeleton */}
-      <footer className="border-t border-orange-200/70 px-5 py-7 sm:px-6 lg:px-8">
+      <footer className="border-t border-border px-5 py-7 sm:px-6 lg:px-8">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <Skeleton className="h-4 w-12" />
           <Skeleton className="h-4 w-56" />

@@ -247,7 +247,6 @@ export default function OnboardingPage() {
               [];
             const already = arr.includes(selectedOption);
 
-            // Handle "None" option specially
             if (selectedOption === "None") {
               return {
                 ...prev,
@@ -255,7 +254,6 @@ export default function OnboardingPage() {
               };
             }
 
-            // If selecting any other option, remove "None" first
             let newArr = arr.filter((v) => v !== "None");
             if (already) {
               newArr = newArr.filter((v) => v !== selectedOption);
@@ -301,9 +299,9 @@ export default function OnboardingPage() {
 
   if (isSubmitting) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-orange-50 via-white to-amber-50">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
         <div className="relative w-48 h-48 mb-6">
-          <div className="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-20" />
+          <div className="absolute inset-0 bg-primary/10 rounded-full animate-ping" />
           <Image
             src="/thrive mascots/bgRemoved/cooking Background Removed.png"
             alt="Setting up"
@@ -314,7 +312,7 @@ export default function OnboardingPage() {
             priority
           />
         </div>
-        <p className="text-zinc-600 font-medium animate-pulse">
+        <p className="text-muted-foreground font-medium animate-pulse">
           Setting up your profile...
         </p>
       </div>
@@ -322,7 +320,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50 via-white to-amber-50">
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Navbar */}
       <header className="flex justify-between items-center h-16 px-6 max-w-2xl mx-auto w-full">
         <div className="flex flex-row items-center gap-2">
@@ -334,7 +332,7 @@ export default function OnboardingPage() {
             className="object-contain rounded-lg"
             priority
           />
-          <h1 className="text-xl font-bold text-orange-600">Thrive</h1>
+          <h1 className="text-xl font-bold text-primary">Thrive</h1>
         </div>
         <SignOutButton>
           <button className="text-sm text-muted-foreground hover:text-red-500 transition-colors font-medium">
@@ -353,9 +351,9 @@ export default function OnboardingPage() {
             {Math.round(((step + 1) / questions.length) * 100)}% Complete
           </span>
         </div>
-        <div className="w-full bg-orange-100 rounded-full h-1.5 overflow-hidden">
+        <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
           <motion.div
-            className="bg-orange-500 h-1.5 rounded-full"
+            className="bg-primary h-1.5 rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${((step + 1) / questions.length) * 100}%` }}
             transition={{ duration: 0.3 }}
@@ -393,11 +391,11 @@ export default function OnboardingPage() {
 
             {/* Question */}
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-zinc-900">
+              <h2 className="text-2xl font-bold text-foreground">
                 {currentQuestion.question}
               </h2>
               {currentQuestion.subtext && (
-                <p className="text-sm text-zinc-600 mt-2">
+                <p className="text-sm text-muted-foreground mt-2">
                   {currentQuestion.subtext}
                 </p>
               )}
@@ -411,7 +409,7 @@ export default function OnboardingPage() {
                     ref={inputRef}
                     type="number"
                     min={1}
-                    className="w-full border-b-2 border-orange-200 bg-transparent py-3 px-2 focus:outline-none focus:border-orange-500 text-2xl text-center font-medium text-zinc-900"
+                    className="w-full border-b-2 border-border bg-transparent py-3 px-2 focus:outline-none focus:border-primary text-2xl text-center font-medium text-foreground"
                     value={
                       formData[currentQuestion.name as keyof FormDataState] ??
                       ""
@@ -426,7 +424,7 @@ export default function OnboardingPage() {
                     }
                     placeholder="0"
                   />
-                  <p className="text-center text-xs text-zinc-500 mt-4">
+                  <p className="text-center text-xs text-muted-foreground mt-4">
                     Press Enter to continue
                   </p>
                 </div>
@@ -469,7 +467,6 @@ export default function OnboardingPage() {
                                 ] as string[]) || [];
                               const already = arr.includes(opt);
 
-                              // Handle "None" option specially - it should deselect everything else
                               if (opt === "None") {
                                 return {
                                   ...prev,
@@ -479,7 +476,6 @@ export default function OnboardingPage() {
                                 };
                               }
 
-                              // If selecting any other option, remove "None" first
                               let newArr = arr.filter((v) => v !== "None");
                               if (already) {
                                 newArr = newArr.filter((v) => v !== opt);
@@ -495,23 +491,23 @@ export default function OnboardingPage() {
                         }}
                         className={`w-full px-4 py-3 rounded-lg border text-left font-medium transition-colors flex items-center justify-between ${
                           isSelected
-                            ? "border-orange-500 bg-orange-50 text-orange-700"
-                            : "border-orange-100 hover:border-orange-300 hover:bg-orange-50/30 text-zinc-700"
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border hover:border-primary/50 hover:bg-accent/30 text-foreground"
                         }`}
                       >
                         <span>
-                          <span className="text-orange-500 font-bold mr-2">
+                          <span className="text-primary font-bold mr-2">
                             {idx + 1}.
                           </span>
                           {opt}
                         </span>
                         {isSelected && (
-                          <Check className="w-4 h-4 text-orange-500" />
+                          <Check className="w-4 h-4 text-primary" />
                         )}
                       </button>
                     );
                   })}
-                  <p className="text-center text-xs text-zinc-500 mt-4">
+                  <p className="text-center text-xs text-muted-foreground mt-4">
                     Press 1-{currentQuestion.options!.length} to select • Enter
                     to continue
                   </p>
@@ -524,14 +520,14 @@ export default function OnboardingPage() {
               <button
                 onClick={handlePrev}
                 disabled={step === 0}
-                className="px-6 py-2.5 rounded-lg border border-orange-200 text-orange-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-orange-50 font-medium transition-colors"
+                className="px-6 py-2.5 rounded-lg border border-border text-foreground disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent font-medium transition-colors"
               >
                 Back
               </button>
               <button
                 onClick={handleNext}
                 disabled={!isAnswered(currentQuestion)}
-                className="px-8 py-2.5 rounded-lg bg-orange-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 font-medium transition-colors"
+                className="px-8 py-2.5 rounded-lg bg-primary text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 font-medium transition-colors"
               >
                 {step === questions.length - 1 ? "Complete" : "Continue"}
               </button>

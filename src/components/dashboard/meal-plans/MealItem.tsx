@@ -2,6 +2,24 @@ import type { Dish } from "./types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+function resolveNutrientAmount(
+  nutrition: unknown,
+  name: "protein" | "carbs" | "fat",
+): number {
+  if (!nutrition || typeof nutrition !== "object") return 0;
+  const rn = nutrition as {
+    nutrients?: Array<{ name?: string; amount?: number }>;
+  };
+  if (!Array.isArray(rn.nutrients)) return 0;
+
+  const normalizedName = name === "carbs" ? "carbohydrates" : name;
+  const found = rn.nutrients.find((n) => {
+    const nName = n?.name?.toLowerCase() || "";
+    return nName.includes(normalizedName) && typeof n?.amount === "number";
+  });
+  return typeof found?.amount === "number" ? found.amount : 0;
+}
+
 interface MealItemProps {
   dish: Dish;
 }

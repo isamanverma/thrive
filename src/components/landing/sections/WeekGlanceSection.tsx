@@ -147,23 +147,23 @@ export default function WeekGlanceSection() {
   return (
     <section ref={ref} className="px-5 py-28 sm:px-6 lg:px-8 lg:py-36">
       <div className="mx-auto w-full max-w-4xl">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
           your week
         </p>
-        <h2 className="mt-3 text-balance text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-tight text-zinc-900">
+        <h2 className="mt-3 text-balance text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-tight text-foreground">
           your week, already planned
         </h2>
 
         {/* Mode toggle */}
-        <div className="mt-8 inline-flex rounded-full border border-zinc-200 bg-white p-1">
+        <div className="mt-8 inline-flex rounded-full border border-border bg-card p-1">
           {planLabels.map((label) => (
             <button
               key={label}
               onClick={() => setMode(label)}
               className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 ${
                 mode === label
-                  ? "bg-orange-500 text-white shadow-sm"
-                  : "text-zinc-600 hover:text-zinc-900"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {label}
@@ -172,7 +172,7 @@ export default function WeekGlanceSection() {
         </div>
 
         {/* Week card */}
-        <div className="mt-10 rounded-2xl border border-orange-100 bg-white p-6 shadow-[0_20px_60px_-40px_rgba(234,88,12,0.2)] sm:p-8">
+        <div className="mt-10 rounded-2xl border border-border bg-card p-6 shadow-[0_20px_60px_-40px_rgba(234,88,12,0.2)] dark:shadow-[0_20px_60px_-40px_rgba(234,88,12,0.3)] sm:p-8">
           <div className="space-y-1">
             {plan.map((row, i) => (
               <button
@@ -180,24 +180,28 @@ export default function WeekGlanceSection() {
                 onClick={() => handleDayClick(i)}
                 className={`group flex w-full flex-col gap-1 rounded-xl px-4 py-3 text-left transition-all duration-300 sm:flex-row sm:items-center sm:gap-6 ${
                   activeDay === i
-                    ? "scale-[1.01] bg-orange-50/80 shadow-[0_0_0_1px_rgba(251,146,60,0.15),0_4px_16px_-8px_rgba(251,146,60,0.2)]"
-                    : "hover:bg-zinc-50"
+                    ? "scale-[1.01] bg-primary/10 shadow-[0_0_0_1px_rgba(251,146,60,0.15),0_4px_16px_-8px_rgba(251,146,60,0.2)] dark:shadow-[0_0_0_1px_rgba(251,146,60,0.25),0_4px_16px_-8px_rgba(251,146,60,0.3)]"
+                    : "hover:bg-muted"
                 }`}
               >
                 <span
                   className={`w-10 text-sm font-semibold transition-colors duration-200 ${
-                    activeDay === i ? "text-orange-600" : "text-zinc-900"
+                    activeDay === i ? "text-primary" : "text-foreground"
                   }`}
                 >
                   {row.day}
                 </span>
 
-                <span className="flex-1 text-sm text-zinc-600">
+                <span className="flex-1 text-sm text-muted-foreground">
                   {row.meal}
-                  <span className="ml-1 text-zinc-400">· {row.cal} kcal</span>
+                  <span className="ml-1 text-muted-foreground/60">
+                    · {row.cal} kcal
+                  </span>
                 </span>
 
-                <span className="text-sm text-zinc-600">{row.workout}</span>
+                <span className="text-sm text-muted-foreground">
+                  {row.workout}
+                </span>
 
                 {/* Expanded detail on active */}
                 <div
@@ -207,7 +211,7 @@ export default function WeekGlanceSection() {
                       : "max-h-0 opacity-0"
                   }`}
                 >
-                  <span className="text-[11px] font-medium uppercase tracking-wider text-orange-500">
+                  <span className="text-[11px] font-medium uppercase tracking-wider text-primary">
                     {row.workoutType}
                   </span>
                 </div>

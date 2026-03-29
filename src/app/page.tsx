@@ -1,5 +1,6 @@
 "use client";
 
+import MagicNavbar from "@/components/magic-navbar";
 import BentoFeatures from "@/components/landing/BentoFeatures";
 import ProblemSection from "@/components/landing/sections/ProblemSection";
 import HowItWorksSection from "@/components/landing/sections/HowItWorksSection";
@@ -14,63 +15,21 @@ export default function LandingPage() {
   const { isSignedIn, isLoaded } = useUser();
 
   return (
-    <div className="min-h-[100dvh] bg-[#fffaf5] text-foreground">
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_16%_9%,rgba(251,146,60,0.10),transparent_32%),radial-gradient(circle_at_84%_5%,rgba(251,191,36,0.08),transparent_30%)]" />
+    <div className="min-h-[100dvh] bg-background text-foreground">
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_70%_30%,rgba(140,100,255,0.06),transparent_60%)] dark:bg-[radial-gradient(circle_at_70%_30%,rgba(140,100,255,0.10),transparent_60%)]" />
 
-      <header className="sticky top-0 z-30 border-b border-orange-200/70 bg-[#fffaf5]/95 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="Thrive Logo"
-              width={36}
-              height={36}
-              className="object-contain rounded-lg"
-              priority
-            />
-            <span className="text-xl font-semibold tracking-tight text-zinc-900">
-              Thrive
-            </span>
-          </Link>
+      <MagicNavbar />
 
-          <nav className="flex items-center gap-2">
-            {isLoaded && isSignedIn ? (
-              <Link
-                href="/dashboard"
-                className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
-              >
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/sign-in"
-                  className="rounded-full px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-orange-50"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/sign-up"
-                  className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
-                >
-                  Start free
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
-      </header>
-
-      <main>
+      <main className="bg-background">
         {/* ── Hero ─────────────────────────────────────────── */}
         <section className="px-5 pb-20 pt-12 sm:px-6 sm:pt-16 lg:px-8 lg:pb-24">
           <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
             <div>
-              <h1 className="mt-6 max-w-[15ch] text-balance text-[clamp(2.25rem,5.6vw,4.7rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-zinc-900">
+              <h1 className="mt-6 max-w-[15ch] text-balance text-[clamp(2.25rem,5.6vw,4.7rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-foreground">
                 stop guessing your meals and workouts
               </h1>
 
-              <p className="mt-6 max-w-[48ch] text-[1.03rem] leading-relaxed text-zinc-600">
+              <p className="mt-6 max-w-[48ch] text-[1.03rem] leading-relaxed text-muted-foreground">
                 Thrive connects your nutrition, training, and recovery into one
                 weekly system — so every day has a clear plan.
               </p>
@@ -78,20 +37,20 @@ export default function LandingPage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/dashboard"
-                  className="rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+                  className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
                 >
                   Preview dashboard
                 </Link>
               </div>
 
-              <p className="mt-5 text-xs text-zinc-500">
+              <p className="mt-5 text-xs text-muted-foreground">
                 builds your full week in under 3 minutes
               </p>
             </div>
 
-            <aside className="space-y-8 rounded-[1.8rem] border border-orange-200/80 bg-white p-7 shadow-[0_40px_80px_-70px_rgba(234,88,12,0.5)] sm:p-8">
+            <aside className="space-y-8 rounded-[1.8rem] border border-border bg-card p-7 shadow-[0_40px_80px_-70px_rgba(251,146,60,0.5)] sm:p-8">
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary/80">
                   today snapshot
                 </p>
                 <div className="mt-3 grid grid-cols-4 gap-4 text-center">
@@ -101,14 +60,11 @@ export default function LandingPage() {
                     ["waiting", "1"],
                     ["done", "6"],
                   ].map(([label, value]) => (
-                    <div
-                      key={label}
-                      className="rounded-xl bg-orange-50 px-2 py-3"
-                    >
-                      <p className="text-sm font-semibold text-zinc-900">
+                    <div key={label} className="rounded-xl bg-accent px-2 py-3">
+                      <p className="text-sm font-semibold text-foreground">
                         {value}
                       </p>
-                      <p className="text-[10px] uppercase tracking-[0.1em] text-zinc-500">
+                      <p className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
                         {label}
                       </p>
                     </div>
@@ -116,11 +72,11 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="border-t border-orange-100 pt-6">
-                <p className="text-sm font-semibold text-zinc-900">
+              <div className="border-t border-border pt-6">
+                <p className="text-sm font-semibold text-foreground">
                   health route generator
                 </p>
-                <p className="mt-1 text-sm text-zinc-600">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Pick your day type and Thrive composes meals + training with
                   one pass.
                 </p>
@@ -132,7 +88,7 @@ export default function LandingPage() {
                   ].map((line) => (
                     <div
                       key={line}
-                      className="rounded-lg bg-orange-50 px-3 py-2 text-xs text-zinc-700"
+                      className="rounded-lg bg-accent px-3 py-2 text-xs text-muted-foreground"
                     >
                       {line}
                     </div>
@@ -140,12 +96,12 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="flex items-end justify-between border-t border-orange-100 pt-6">
+              <div className="flex items-end justify-between border-t border-border pt-6">
                 <div>
-                  <p className="text-sm font-semibold text-zinc-900">
+                  <p className="text-sm font-semibold text-foreground">
                     monitor loop
                   </p>
-                  <p className="mt-1 text-xs text-zinc-600">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     average response 8.0s across recent checks
                   </p>
                 </div>
@@ -173,14 +129,14 @@ export default function LandingPage() {
           <div className="mx-auto w-full max-w-6xl">
             <div className="mb-8 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary/80">
                   features
                 </p>
-                <h2 className="mt-3 max-w-[20ch] text-balance text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-tight text-zinc-900">
+                <h2 className="mt-3 max-w-[20ch] text-balance text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-tight text-foreground">
                   the weekly control layer
                 </h2>
               </div>
-              <p className="max-w-[46ch] text-sm leading-relaxed text-zinc-600">
+              <p className="max-w-[46ch] text-sm leading-relaxed text-muted-foreground">
                 One continuous workspace with clear hierarchy and whitespace,
                 built for fast scanning and low friction decisions.
               </p>
@@ -200,7 +156,7 @@ export default function LandingPage() {
         <FinalCTASection />
       </main>
 
-      <footer className="border-t border-orange-200/70 px-5 py-7 text-sm text-zinc-600 sm:px-6 lg:px-8">
+      <footer className="border-t border-border px-5 py-7 text-sm text-muted-foreground sm:px-6 lg:px-8">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p>Thrive</p>
           <p>meal and workout planning for real life.</p>

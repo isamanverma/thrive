@@ -63,11 +63,11 @@ function StepIndicator({ active, total }: { active: number; total: number }) {
         <div
           key={i}
           className={`h-1.5 rounded-full transition-all duration-300 ${
-            i === active ? "w-6 bg-orange-500" : "w-1.5 bg-zinc-300"
+            i === active ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/30"
           }`}
         />
       ))}
-      <span className="ml-2 text-[11px] font-medium text-zinc-400">
+      <span className="ml-2 text-[11px] font-medium text-muted-foreground">
         {active + 1}/{total}
       </span>
     </div>
@@ -164,13 +164,13 @@ export default function HowItWorksSection() {
   );
 
   return (
-    <section ref={sectionRef} className="relative bg-[#fffaf5]">
-      <div className="mx-auto hidden h-screen w-full max-w-6xl lg:grid lg:grid-cols-[1fr_1.1fr]">
+    <section ref={sectionRef} className="relative bg-background">
+      <div className="mx-auto hidden min-h-[100dvh] w-full max-w-6xl lg:grid lg:grid-cols-[1fr_1.1fr]">
         <div className="flex flex-col justify-center px-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
             how it works
           </p>
-          <h2 className="mt-3 text-balance text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-tight text-zinc-900">
+          <h2 className="mt-3 text-balance text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.02] tracking-tight text-foreground">
             3 steps to a structured week
           </h2>
 
@@ -184,27 +184,29 @@ export default function HowItWorksSection() {
                   onClick={() => jumpToStep(index)}
                   className={`rounded-2xl border px-4 py-4 transition-all duration-300 ${
                     isActive
-                      ? "border-orange-300 bg-orange-50/70 shadow-[0_8px_32px_-24px_rgba(249,115,22,0.8)]"
-                      : "border-zinc-200/70 bg-white/55"
+                      ? "border-primary/30 bg-primary/10 shadow-[0_8px_32px_-24px_rgba(249,115,22,0.8)] dark:shadow-[0_8px_32px_-24px_rgba(249,115,22,0.5)]"
+                      : "border-border bg-card/50"
                   } w-full cursor-pointer text-left`}
                 >
                   <p
                     className={`text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors ${
-                      isActive ? "text-orange-600" : "text-zinc-400"
+                      isActive ? "text-primary" : "text-muted-foreground"
                     }`}
                   >
                     step {step.number}
                   </p>
                   <p
                     className={`mt-1 text-xl font-semibold tracking-tight transition-colors ${
-                      isActive ? "text-zinc-900" : "text-zinc-600"
+                      isActive ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
                     {step.title}
                   </p>
                   <p
                     className={`mt-2 text-[0.95rem] leading-relaxed transition-colors ${
-                      isActive ? "text-zinc-700" : "text-zinc-500"
+                      isActive
+                        ? "text-foreground/80"
+                        : "text-muted-foreground/70"
                     }`}
                   >
                     {step.desc}
@@ -220,8 +222,8 @@ export default function HowItWorksSection() {
         </div>
 
         <div className="flex items-center justify-center px-8">
-          <div className="relative aspect-[4/3] w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-200/60 bg-zinc-50">
-            <div className="pointer-events-none absolute inset-0 z-20 bg-white/[0.02] backdrop-blur-[1px]" />
+          <div className="relative aspect-[4/3] w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-muted">
+            <div className="pointer-events-none absolute inset-0 z-20 bg-card/[0.02] backdrop-blur-[1px]" />
 
             {steps.map((step, index) => (
               <div
@@ -243,10 +245,10 @@ export default function HowItWorksSection() {
       </div>
 
       <div className="mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:hidden">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-700">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
           how it works
         </p>
-        <h2 className="mt-3 text-balance text-[clamp(1.8rem,7vw,2.3rem)] font-semibold leading-[1.05] tracking-tight text-zinc-900">
+        <h2 className="mt-3 text-balance text-[clamp(1.8rem,7vw,2.3rem)] font-semibold leading-[1.05] tracking-tight text-foreground">
           3 steps to a structured week
         </h2>
 
@@ -260,21 +262,21 @@ export default function HowItWorksSection() {
                 onClick={() => jumpToStep(index)}
                 className={`rounded-2xl border px-4 py-4 transition-all duration-300 ${
                   isActive
-                    ? "border-orange-300 bg-orange-50/70"
-                    : "border-zinc-200/70 bg-white/55"
+                    ? "border-primary/30 bg-primary/10"
+                    : "border-border bg-card/50"
                 } w-full cursor-pointer text-left`}
               >
                 <p
                   className={`text-[11px] font-semibold uppercase tracking-[0.14em] ${
-                    isActive ? "text-orange-600" : "text-zinc-400"
+                    isActive ? "text-primary" : "text-muted-foreground"
                   }`}
                 >
                   step {step.number}
                 </p>
-                <p className="mt-1 text-lg font-semibold tracking-tight text-zinc-900">
+                <p className="mt-1 text-lg font-semibold tracking-tight text-foreground">
                   {step.title}
                 </p>
-                <p className="mt-2 text-[0.93rem] leading-relaxed text-zinc-600">
+                <p className="mt-2 text-[0.93rem] leading-relaxed text-muted-foreground">
                   {step.desc}
                 </p>
               </button>
@@ -286,7 +288,7 @@ export default function HowItWorksSection() {
           <StepIndicator active={activeStep} total={steps.length} />
         </div>
 
-        <div className="relative mt-4 aspect-[4/3] overflow-hidden rounded-2xl border border-zinc-200/60 bg-zinc-50">
+        <div className="relative mt-4 aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-muted">
           <VideoClip
             src={steps[activeStep].video}
             fallbackSrc={steps[activeStep].fallback}

@@ -274,7 +274,7 @@ export default function MealPlansPage() {
             />
           </div>
           {/* Right: Nutrition summary */}
-          <div className="w-[340px] shrink-0 hidden lg:block">
+          <div className="w-[400px] shrink-0 hidden lg:block">
             <NutritionSummary
               stats={dailyStats}
               weeklyMeals={weeklyMeals}
@@ -292,7 +292,7 @@ export default function MealPlansPage() {
                     />
                   ))}
                 </div>
-                <div className="w-[340px] shrink-0 hidden lg:block">
+                <div className="w-[400px] shrink-0 hidden lg:block">
                   <div className="rounded-xl border border-border/50 bg-card/40 p-4">
                     <div className="flex gap-4 items-center">
                       <Skeleton className="h-[140px] w-[140px] rounded-full shrink-0" />
