@@ -15,6 +15,7 @@ interface WeeklyMealGridProps {
   currentDayIndex: number;
   todayInCurrentWeek: number | null;
   weekStartDay: number;
+  currentDate: Date;
   onSlotClick: (mealType: string, dayIndex: number) => void;
   onEmptySlotClick: (mealType: string, dayIndex: number) => void;
 }
@@ -26,6 +27,7 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
   currentDayIndex,
   todayInCurrentWeek,
   weekStartDay,
+  currentDate,
   onSlotClick,
   onEmptySlotClick,
 }: WeeklyMealGridProps) {
@@ -39,7 +41,15 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
   const adjustedDayIndex = (currentDayIndex - weekStartDay + 7) % 7;
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const dayHeaders = Array.from({ length: 7 }, (_, i) => dayNames[(weekStartDay + i) % 7]);
+  const dayHeaders = Array.from({ length: 7 }, (_, i) => {
+    const dayOffset = (i - ((currentDate.getDay() - weekStartDay + 7) % 7) + 7) % 7;
+    const date = new Date(currentDate);
+    date.setDate(date.getDate() - date.getDay() + weekStartDay + i);
+    return {
+      name: dayNames[(weekStartDay + i) % 7],
+      date: date.getDate(),
+    };
+  });
 
   return (
     <div className="w-full h-full min-h-0 flex flex-col">
@@ -48,14 +58,15 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
         <div /> {/* empty label spacer */}
         {dayHeaders.map((day, index) => (
           <div
-            key={day}
-            className={`py-2 text-center text-xs font-semibold transition-colors rounded-lg ${
+            key={`${day.name}-${day.date}`}
+            className={`py-1 text-center transition-colors rounded-lg ${
               todayInCurrentWeek !== null && index === todayInCurrentWeek
                 ? "bg-primary/10 text-primary ring-2 ring-primary/30"
                 : "text-foreground"
             }`}
           >
-            {day}
+            <div className="text-xs font-semibold">{day.name}</div>
+            <div className="text-lg font-bold">{day.date}</div>
           </div>
         ))}
       </div>

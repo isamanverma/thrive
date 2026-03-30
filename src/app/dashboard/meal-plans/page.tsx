@@ -227,6 +227,7 @@ export default function MealPlansPage() {
               currentDayIndex={currentDayIndex}
               todayInCurrentWeek={todayInCurrentWeek}
               weekStartDay={weekStartDay}
+              currentDate={currentDate}
               onSlotClick={handleSlotClick}
               onEmptySlotClick={handleEmptySlotClick}
             />

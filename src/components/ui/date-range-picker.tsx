@@ -1,20 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { format, addDays, startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
+import { format, addDays, startOfWeek, endOfWeek } from "date-fns";
 import { Calendar as CalendarIcon, ChevronDown, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 
 interface DateRange {
   from: Date;
@@ -36,34 +34,12 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [selectedRange, setSelectedRange] = React.useState<DateRange>(value);
-  const [selectingEnd, setSelectingEnd] = React.useState(false);
 
   const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const formatRange = (range: DateRange) => {
     if (!range.from || !range.to) return "Select dates";
     return `${format(range.from, "MMM d")} — ${format(range.to, "MMM d, yyyy")}`;
-  };
-
-  const handleDateSelect = (date: Date | undefined) => {
-    if (!date) return;
-
-    if (!selectingEnd) {
-      setSelectedRange({ from: date, to: date });
-      setSelectingEnd(true);
-    } else {
-      const newRange = {
-        from: date < selectedRange.from ? date : selectedRange.from,
-        to: date > selectedRange.from ? date : selectedRange.from,
-      };
-      setSelectedRange(newRange);
-      setSelectingEnd(false);
-    }
-  };
-
-  const isInRange = (date: Date) => {
-    if (!selectedRange.from || !selectedRange.to) return false;
-    return isWithinInterval(date, { start: selectedRange.from, end: selectedRange.to });
   };
 
   const handleQuickAction = (action: "today" | "thisWeek" | "lastWeek") => {
@@ -89,27 +65,24 @@ export function DateRangePicker({
         break;
     }
     setSelectedRange(newRange);
-  };
-
-  const handleApply = () => {
-    onChange(selectedRange);
+    onChange(newRange);
     setIsOpen(false);
   };
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="justify-start text-left font-normal">
-          <CalendarIcon className="mr-2 h-4 w-4" />
+        <Button variant="outline" className="justify-center text-center font-normal gap-2">
+          <CalendarIcon className="h-4 w-4" />
           {formatRange(value)}
-          <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+          <ChevronDown className="h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className="w-auto p-0" align="center">
         <div className="flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between border-b px-3 py-2">
-            <span className="text-sm font-medium">Select dates</span>
+            <span className="text-sm font-medium">Select week</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -134,60 +107,34 @@ export function DateRangePicker({
           </div>
 
           {/* Calendar */}
-          <div className="p-3">
-            <Calendar
-              mode="range"
-              selected={{ from: selectedRange.from, to: selectedRange.to }}
-              onSelect={(range) => {
-                if (range?.from) setSelectedRange({ ...selectedRange, from: range.from });
-                if (range?.to) setSelectedRange({ ...selectedRange, to: range.to });
-              }}
-              numberOfMonths={1}
-              weekStartsOn={weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6}
-            />
-          </div>
-
-          {/* Range inputs */}
-          <div className="flex items-center gap-2 px-3 pb-2">
-            <div className="flex-1">
-              <label className="text-xs text-muted-foreground">From</label>
-              <Input
-                type="date"
-                value={selectedRange.from ? format(selectedRange.from, "yyyy-MM-dd") : ""}
-                onChange={(e) =>
-                  setSelectedRange({ ...selectedRange, from: new Date(e.target.value) })
-                }
-                className="h-8 text-xs"
-              />
-            </div>
-            <div className="flex-1">
-              <label className="text-xs text-muted-foreground">To</label>
-              <Input
-                type="date"
-                value={selectedRange.to ? format(selectedRange.to, "yyyy-MM-dd") : ""}
-                onChange={(e) =>
-                  setSelectedRange({ ...selectedRange, to: new Date(e.target.value) })
-                }
-                className="h-8 text-xs"
-              />
-            </div>
-          </div>
+          <Calendar
+            mode="range"
+            selected={{ from: selectedRange.from, to: selectedRange.to }}
+            onSelect={(range) => {
+              if (range?.from && range?.to) {
+                const weekRange = {
+                  from: startOfWeek(range.from, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 }),
+                  to: endOfWeek(range.from, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 }),
+                };
+                setSelectedRange(weekRange);
+                onChange(weekRange);
+                setIsOpen(false);
+              }
+            }}
+            numberOfMonths={1}
+            weekStartsOn={weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6}
+          />
 
           {/* Quick actions */}
-          <div className="flex items-center justify-between border-t px-3 py-2">
-            <div className="flex gap-1">
-              <Button variant="ghost" size="sm" onClick={() => handleQuickAction("today")}>
-                Today
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => handleQuickAction("thisWeek")}>
-                This Week
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => handleQuickAction("lastWeek")}>
-                Last Week
-              </Button>
-            </div>
-            <Button size="sm" onClick={handleApply}>
-              Apply
+          <div className="flex gap-1 border-t px-3 py-2">
+            <Button variant="ghost" size="sm" onClick={() => handleQuickAction("today")}>
+              Today
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => handleQuickAction("thisWeek")}>
+              This Week
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => handleQuickAction("lastWeek")}>
+              Last Week
             </Button>
           </div>
         </div>
