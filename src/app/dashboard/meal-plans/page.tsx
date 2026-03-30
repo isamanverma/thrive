@@ -166,6 +166,7 @@ export default function MealPlansPage() {
       <MealPlanHeader
         viewMode={viewMode}
         currentDate={currentDate}
+        dayCount={dayCount}
         onViewModeChange={setViewMode}
         onNavigate={navigateDate}
       />

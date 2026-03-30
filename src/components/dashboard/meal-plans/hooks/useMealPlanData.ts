@@ -437,7 +437,19 @@ export function useMealPlanData() {
     return getTodayInCurrentWeek(weekStart);
   }, [currentDate, preferences.weekStartDay, preferencesLoading]);
 
-  const navigateDate = (direction: "prev" | "next" | "today" | "date", date?: Date) => {
+  const [localDayCount, setLocalDayCount] = useState(dayCount);
+
+  // Sync local day count when preferences load
+  useEffect(() => {
+    if (!preferencesLoading) {
+      setLocalDayCount(preferences.dayCount ?? 7);
+    }
+  }, [preferences.dayCount, preferencesLoading]);
+
+  const navigateDate = (direction: "prev" | "next" | "today" | "date", date?: Date, newDayCount?: number) => {
+    if (newDayCount !== undefined) {
+      setLocalDayCount(newDayCount);
+    }
     if (direction === "today") {
       setCurrentDate(new Date());
       return;
@@ -468,7 +480,7 @@ export function useMealPlanData() {
     currentDayIndex: getCurrentDayIndex(),
     todayInCurrentWeek,
     weekStartDay,
-    dayCount,
+    dayCount: localDayCount,
     weeklyMeals,
     draggedItem,
     activeDropZone,

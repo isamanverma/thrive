@@ -1,27 +1,28 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { addDays } from "date-fns";
+import { addDays, differenceInDays } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
 import type { ViewMode } from "./types";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 
 interface MealPlanHeaderProps {
   viewMode: ViewMode;
   currentDate: Date;
+  dayCount: number;
   onViewModeChange: (mode: ViewMode) => void;
-  onNavigate: (direction: "prev" | "next" | "today" | "date", date?: Date) => void;
+  onNavigate: (direction: "prev" | "next" | "today" | "date", date?: Date, newDayCount?: number) => void;
 }
 
 export function MealPlanHeader({
   viewMode,
   currentDate,
+  dayCount,
   onViewModeChange,
   onNavigate,
 }: MealPlanHeaderProps) {
-  const { preferences, isLoading: preferencesLoading, updatePreferences } = useUserPreferences();
-  const dayCount = preferencesLoading ? 7 : preferences.dayCount;
+  const { updatePreferences } = useUserPreferences();
 
   const currentRange = useMemo(() => {
     return {
@@ -30,44 +31,18 @@ export function MealPlanHeader({
     };
   }, [currentDate, dayCount]);
 
-  const handleRangeChange = (range: { from: Date; to: Date }, newDayCount?: number) => {
-    if (newDayCount !== undefined && newDayCount !== dayCount) {
-      updatePreferences({ dayCount: newDayCount });
-    }
-    onNavigate("date", range.from);
-  };
-
-  const handleDayCountChange = (count: number) => {
-    updatePreferences({ dayCount: count });
-  };
+  const handleRangeChange = useCallback((range: { from: Date; to: Date }, newDayCount: number) => {
+    // Update preference in background (don't await)
+    updatePreferences({ dayCount: newDayCount });
+    // Immediately navigate with the new day count
+    onNavigate("date", range.from, newDayCount);
+  }, [onNavigate, updatePreferences]);
 
   const isCurrentRange = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const rangeEnd = addDays(currentDate, dayCount - 1);
     return today >= currentDate && today <= rangeEnd;
-  };
-
-  const formatRange = (date: Date, count: number) => {
-    const endDate = addDays(date, count - 1);
-    const start = date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-    const end = endDate.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-    return `${start} — ${end}`;
-  };
-
-  const formatDayDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "short",
-      day: "numeric",
-    });
   };
 
   return (
@@ -91,7 +66,10 @@ export function MealPlanHeader({
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => onNavigate("prev")}
+          onClick={() => {
+            const newStart = addDays(currentDate, -dayCount);
+            onNavigate("date", newStart);
+          }}
           className="h-8 w-8"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -100,12 +78,14 @@ export function MealPlanHeader({
           value={currentRange}
           onChange={handleRangeChange}
           dayCount={dayCount}
-          onDayCountChange={handleDayCountChange}
         />
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => onNavigate("next")}
+          onClick={() => {
+            const newStart = addDays(currentDate, dayCount);
+            onNavigate("date", newStart);
+          }}
           className="h-8 w-8"
         >
           <ChevronRight className="w-4 h-4" />

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { format, addDays } from "date-fns";
+import { format, differenceInDays, addDays } from "date-fns";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -23,55 +23,28 @@ export function DateRangePicker({
   value,
   onChange,
   dayCount = 7,
-  onDayCountChange,
 }: DateRangePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedDayCount, setSelectedDayCount] = React.useState(dayCount);
-
-  // Sync with prop changes
-  React.useEffect(() => {
-    setSelectedDayCount(dayCount);
-  }, [dayCount]);
 
   const formatRange = (range: DateRange) => {
     if (!range.from || !range.to) return "Select dates";
-    return `${format(range.from, "MMM d")} — ${format(range.to, "MMM d, yyyy")}`;
+    const days = differenceInDays(range.to, range.from) + 1;
+    return `${format(range.from, "MMM d")} — ${format(range.to, "MMM d")} (${days} days)`;
   };
 
-  const handleDateSelect = (date: Date | undefined) => {
-    if (!date) return;
-    const newRange = {
-      from: date,
-      to: addDays(date, selectedDayCount - 1),
-    };
-    onChange(newRange, selectedDayCount);
-    setIsOpen(false);
-  };
+  const handleRangeSelect = (range: { from?: Date; to?: Date } | undefined) => {
+    if (!range?.from) return;
 
-  const handleQuickAction = (action: "today" | "tomorrow") => {
-    const today = new Date();
-    const start = action === "tomorrow" ? addDays(today, 1) : today;
-    const newRange = {
-      from: start,
-      to: addDays(start, selectedDayCount - 1),
-    };
-    onChange(newRange, selectedDayCount);
-    setIsOpen(false);
-  };
+    if (range.to) {
+      // User completed selecting a range
+      const days = differenceInDays(range.to, range.from) + 1;
+      const clampedDays = Math.max(3, Math.min(7, days));
+      const adjustedTo = addDays(range.from, clampedDays - 1);
 
-  const handleDayCountSelect = (count: number) => {
-    setSelectedDayCount(count);
-    onDayCountChange?.(count);
-    if (value.from) {
-      const newRange = {
-        from: value.from,
-        to: addDays(value.from, count - 1),
-      };
-      onChange(newRange, count);
+      onChange({ from: range.from, to: adjustedTo }, clampedDays);
+      setIsOpen(false);
     }
   };
-
-  const dayOptions = [3, 4, 5, 6, 7];
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -84,38 +57,18 @@ export function DateRangePicker({
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="center">
         <div className="flex flex-col">
-          {/* Day count selector */}
-          <div className="flex items-center justify-center gap-1 border-b px-3 py-2">
-            {dayOptions.map((count) => (
-              <Button
-                key={count}
-                variant={selectedDayCount === count ? "default" : "ghost"}
-                size="sm"
-                className="h-7 px-2 text-xs"
-                onClick={() => handleDayCountSelect(count)}
-              >
-                {count}D
-              </Button>
-            ))}
+          {/* Header */}
+          <div className="px-3 py-2 border-b">
+            <span className="text-sm font-medium">Select start and end date (3-7 days)</span>
           </div>
 
-          {/* Calendar */}
+          {/* Calendar with range selection */}
           <Calendar
-            mode="single"
-            selected={value.from}
-            onSelect={handleDateSelect}
+            mode="range"
+            selected={{ from: value.from, to: value.to }}
+            onSelect={handleRangeSelect}
             numberOfMonths={1}
           />
-
-          {/* Quick actions */}
-          <div className="flex gap-1 border-t px-3 py-2">
-            <Button variant="ghost" size="sm" onClick={() => handleQuickAction("today")}>
-              Today
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => handleQuickAction("tomorrow")}>
-              Tomorrow
-            </Button>
-          </div>
         </div>
       </PopoverContent>
     </Popover>
