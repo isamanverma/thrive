@@ -25,6 +25,40 @@ interface DailyMealGridProps {
   currentDayIndex?: number;
 }
 
+function resolveNutrientAmount(
+  nutrition: unknown,
+  name: "protein" | "carbs" | "fat",
+): number {
+  if (!nutrition || typeof nutrition !== "object") return 0;
+  const rn = nutrition as {
+    nutrients?: Array<{ name?: string; amount?: number }>;
+  };
+  if (!Array.isArray(rn.nutrients)) return 0;
+
+  const normalizedName = name === "carbs" ? "carbohydrates" : name;
+  const found = rn.nutrients.find((n) => {
+    const nName = n?.name?.toLowerCase() || "";
+    return nName.includes(normalizedName) && typeof n?.amount === "number";
+  });
+  return typeof found?.amount === "number" ? Math.round(found.amount) : 0;
+}
+
+function calculateMacros(dishes: Dish[]) {
+  let calories = 0;
+  let protein = 0;
+  let carbs = 0;
+  let fat = 0;
+
+  dishes.forEach((dish) => {
+    calories += dish.calories || 0;
+    protein += resolveNutrientAmount(dish.nutrition, "protein");
+    carbs += resolveNutrientAmount(dish.nutrition, "carbs");
+    fat += resolveNutrientAmount(dish.nutrition, "fat");
+  });
+
+  return { calories, protein, carbs, fat };
+}
+
 const mealTypeConfig: Record<
   MealTypeCapitalized,
   {
@@ -62,13 +96,13 @@ const mealTypeConfig: Record<
 
 function MealSectionHeader({
   type,
-  totalCalories,
+  macros,
   itemCount,
   config,
   onClick,
 }: {
   type: MealTypeCapitalized;
-  totalCalories: number;
+  macros: { calories: number; protein: number; carbs: number; fat: number };
   itemCount: number;
   config: (typeof mealTypeConfig)[MealTypeCapitalized];
   onClick: () => void;
@@ -78,29 +112,36 @@ function MealSectionHeader({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex items-center gap-2.5 w-full py-3 px-2.5 rounded-lg transition-colors cursor-pointer group",
+        "flex items-center gap-3 w-full py-4 px-3 rounded-lg transition-colors cursor-pointer group",
         config.hoverBg,
       )}
     >
       <span
         className={cn(
-          "h-2.5 w-2.5 rounded-full shrink-0 border-2 border-background",
+          "h-3 w-3 rounded-full shrink-0 border-2 border-background",
           config.dot,
         )}
       />
-      <span className={cn("text-[13px] font-semibold", config.label)}>
-        {type}
-      </span>
-      <span className="text-[12px] text-muted-foreground tabular-nums">
-        · {totalCalories} kcal
+      <div className="flex flex-col items-start">
+        <div className="flex items-center gap-2">
+          <span className={cn("text-[14px] font-semibold", config.label)}>
+            {type}
+          </span>
+          <span className="text-[12px] text-muted-foreground">
+            {itemCount} {itemCount === 1 ? "item" : "items"}
+          </span>
+        </div>
         {itemCount > 0 && (
-          <>
-            {" "}
-            · {itemCount} {itemCount === 1 ? "item" : "items"}
-          </>
+          <div className="flex items-center gap-3 mt-0.5 text-[11px] text-muted-foreground">
+            <span>{macros.calories} kcal</span>
+            <span className="text-foreground/30">|</span>
+            <span>P: {macros.protein}g</span>
+            <span>C: {macros.carbs}g</span>
+            <span>F: {macros.fat}g</span>
+          </div>
         )}
-      </span>
-      <Plus className="ml-auto h-3.5 w-3.5 text-muted-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
+      <Plus className="ml-auto h-4 w-4 text-muted-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity" />
     </button>
   );
 }
@@ -183,10 +224,7 @@ export function DailyMealGrid({
               | undefined;
             const dishes: Dish[] = meal?.dishes || [];
             const config = mealTypeConfig[type];
-            const totalCalories = dishes.reduce(
-              (sum, dish) => sum + (dish.calories || 0),
-              0,
-            );
+            const macros = calculateMacros(dishes);
 
             return (
               <div key={type} className="relative">
@@ -195,14 +233,14 @@ export function DailyMealGrid({
                     type="button"
                     onClick={() => onEmptySlotClick(type, adjustedDayIndex)}
                     className={cn(
-                      "relative flex items-center gap-2 w-full py-3 px-2.5 rounded-lg transition-colors cursor-pointer",
+                      "relative flex items-center gap-2 w-full py-4 px-3 rounded-lg transition-colors cursor-pointer",
                       config.hoverBg,
                       "border border-dashed border-border/40",
                     )}
                   >
                     <span
                       className={cn(
-                        "h-2.5 w-2.5 rounded-full shrink-0 border-2 border-dashed",
+                        "h-3 w-3 rounded-full shrink-0 border-2 border-dashed",
                         type === "Breakfast" && "border-orange-400/50",
                         type === "Lunch" && "border-blue-400/50",
                         type === "Snack" && "border-amber-400/50",
@@ -221,7 +259,7 @@ export function DailyMealGrid({
                   <div>
                     <MealSectionHeader
                       type={type}
-                      totalCalories={totalCalories}
+                      macros={macros}
                       itemCount={dishes.length}
                       config={config}
                       onClick={() => onSlotClick(type, adjustedDayIndex)}
