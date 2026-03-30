@@ -16,7 +16,6 @@ interface DateRangePickerProps {
   value: DateRange;
   onChange: (range: DateRange, dayCount: number) => void;
   dayCount?: number;
-  onDayCountChange?: (count: number) => void;
 }
 
 export function DateRangePicker({

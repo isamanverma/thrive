@@ -25,17 +25,26 @@ export function MealPlanHeader({
   const { updatePreferences } = useUserPreferences();
   const isDaily = viewMode === "daily";
 
+  // For multi-day, ensure dayCount is at least 3
+  const multiDayCount = Math.max(3, dayCount);
+
   const currentRange = useMemo(() => {
     return {
       from: currentDate,
-      to: addDays(currentDate, isDaily ? 0 : dayCount - 1),
+      to: addDays(currentDate, isDaily ? 0 : multiDayCount - 1),
     };
-  }, [currentDate, dayCount, isDaily]);
+  }, [currentDate, multiDayCount, isDaily]);
 
   const handleRangeChange = useCallback((range: { from: Date; to: Date }, newDayCount: number) => {
-    updatePreferences({ dayCount: newDayCount });
+    if (newDayCount > 1) {
+      updatePreferences({ dayCount: newDayCount });
+    }
     onNavigate("date", range.from, newDayCount);
   }, [onNavigate, updatePreferences]);
+
+  const handleSingleDateSelect = useCallback((date: Date) => {
+    onNavigate("date", date, 1);
+  }, [onNavigate]);
 
   const isToday = () => {
     const today = new Date();
@@ -45,7 +54,7 @@ export function MealPlanHeader({
     return today.getTime() === checkDate.getTime();
   };
 
-  const navigateBy = isDaily ? 1 : dayCount;
+  const navigateBy = isDaily ? 1 : multiDayCount;
 
   return (
     <div className="flex items-center justify-between mb-6">
@@ -62,11 +71,19 @@ export function MealPlanHeader({
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
-        <DateRangePicker
-          value={currentRange}
-          onChange={handleRangeChange}
-          dayCount={isDaily ? 1 : dayCount}
-        />
+        {isDaily ? (
+          <DateRangePicker
+            value={currentRange}
+            onChange={(range) => handleSingleDateSelect(range.from)}
+            dayCount={1}
+          />
+        ) : (
+          <DateRangePicker
+            value={currentRange}
+            onChange={handleRangeChange}
+            dayCount={multiDayCount}
+          />
+        )}
         <Button
           variant="ghost"
           size="icon"
