@@ -461,12 +461,15 @@ export function useMealPlanData() {
     [weeklyMeals, currentDate],
   );
 
+  const weekStartDay = preferencesLoading ? 1 : (preferences.weekStartDay ?? 1);
+
   return {
     // State
     viewMode,
     currentDate,
     currentDayIndex: getCurrentDayIndex(),
     todayInCurrentWeek,
+    weekStartDay,
     weeklyMeals,
     draggedItem,
     activeDropZone,

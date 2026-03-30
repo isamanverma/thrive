@@ -1,10 +1,10 @@
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
 import type { ViewMode } from "./types";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { startOfWeek, endOfWeek } from "date-fns";
 
 interface MealPlanHeaderProps {
@@ -20,8 +20,6 @@ export function MealPlanHeader({
   onViewModeChange,
   onNavigate,
 }: MealPlanHeaderProps) {
-  const [showMonthPicker, setShowMonthPicker] = useState(false);
-  const pickerRef = useRef<HTMLDivElement>(null);
   const { preferences, isLoading: preferencesLoading, updatePreferences } = useUserPreferences();
   const weekStartDay = preferencesLoading ? 1 : preferences.weekStartDay;
 
@@ -72,37 +70,9 @@ export function MealPlanHeader({
     });
   };
 
-  const getCurrentMonthYear = () => {
-    return currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-  };
-
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
-        setShowMonthPicker(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleMonthSelect = (month: number, year: number) => {
-    const newDate = new Date(year, month, 1);
-    const firstDayOfMonth = startOfWeek(newDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-    onNavigate("date", firstDayOfMonth);
-    setShowMonthPicker(false);
-  };
-
   return (
     <div className="relative flex items-center justify-between mb-6">
-      {/* Left: Today button + Month picker */}
+      {/* Left: Today button */}
       <div className="flex items-center gap-2">
         {!isCurrentWeek() && (
           <Button
@@ -114,49 +84,6 @@ export function MealPlanHeader({
             Today
           </Button>
         )}
-        <div className="relative" ref={pickerRef}>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowMonthPicker(!showMonthPicker)}
-            className="flex items-center gap-2 text-sm font-medium text-foreground hover:bg-muted h-8"
-          >
-            <CalendarIcon className="w-4 h-4" />
-            {getCurrentMonthYear()}
-          </Button>
-          {showMonthPicker && (
-            <div className="absolute top-full left-0 mt-2 z-50 bg-popover border border-border rounded-lg shadow-lg p-4 min-w-[240px]">
-              <div className="grid grid-cols-4 gap-1">
-                {months.map((month, idx) => (
-                  <button
-                    key={month}
-                    onClick={() => handleMonthSelect(idx, currentDate.getFullYear())}
-                    className={`px-2 py-1.5 text-xs rounded-md transition-colors ${
-                      currentDate.getMonth() === idx
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted"
-                    }`}
-                  >
-                    {month.slice(0, 3)}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-3 pt-3 border-t border-border">
-                <select
-                  value={currentDate.getFullYear()}
-                  onChange={(e) => handleMonthSelect(currentDate.getMonth(), parseInt(e.target.value))}
-                  className="w-full px-2 py-1.5 text-xs bg-background border border-border rounded-md"
-                >
-                  {years.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Center: Navigation arrows + Date display */}

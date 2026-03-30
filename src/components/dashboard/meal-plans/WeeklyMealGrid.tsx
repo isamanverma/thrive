@@ -13,6 +13,8 @@ interface WeeklyMealGridProps {
   draggedItem: DraggedItem | null;
   activeDropZone: DropZone | null;
   currentDayIndex: number;
+  todayInCurrentWeek: number | null;
+  weekStartDay: number;
   onSlotClick: (mealType: string, dayIndex: number) => void;
   onEmptySlotClick: (mealType: string, dayIndex: number) => void;
 }
@@ -22,6 +24,8 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
   draggedItem,
   activeDropZone,
   currentDayIndex,
+  todayInCurrentWeek,
+  weekStartDay,
   onSlotClick,
   onEmptySlotClick,
 }: WeeklyMealGridProps) {
@@ -32,19 +36,22 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
     "Dinner",
   ];
 
-  const adjustedDayIndex = (currentDayIndex - 1 + 7) % 7;
+  const adjustedDayIndex = (currentDayIndex - weekStartDay + 7) % 7;
+
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayHeaders = Array.from({ length: 7 }, (_, i) => dayNames[(weekStartDay + i) % 7]);
 
   return (
     <div className="w-full h-full min-h-0 flex flex-col">
       {/* Day headers — label spacer + 7 day columns */}
       <div className="grid grid-cols-[40px_repeat(7,1fr)] gap-x-2">
         <div /> {/* empty label spacer */}
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
+        {dayHeaders.map((day, index) => (
           <div
             key={day}
             className={`py-2 text-center text-xs font-semibold transition-colors rounded-lg ${
-              index === adjustedDayIndex
-                ? "bg-primary/10 text-primary"
+              todayInCurrentWeek !== null && index === todayInCurrentWeek
+                ? "bg-primary/10 text-primary ring-2 ring-primary/30"
                 : "text-foreground"
             }`}
           >
@@ -66,6 +73,7 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
             draggedItem={draggedItem}
             activeDropZone={activeDropZone}
             todayIndex={adjustedDayIndex}
+            todayInCurrentWeek={todayInCurrentWeek}
             onSlotClick={onSlotClick}
             onEmptySlotClick={onEmptySlotClick}
           />
