@@ -3,7 +3,6 @@
 import * as React from "react";
 import { format, addDays } from "date-fns";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -15,7 +14,7 @@ interface DateRange {
 
 interface DateRangePickerProps {
   value: DateRange;
-  onChange: (range: DateRange) => void;
+  onChange: (range: DateRange, dayCount: number) => void;
   dayCount?: number;
   onDayCountChange?: (count: number) => void;
 }
@@ -27,6 +26,12 @@ export function DateRangePicker({
   onDayCountChange,
 }: DateRangePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [selectedDayCount, setSelectedDayCount] = React.useState(dayCount);
+
+  // Sync with prop changes
+  React.useEffect(() => {
+    setSelectedDayCount(dayCount);
+  }, [dayCount]);
 
   const formatRange = (range: DateRange) => {
     if (!range.from || !range.to) return "Select dates";
@@ -37,9 +42,9 @@ export function DateRangePicker({
     if (!date) return;
     const newRange = {
       from: date,
-      to: addDays(date, dayCount - 1),
+      to: addDays(date, selectedDayCount - 1),
     };
-    onChange(newRange);
+    onChange(newRange, selectedDayCount);
     setIsOpen(false);
   };
 
@@ -48,10 +53,22 @@ export function DateRangePicker({
     const start = action === "tomorrow" ? addDays(today, 1) : today;
     const newRange = {
       from: start,
-      to: addDays(start, dayCount - 1),
+      to: addDays(start, selectedDayCount - 1),
     };
-    onChange(newRange);
+    onChange(newRange, selectedDayCount);
     setIsOpen(false);
+  };
+
+  const handleDayCountSelect = (count: number) => {
+    setSelectedDayCount(count);
+    onDayCountChange?.(count);
+    if (value.from) {
+      const newRange = {
+        from: value.from,
+        to: addDays(value.from, count - 1),
+      };
+      onChange(newRange, count);
+    }
   };
 
   const dayOptions = [3, 4, 5, 6, 7];
@@ -72,18 +89,10 @@ export function DateRangePicker({
             {dayOptions.map((count) => (
               <Button
                 key={count}
-                variant={dayCount === count ? "default" : "ghost"}
+                variant={selectedDayCount === count ? "default" : "ghost"}
                 size="sm"
                 className="h-7 px-2 text-xs"
-                onClick={() => {
-                  onDayCountChange?.(count);
-                  if (value.from) {
-                    onChange({
-                      from: value.from,
-                      to: addDays(value.from, count - 1),
-                    });
-                  }
-                }}
+                onClick={() => handleDayCountSelect(count)}
               >
                 {count}D
               </Button>

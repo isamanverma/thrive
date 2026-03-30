@@ -50,12 +50,10 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
     };
   });
 
-  const gridCols = `40px_repeat(${dayCount},1fr)`;
-
   return (
     <div className="w-full h-full min-h-0 flex flex-col">
       {/* Day headers — label spacer + N day columns */}
-      <div className="grid gap-x-2" style={{ gridTemplateColumns: gridCols }}>
+      <div className="grid gap-x-2" style={{ gridTemplateColumns: `40px repeat(${dayCount}, 1fr)` }}>
         <div /> {/* empty label spacer */}
         {dayHeaders.map((day, index) => (
           <div

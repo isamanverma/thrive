@@ -76,12 +76,10 @@ function MealTypeRowInner({
   const Icon = styles.icon;
   const mealKey = mealType.toLowerCase() as keyof (typeof weeklyMeals)[0];
 
-  const gridCols = `40px_repeat(${dayCount},1fr)`;
-
   return (
     <div
       className={`grid gap-x-2 ${styles.bg} rounded-xl h-full min-h-0 py-1.5 items-stretch`}
-      style={{ gridTemplateColumns: gridCols }}
+      style={{ gridTemplateColumns: `40px repeat(${dayCount}, 1fr)` }}
     >
       {/* Meal type marker — icon only */}
       <div className="flex items-center justify-center h-full">

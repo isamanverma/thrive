@@ -30,7 +30,10 @@ export function MealPlanHeader({
     };
   }, [currentDate, dayCount]);
 
-  const handleRangeChange = (range: { from: Date; to: Date }) => {
+  const handleRangeChange = (range: { from: Date; to: Date }, newDayCount?: number) => {
+    if (newDayCount !== undefined && newDayCount !== dayCount) {
+      updatePreferences({ dayCount: newDayCount });
+    }
     onNavigate("date", range.from);
   };
 
