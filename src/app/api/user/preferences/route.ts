@@ -3,18 +3,31 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const { userId } = await auth();
-  if (!userId) {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  let user = await prisma.user.findUnique({
+    where: { clerkId },
+  });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        clerkId,
+        email: `${clerkId}@placeholder.local`,
+      },
+    });
+  }
+
   let preferences = await prisma.userPreference.findUnique({
-    where: { userId },
+    where: { userId: user.id },
   });
 
   if (!preferences) {
     preferences = await prisma.userPreference.create({
-      data: { userId },
+      data: { userId: user.id },
     });
   }
 
@@ -22,23 +35,38 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
-  const { userId } = await auth();
-  if (!userId) {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const body = await request.json();
-  const { weekStartDay, theme } = body;
+  const { weekStartDay, dayCount, theme } = body;
+
+  let user = await prisma.user.findUnique({
+    where: { clerkId },
+  });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        clerkId,
+        email: `${clerkId}@placeholder.local`,
+      },
+    });
+  }
 
   const preferences = await prisma.userPreference.upsert({
-    where: { userId },
+    where: { userId: user.id },
     update: {
       ...(weekStartDay !== undefined && { weekStartDay }),
+      ...(dayCount !== undefined && { dayCount }),
       ...(theme !== undefined && { theme }),
     },
     create: {
-      userId,
+      userId: user.id,
       weekStartDay: weekStartDay ?? 1,
+      dayCount: dayCount ?? 7,
       theme: theme ?? "system",
     },
   });

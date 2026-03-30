@@ -1,11 +1,11 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { addDays } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
 import type { ViewMode } from "./types";
 import { useMemo } from "react";
-import { startOfWeek, endOfWeek } from "date-fns";
 
 interface MealPlanHeaderProps {
   viewMode: ViewMode;
@@ -21,45 +21,42 @@ export function MealPlanHeader({
   onNavigate,
 }: MealPlanHeaderProps) {
   const { preferences, isLoading: preferencesLoading, updatePreferences } = useUserPreferences();
-  const weekStartDay = preferencesLoading ? 1 : preferences.weekStartDay;
+  const dayCount = preferencesLoading ? 7 : preferences.dayCount;
 
   const currentRange = useMemo(() => {
-    const start = startOfWeek(currentDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-    const end = endOfWeek(currentDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-    return { from: start, to: end };
-  }, [currentDate, weekStartDay]);
+    return {
+      from: currentDate,
+      to: addDays(currentDate, dayCount - 1),
+    };
+  }, [currentDate, dayCount]);
 
   const handleRangeChange = (range: { from: Date; to: Date }) => {
     onNavigate("date", range.from);
   };
 
-  const handleWeekStartChange = (day: number) => {
-    updatePreferences({ weekStartDay: day });
+  const handleDayCountChange = (count: number) => {
+    updatePreferences({ dayCount: count });
   };
 
-  const isCurrentWeek = () => {
+  const isCurrentRange = () => {
     const today = new Date();
-    const currentWeekStart = startOfWeek(currentDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-    const currentWeekEnd = endOfWeek(currentDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-
-    return today >= currentWeekStart && today <= currentWeekEnd;
+    today.setHours(0, 0, 0, 0);
+    const rangeEnd = addDays(currentDate, dayCount - 1);
+    return today >= currentDate && today <= rangeEnd;
   };
 
-  const formatWeekRange = (date: Date) => {
-    const startOfWeekDate = startOfWeek(date, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-    const endOfWeekDate = endOfWeek(date, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-
-    const start = startOfWeekDate.toLocaleDateString("en-US", {
+  const formatRange = (date: Date, count: number) => {
+    const endDate = addDays(date, count - 1);
+    const start = date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
     });
-    const end = endOfWeekDate.toLocaleDateString("en-US", {
+    const end = endDate.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
+      year: "numeric",
     });
-    const year = endOfWeekDate.getFullYear();
-
-    return `${start} — ${end}, ${year}`;
+    return `${start} — ${end}`;
   };
 
   const formatDayDate = (date: Date) => {
@@ -74,7 +71,7 @@ export function MealPlanHeader({
     <div className="relative flex items-center justify-between mb-6">
       {/* Left: Today button */}
       <div className="flex items-center gap-2">
-        {!isCurrentWeek() && (
+        {!isCurrentRange() && (
           <Button
             variant="outline"
             size="sm"
@@ -99,8 +96,8 @@ export function MealPlanHeader({
         <DateRangePicker
           value={currentRange}
           onChange={handleRangeChange}
-          weekStartDay={weekStartDay}
-          onWeekStartChange={handleWeekStartChange}
+          dayCount={dayCount}
+          onDayCountChange={handleDayCountChange}
         />
         <Button
           variant="ghost"
@@ -134,7 +131,7 @@ export function MealPlanHeader({
               : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
-          Week
+          Multi-Day
         </button>
       </div>
     </div>

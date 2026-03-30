@@ -17,6 +17,8 @@ interface MealTypeRowProps {
   draggedItem: DraggedItem | null;
   activeDropZone: DropZone | null;
   todayIndex: number;
+  todayInCurrentWeek: number | null;
+  dayCount: number;
   onSlotClick: (mealType: string, dayIndex: number) => void;
   onEmptySlotClick: (mealType: string, dayIndex: number) => void;
 }
@@ -65,6 +67,8 @@ function MealTypeRowInner({
   mealType,
   weeklyMeals,
   todayIndex,
+  todayInCurrentWeek,
+  dayCount,
   onSlotClick,
   onEmptySlotClick,
 }: MealTypeRowProps) {
@@ -72,9 +76,12 @@ function MealTypeRowInner({
   const Icon = styles.icon;
   const mealKey = mealType.toLowerCase() as keyof (typeof weeklyMeals)[0];
 
+  const gridCols = `40px_repeat(${dayCount},1fr)`;
+
   return (
     <div
-      className={`grid grid-cols-[40px_repeat(7,1fr)] gap-x-2 ${styles.bg} rounded-xl h-full min-h-0 py-1.5 items-stretch`}
+      className={`grid gap-x-2 ${styles.bg} rounded-xl h-full min-h-0 py-1.5 items-stretch`}
+      style={{ gridTemplateColumns: gridCols }}
     >
       {/* Meal type marker — icon only */}
       <div className="flex items-center justify-center h-full">
@@ -82,15 +89,16 @@ function MealTypeRowInner({
       </div>
 
       {/* Day cells */}
-      {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => {
+      {Array.from({ length: dayCount }, (_, index) => {
         const dayMeals = weeklyMeals[index];
         const meal = dayMeals?.[mealKey] as MealPlanItem | undefined;
         const dishes: Dish[] = meal?.dishes || [];
+        const isToday = todayInCurrentWeek !== null && index === todayInCurrentWeek;
 
         return (
           <div
             key={`${mealType.toLowerCase()}-${index}`}
-            className="h-full min-h-0 overflow-hidden"
+            className={`h-full min-h-0 overflow-hidden ${isToday ? "ring-2 ring-primary/20 rounded-lg" : ""}`}
           >
             {dishes.length > 0 ? (
               <MealSlotCard

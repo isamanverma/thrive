@@ -22,7 +22,7 @@ export default function MealPlansPage() {
     currentDate,
     currentDayIndex,
     todayInCurrentWeek,
-    weekStartDay,
+    dayCount,
     weeklyMeals,
     draggedItem,
     activeDropZone,
@@ -46,7 +46,11 @@ export default function MealPlansPage() {
   const [drawerDishes, setDrawerDishes] = useState<Dish[]>([]);
 
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const dayLabels = Array.from({ length: 7 }, (_, i) => dayNames[(weekStartDay + i) % 7]);
+  const dayLabels = Array.from({ length: dayCount }, (_, i) => {
+    const date = new Date(currentDate);
+    date.setDate(date.getDate() + i);
+    return dayNames[date.getDay()];
+  });
 
   const handleSlotClick = useCallback(
     (mealType: string, dayIndex: number) => {
@@ -226,7 +230,7 @@ export default function MealPlansPage() {
               activeDropZone={activeDropZone}
               currentDayIndex={currentDayIndex}
               todayInCurrentWeek={todayInCurrentWeek}
-              weekStartDay={weekStartDay}
+              dayCount={dayCount}
               currentDate={currentDate}
               onSlotClick={handleSlotClick}
               onEmptySlotClick={handleEmptySlotClick}

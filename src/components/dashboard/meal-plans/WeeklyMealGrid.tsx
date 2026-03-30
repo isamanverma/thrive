@@ -14,7 +14,7 @@ interface WeeklyMealGridProps {
   activeDropZone: DropZone | null;
   currentDayIndex: number;
   todayInCurrentWeek: number | null;
-  weekStartDay: number;
+  dayCount: number;
   currentDate: Date;
   onSlotClick: (mealType: string, dayIndex: number) => void;
   onEmptySlotClick: (mealType: string, dayIndex: number) => void;
@@ -26,7 +26,7 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
   activeDropZone,
   currentDayIndex,
   todayInCurrentWeek,
-  weekStartDay,
+  dayCount,
   currentDate,
   onSlotClick,
   onEmptySlotClick,
@@ -38,27 +38,28 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
     "Dinner",
   ];
 
-  const adjustedDayIndex = (currentDayIndex - weekStartDay + 7) % 7;
+  const adjustedDayIndex = (currentDayIndex) % dayCount;
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const dayHeaders = Array.from({ length: 7 }, (_, i) => {
-    const dayOffset = (i - ((currentDate.getDay() - weekStartDay + 7) % 7) + 7) % 7;
+  const dayHeaders = Array.from({ length: dayCount }, (_, i) => {
     const date = new Date(currentDate);
-    date.setDate(date.getDate() - date.getDay() + weekStartDay + i);
+    date.setDate(date.getDate() + i);
     return {
-      name: dayNames[(weekStartDay + i) % 7],
+      name: dayNames[date.getDay()],
       date: date.getDate(),
     };
   });
 
+  const gridCols = `40px_repeat(${dayCount},1fr)`;
+
   return (
     <div className="w-full h-full min-h-0 flex flex-col">
-      {/* Day headers — label spacer + 7 day columns */}
-      <div className="grid grid-cols-[40px_repeat(7,1fr)] gap-x-2">
+      {/* Day headers — label spacer + N day columns */}
+      <div className="grid gap-x-2" style={{ gridTemplateColumns: gridCols }}>
         <div /> {/* empty label spacer */}
         {dayHeaders.map((day, index) => (
           <div
-            key={`${day.name}-${day.date}`}
+            key={`${day.name}-${day.date}-${index}`}
             className={`py-1 text-center transition-colors rounded-lg ${
               todayInCurrentWeek !== null && index === todayInCurrentWeek
                 ? "bg-primary/10 text-primary ring-2 ring-primary/30"
@@ -73,7 +74,7 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
 
       {/* Meal type rows */}
       <div
-        className="grid grid-rows-4 gap-y-2 mt-1 flex-1 min-h-0"
+        className="grid gap-y-2 mt-1 flex-1 min-h-0"
         style={{ gridTemplateRows: "1fr 1fr 1fr 1fr" }}
       >
         {mealTypes.map((mealType) => (
@@ -85,6 +86,7 @@ export const WeeklyMealGrid = React.memo(function WeeklyMealGrid({
             activeDropZone={activeDropZone}
             todayIndex={adjustedDayIndex}
             todayInCurrentWeek={todayInCurrentWeek}
+            dayCount={dayCount}
             onSlotClick={onSlotClick}
             onEmptySlotClick={onEmptySlotClick}
           />

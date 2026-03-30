@@ -28,6 +28,7 @@ export function useMealPlanData() {
   const [mealPlanId, setMealPlanId] = useState<string | null>(null);
   const { preferences, isLoading: preferencesLoading } = useUserPreferences();
   const weekStartDay = preferencesLoading ? 1 : (preferences.weekStartDay ?? 1);
+  const dayCount = preferencesLoading ? 7 : (preferences.dayCount ?? 7);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isLoadingRef = useRef(false);
   const initialLoadRef = useRef(false);
@@ -467,6 +468,7 @@ export function useMealPlanData() {
     currentDayIndex: getCurrentDayIndex(),
     todayInCurrentWeek,
     weekStartDay,
+    dayCount,
     weeklyMeals,
     draggedItem,
     activeDropZone,
