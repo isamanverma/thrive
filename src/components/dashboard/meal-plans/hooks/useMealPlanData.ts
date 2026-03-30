@@ -14,6 +14,8 @@ import {
   swapMealsAPI,
   updateMealDishesAPI,
 } from "@/lib/mealPlanClient";
+import { useUserPreferences } from "@/hooks/useUserPreferences";
+import { endOfWeek, startOfWeek } from "date-fns";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export function useMealPlanData() {
@@ -24,6 +26,7 @@ export function useMealPlanData() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [mealPlanId, setMealPlanId] = useState<string | null>(null);
+  const { preferences, isLoading: preferencesLoading } = useUserPreferences();
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isLoadingRef = useRef(false);
   const initialLoadRef = useRef(false);
@@ -413,11 +416,36 @@ export function useMealPlanData() {
     };
   };
 
+  const getTodayInCurrentWeek = (weekStartDay: number = 1): number | null => {
+    const today = new Date();
+    const currentWeekStart = startOfWeek(currentDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
+    const currentWeekEnd = endOfWeek(currentDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
+
+    if (today >= currentWeekStart && today <= currentWeekEnd) {
+      const dayIndex = (today.getDay() - weekStartDay + 7) % 7;
+      return dayIndex;
+    }
+    return null;
+  };
+
   const getCurrentDayIndex = () => {
     return currentDate.getDay();
   };
 
-  const navigateDate = (direction: "prev" | "next") => {
+  const todayInCurrentWeek = useMemo(() => {
+    const weekStart = preferencesLoading ? 1 : (preferences.weekStartDay ?? 1);
+    return getTodayInCurrentWeek(weekStart);
+  }, [currentDate, preferences.weekStartDay, preferencesLoading]);
+
+  const navigateDate = (direction: "prev" | "next" | "today" | "date", date?: Date) => {
+    if (direction === "today") {
+      setCurrentDate(new Date());
+      return;
+    }
+    if (direction === "date" && date) {
+      setCurrentDate(date);
+      return;
+    }
     const newDate = new Date(currentDate);
     if (viewMode === "weekly") {
       newDate.setDate(currentDate.getDate() + (direction === "next" ? 7 : -7));
@@ -438,6 +466,7 @@ export function useMealPlanData() {
     viewMode,
     currentDate,
     currentDayIndex: getCurrentDayIndex(),
+    todayInCurrentWeek,
     weeklyMeals,
     draggedItem,
     activeDropZone,
@@ -463,5 +492,6 @@ export function useMealPlanData() {
     updateMealDishes,
     removeMeal,
     swapMeals,
+    getTodayInCurrentWeek,
   };
 }
