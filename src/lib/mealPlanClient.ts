@@ -72,11 +72,54 @@ async function safeJson(res: Response) {
 }
 
 const MEAL_PLAN_CACHE_TTL_MS = 5 * 60 * 1000;
+const SESSION_CACHE_PREFIX = "mp_cache_";
 const mealPlanCache = new Map<string, { ts: number; data: MealPlanResponse }>();
 const mealPlanInflight = new Map<
   string,
   Promise<{ ok: boolean; data?: MealPlanResponse; error?: unknown }>
 >();
+
+// SessionStorage helpers — survives page refreshes within the same tab
+function getSessionCache(
+  key: string,
+): { ts: number; data: MealPlanResponse } | null {
+  try {
+    const raw = sessionStorage.getItem(SESSION_CACHE_PREFIX + key);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function setSessionCache(key: string, entry: { ts: number; data: MealPlanResponse }) {
+  try {
+    sessionStorage.setItem(SESSION_CACHE_PREFIX + key, JSON.stringify(entry));
+  } catch {
+    // Storage full or unavailable — silently ignore
+  }
+}
+
+function removeSessionCache(key: string) {
+  try {
+    sessionStorage.removeItem(SESSION_CACHE_PREFIX + key);
+  } catch {
+    // ignore
+  }
+}
+
+function clearSessionCache() {
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const k = sessionStorage.key(i);
+      if (k?.startsWith(SESSION_CACHE_PREFIX)) keysToRemove.push(k);
+    }
+    keysToRemove.forEach((k) => sessionStorage.removeItem(k));
+  } catch {
+    // ignore
+  }
+}
 
 function getWeekCacheKey(date?: Date, weekStartDay = 1): string {
   const d = date ? new Date(date) : new Date();
@@ -89,9 +132,12 @@ function getWeekCacheKey(date?: Date, weekStartDay = 1): string {
 export function invalidateMealPlanCache(date?: Date, weekStartDay?: number) {
   if (!date) {
     mealPlanCache.clear();
+    clearSessionCache();
     return;
   }
-  mealPlanCache.delete(getWeekCacheKey(date, weekStartDay));
+  const key = getWeekCacheKey(date, weekStartDay);
+  mealPlanCache.delete(key);
+  removeSessionCache(key);
 }
 
 export async function fetchCurrentMealPlan(
@@ -103,9 +149,17 @@ export async function fetchCurrentMealPlan(
   const force = Boolean(options?.force);
 
   if (!force) {
+    // Check in-memory cache first
     const cached = mealPlanCache.get(key);
     if (cached && Date.now() - cached.ts < MEAL_PLAN_CACHE_TTL_MS) {
       return { ok: true, data: cached.data };
+    }
+    // Fallback to sessionStorage (survives page refresh)
+    const sessionCached = getSessionCache(key);
+    if (sessionCached && Date.now() - sessionCached.ts < MEAL_PLAN_CACHE_TTL_MS) {
+      // Promote back to in-memory and return immediately
+      mealPlanCache.set(key, sessionCached);
+      return { ok: true, data: sessionCached.data };
     }
   }
 
@@ -130,7 +184,9 @@ export async function fetchCurrentMealPlan(
       const payload = await safeJson(res);
       if (!res.ok) return { ok: false, error: payload };
       const data = payload as MealPlanResponse;
-      mealPlanCache.set(key, { ts: Date.now(), data });
+      const entry = { ts: Date.now(), data };
+      mealPlanCache.set(key, entry);
+      setSessionCache(key, entry);
       return { ok: true, data };
     } catch (err) {
       console.error("fetchCurrentMealPlan error:", err);
