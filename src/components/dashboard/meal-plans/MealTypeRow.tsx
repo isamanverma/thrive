@@ -96,7 +96,7 @@ function MealTypeRowInner({
         return (
           <div
             key={`${mealType.toLowerCase()}-${index}`}
-            className={`h-full min-h-0 overflow-hidden ${isToday ? "ring-2 ring-primary/20 rounded-lg" : ""}`}
+            className="h-full min-h-0 overflow-hidden"
           >
             {dishes.length > 0 ? (
               <MealSlotCard
