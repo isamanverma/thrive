@@ -27,6 +27,7 @@ export function useMealPlanData() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [mealPlanId, setMealPlanId] = useState<string | null>(null);
   const { preferences, isLoading: preferencesLoading } = useUserPreferences();
+  const weekStartDay = preferencesLoading ? 1 : (preferences.weekStartDay ?? 1);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isLoadingRef = useRef(false);
   const initialLoadRef = useRef(false);
@@ -54,7 +55,7 @@ export function useMealPlanData() {
           setIsRefreshing(true);
         }
 
-        const { ok, data, error } = await fetchCurrentMealPlan(date);
+        const { ok, data, error } = await fetchCurrentMealPlan(date, undefined, weekStartDay);
         if (!ok || !data) {
           console.warn("Failed to load meal plan, rendering empty week", error);
           const emptyMeals: WeeklyMeals = {};
@@ -90,8 +91,8 @@ export function useMealPlanData() {
         prevWeekDate.setDate(prevWeekDate.getDate() - 7);
         const nextWeekDate = new Date(date);
         nextWeekDate.setDate(nextWeekDate.getDate() + 7);
-        void fetchCurrentMealPlan(prevWeekDate);
-        void fetchCurrentMealPlan(nextWeekDate);
+        void fetchCurrentMealPlan(prevWeekDate, undefined, weekStartDay);
+        void fetchCurrentMealPlan(nextWeekDate, undefined, weekStartDay);
       } catch (error) {
         console.error("Error loading meal plan:", error);
         const meals: WeeklyMeals = {};
@@ -105,7 +106,7 @@ export function useMealPlanData() {
         initialLoadRef.current = true;
       }
     },
-    [currentDate],
+    [currentDate, weekStartDay],
   );
 
   // Save meal plan to database
@@ -113,9 +114,8 @@ export function useMealPlanData() {
     async (meals: WeeklyMeals) => {
       try {
         const startOfWeek = new Date(currentDate);
-        const mondayOffset =
-          currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
-        startOfWeek.setDate(currentDate.getDate() + mondayOffset);
+        const offset = (currentDate.getDay() - weekStartDay + 7) % 7;
+        startOfWeek.setDate(currentDate.getDate() - offset);
         startOfWeek.setHours(0, 0, 0, 0);
 
         const endOfWeek = new Date(startOfWeek);
@@ -134,7 +134,7 @@ export function useMealPlanData() {
         console.error("Error saving meal plan:", error);
       }
     },
-    [currentDate],
+    [currentDate, weekStartDay],
   );
 
   // Update a meal slot with dishes
@@ -172,7 +172,7 @@ export function useMealPlanData() {
 
       // Persist to backend
       try {
-        invalidateMealPlanCache(currentDate);
+        invalidateMealPlanCache(currentDate, weekStartDay);
         await updateMealDishesAPI(
           idx,
           mealTypeKey,
@@ -194,7 +194,7 @@ export function useMealPlanData() {
         loadMealPlan();
       }
     },
-    [currentDate, loadMealPlan],
+    [currentDate, loadMealPlan, weekStartDay],
   );
 
   // Remove a meal slot
@@ -251,7 +251,7 @@ export function useMealPlanData() {
       });
 
       try {
-        invalidateMealPlanCache(currentDate);
+        invalidateMealPlanCache(currentDate, weekStartDay);
         await swapMealsAPI(srcIdx, srcKey, tgtIdx, tgtKey, currentDate);
       } catch (error) {
         console.error("Failed to swap meals in database, reverting...", error);
@@ -262,7 +262,7 @@ export function useMealPlanData() {
         }
       }
     },
-    [currentDate, loadMealPlan],
+    [currentDate, loadMealPlan, weekStartDay],
   );
 
   // Enhanced setWeeklyMeals that also saves to database with debouncing
@@ -297,9 +297,8 @@ export function useMealPlanData() {
   const prevWeekStartRef = useRef<string>("");
   useEffect(() => {
     const startOfWeek = new Date(currentDate);
-    const mondayOffset =
-      currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
-    startOfWeek.setDate(currentDate.getDate() + mondayOffset);
+    const offset = (currentDate.getDay() - weekStartDay + 7) % 7;
+    startOfWeek.setDate(currentDate.getDate() - offset);
     startOfWeek.setHours(0, 0, 0, 0);
     const weekKey = startOfWeek.toISOString();
 
@@ -307,7 +306,7 @@ export function useMealPlanData() {
       loadMealPlan(currentDate, { preserveUI: true });
     }
     prevWeekStartRef.current = weekKey;
-  }, [currentDate, loadMealPlan]);
+  }, [currentDate, loadMealPlan, weekStartDay]);
 
   // Calculate nutrition from dishes
   const calculateDishCalories = (dish: Dish): number => {
@@ -398,7 +397,7 @@ export function useMealPlanData() {
   };
 
   const calculateDailyStats = () => {
-    const adjustedDayIndex = (currentDate.getDay() - 1 + 7) % 7;
+    const adjustedDayIndex = (currentDate.getDay() - weekStartDay + 7) % 7;
     const dayMeals = weeklyMeals[adjustedDayIndex] || {};
     const totalCalories = calculateDayCalories(
       dayMeals as Record<string, MealPlanItem>,
@@ -458,10 +457,8 @@ export function useMealPlanData() {
   const weeklyStats = useMemo(() => calculateWeeklyStats(), [weeklyMeals]);
   const dailyStats = useMemo(
     () => calculateDailyStats(),
-    [weeklyMeals, currentDate],
+    [weeklyMeals, currentDate, weekStartDay],
   );
-
-  const weekStartDay = preferencesLoading ? 1 : (preferences.weekStartDay ?? 1);
 
   return {
     // State

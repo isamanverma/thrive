@@ -78,27 +78,28 @@ const mealPlanInflight = new Map<
   Promise<{ ok: boolean; data?: MealPlanResponse; error?: unknown }>
 >();
 
-function getWeekCacheKey(date?: Date): string {
+function getWeekCacheKey(date?: Date, weekStartDay = 1): string {
   const d = date ? new Date(date) : new Date();
-  const mondayOffset = d.getDay() === 0 ? -6 : 1 - d.getDay();
-  d.setDate(d.getDate() + mondayOffset);
+  const offset = (d.getDay() - weekStartDay + 7) % 7;
+  d.setDate(d.getDate() - offset);
   d.setHours(0, 0, 0, 0);
-  return d.toISOString().split("T")[0];
+  return d.toISOString().split("T")[0] + `|${weekStartDay}`;
 }
 
-export function invalidateMealPlanCache(date?: Date) {
+export function invalidateMealPlanCache(date?: Date, weekStartDay?: number) {
   if (!date) {
     mealPlanCache.clear();
     return;
   }
-  mealPlanCache.delete(getWeekCacheKey(date));
+  mealPlanCache.delete(getWeekCacheKey(date, weekStartDay));
 }
 
 export async function fetchCurrentMealPlan(
   date?: Date,
   options?: MealPlanFetchOptions,
+  weekStartDay?: number,
 ): Promise<{ ok: boolean; data?: MealPlanResponse; error?: unknown }> {
-  const key = getWeekCacheKey(date);
+  const key = getWeekCacheKey(date, weekStartDay);
   const force = Boolean(options?.force);
 
   if (!force) {
@@ -118,6 +119,9 @@ export async function fetchCurrentMealPlan(
       const params = new URLSearchParams();
       if (date) {
         params.set("date", date.toISOString().split("T")[0]);
+      }
+      if (weekStartDay != null) {
+        params.set("weekStartDay", String(weekStartDay));
       }
       const query = params.toString();
       const res = await fetch(

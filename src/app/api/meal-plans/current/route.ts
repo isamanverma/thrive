@@ -70,12 +70,12 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const dateParam = url.searchParams.get("date");
     const currentDate = dateParam ? new Date(dateParam) : new Date();
+    const weekStartDay = Number(url.searchParams.get("weekStartDay") ?? 1) || 1;
 
-    // Get week range (Monday to Sunday) for the target date
+    // Get week range for the target date based on user's weekStartDay
     const startOfWeek = new Date(currentDate);
-    const mondayOffset =
-      currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();
-    startOfWeek.setDate(currentDate.getDate() + mondayOffset);
+    const offset = (currentDate.getDay() - weekStartDay + 7) % 7;
+    startOfWeek.setDate(currentDate.getDate() - offset);
     startOfWeek.setHours(0, 0, 0, 0);
 
     const endOfWeek = new Date(startOfWeek);
