@@ -136,6 +136,16 @@ exports.Prisma.UserScalarFieldEnum = {
   diet_preference: 'diet_preference'
 };
 
+exports.Prisma.UserPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  weekStartDay: 'weekStartDay',
+  dayCount: 'dayCount',
+  theme: 'theme',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserRecipeScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -264,6 +274,7 @@ exports.RecipeDifficulty = exports.$Enums.RecipeDifficulty = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  UserPreference: 'UserPreference',
   UserRecipe: 'UserRecipe',
   MealPlan: 'MealPlan',
   MealPlanItem: 'MealPlanItem',

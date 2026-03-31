@@ -10,15 +10,15 @@ datasource db {
 }
 
 model User {
-  id              String       @id @default(uuid())
-  clerkId         String       @unique
-  email           String       @unique
+  id              String          @id @default(uuid())
+  clerkId         String          @unique
+  email           String          @unique
   name            String?
   age             Int?
   weight          Float?
   goals           String?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
   activityLevel   String?
   height          Float?
   diet_preference String?
@@ -26,6 +26,20 @@ model User {
   progress        Progress[]
   userRecipes     UserRecipe[]
   recipes         Recipe[]
+  preferences     UserPreference?
+}
+
+model UserPreference {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  weekStartDay Int      @default(1)
+  dayCount     Int      @default(7)
+  theme        String   @default("system")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model UserRecipe {
