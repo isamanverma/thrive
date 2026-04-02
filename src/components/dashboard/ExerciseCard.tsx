@@ -83,7 +83,7 @@ export function ExerciseCard({
       </div>
 
       {exercise.progress !== undefined && (
-        <div className="mt-2 ml-13">
+        <div className="mt-2 ml-[3.25rem]">
           <div className="w-full bg-amber-500/20 rounded-full h-1.5">
             <div
               className="bg-amber-500 h-1.5 rounded-full transition-all duration-300"
