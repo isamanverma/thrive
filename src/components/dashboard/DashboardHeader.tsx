@@ -81,7 +81,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
   return (
     <header className="flex items-center justify-between mb-8">
       <div className="flex items-center gap-4">
-        <h1 className="text-3xl font-bold text-foreground">
+        <h1 className="text-2xl font-bold text-foreground">
           Good morning, {loading ? "..." : getDisplayName()}!
         </h1>
       </div>
