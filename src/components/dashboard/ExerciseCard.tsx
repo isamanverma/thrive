@@ -87,7 +87,9 @@ export function ExerciseCard({
           <div className="w-full bg-amber-500/20 rounded-full h-1.5">
             <div
               className="bg-amber-500 h-1.5 rounded-full transition-all duration-300"
-              style={{ width: `${Math.min(exercise.progress, 100)}%` }}
+              style={{
+                width: `${Math.max(0, Math.min(exercise.progress, 100))}%`,
+              }}
             />
           </div>
         </div>
