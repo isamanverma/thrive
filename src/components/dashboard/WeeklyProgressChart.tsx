@@ -12,6 +12,7 @@ interface WeeklyProgressChartProps {
   mealData: number[];
   exerciseData: number[];
   labels: string[];
+  adherence?: number;
 }
 
 const chartConfig = {
@@ -29,16 +30,18 @@ export function WeeklyProgressChart({
   mealData,
   exerciseData,
   labels,
+  adherence,
 }: WeeklyProgressChartProps) {
   // Transform the data into the format expected by recharts
   const chartData = labels.map((label, index) => ({
     day: label,
     meals: mealData[index] || 0,
+    // TODO: Replace with real exercise data from API when available
     exercise: exerciseData[index] || 0,
   }));
 
   return (
-    <div className="h-40">
+    <div className="h-56">
       <ChartContainer config={chartConfig} className="h-full w-full">
         <LineChart
           accessibilityLayer
