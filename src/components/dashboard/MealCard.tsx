@@ -13,7 +13,6 @@ export interface Meal {
   type: "Breakfast" | "Lunch" | "Dinner" | "Snack";
   image: string;
   completed?: boolean;
-  ingredients?: string[];
   spoonacularId?: number;
 }
 
@@ -22,7 +21,6 @@ interface MealCardProps {
   onToggleComplete?: (id: string) => void;
   onRepeat?: (id: string) => void;
   onSave?: (id: string) => void;
-  showIngredients?: boolean;
 }
 
 export function MealCard({
@@ -30,7 +28,6 @@ export function MealCard({
   onToggleComplete,
   onRepeat,
   onSave,
-  showIngredients = false,
 }: MealCardProps) {
   const router = useRouter();
 
@@ -40,10 +37,20 @@ export function MealCard({
     }
   };
 
+  const isClickable = !!meal.spoonacularId;
+
   return (
     <div
-      className={`flex items-center gap-4 py-3 ${meal.spoonacularId ? "cursor-pointer" : ""}`}
+      className={`flex items-center gap-4 py-3 ${isClickable ? "cursor-pointer" : ""}`}
       onClick={handleMealClick}
+      role={isClickable ? "button" : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (isClickable && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          handleMealClick();
+        }
+      }}
     >
       <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0">
         <Image
@@ -77,6 +84,7 @@ export function MealCard({
               : "hover:bg-muted"
           }`}
           onClick={() => onToggleComplete?.(meal.id)}
+          aria-label="Mark meal complete"
         >
           <Check className="h-4 w-4" />
         </Button>
@@ -85,6 +93,7 @@ export function MealCard({
           size="icon"
           className="h-8 w-8 rounded-full hover:bg-muted"
           onClick={() => onRepeat?.(meal.id)}
+          aria-label="Repeat meal"
         >
           <Repeat className="h-4 w-4" />
         </Button>
@@ -93,6 +102,7 @@ export function MealCard({
           size="icon"
           className="h-8 w-8 rounded-full hover:bg-muted"
           onClick={() => onSave?.(meal.id)}
+          aria-label="Save meal"
         >
           <Bookmark className="h-4 w-4" />
         </Button>
