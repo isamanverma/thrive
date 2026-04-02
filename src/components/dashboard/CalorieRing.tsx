@@ -6,16 +6,11 @@ import { useEffect } from "react";
 interface CalorieRingProps {
   consumed: number;
   target: number;
-  size?: "sm" | "md";
 }
 
 const CIRCUMFERENCE = 2 * Math.PI * 48; // ≈ 301.59
 
-export function CalorieRing({
-  consumed,
-  target,
-  size = "md",
-}: CalorieRingProps) {
+export function CalorieRing({ consumed, target }: CalorieRingProps) {
   const progress = target > 0 ? Math.min(consumed / target, 1) : 0;
   const isOver = consumed > target;
 
@@ -40,14 +35,12 @@ export function CalorieRing({
         ? "text-amber-400"
         : "text-amber-300";
 
-  const sizeClasses = size === "sm" ? "w-20 h-20" : "w-28 h-28";
-
   if (target === 0) {
     return (
-      <div
-        className={`${sizeClasses} flex flex-col items-center justify-center`}
-      >
-        <span className="text-2xl font-bold text-muted-foreground">—</span>
+      <div className="w-20 h-20 md:w-28 md:h-28 flex flex-col items-center justify-center">
+        <span className="text-lg md:text-2xl font-bold text-muted-foreground">
+          —
+        </span>
         <span className="text-xs text-muted-foreground mt-1">
           No target set
         </span>
@@ -56,8 +49,8 @@ export function CalorieRing({
   }
 
   return (
-    <div className={`${sizeClasses} relative`}>
-      <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
+    <div className="w-20 h-20 md:w-28 md:h-28 relative">
+      <svg viewBox="0 0 120 120" className="w-full h-full">
         <circle
           cx="60"
           cy="60"
@@ -78,18 +71,20 @@ export function CalorieRing({
           strokeDasharray={CIRCUMFERENCE}
           style={{
             strokeDashoffset,
+            transform: "rotate(-90deg)",
+            transformOrigin: "center",
           }}
           className={ringColor}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span
-          className={`font-bold tabular-nums ${isOver ? "text-rose-500" : "text-foreground"} ${size === "sm" ? "text-lg" : "text-2xl"}`}
+          className={`font-bold tabular-nums ${isOver ? "text-rose-500" : "text-foreground"} text-lg md:text-2xl`}
         >
           {consumed.toLocaleString()}
         </span>
         <span
-          className={`text-muted-foreground tabular-nums ${size === "sm" ? "text-xs" : "text-sm"}`}
+          className={`text-muted-foreground tabular-nums text-xs md:text-sm`}
         >
           / {target.toLocaleString()}
         </span>
