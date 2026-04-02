@@ -6,7 +6,10 @@ import { CalorieRing } from "./CalorieRing";
 interface DailyProgressPanelProps {
   caloriesConsumed: number;
   caloriesTarget: number;
-  meals: { type: string; completed: boolean }[];
+  meals: {
+    type: "Breakfast" | "Lunch" | "Dinner" | "Snack";
+    completed: boolean;
+  }[];
   exerciseDuration: number;
   exerciseCompleted: number;
   exerciseTotal: number;
@@ -80,7 +83,7 @@ export function DailyProgressPanel({
             <div className="w-full bg-amber-500/20 rounded-full h-1.5">
               <div
                 className="bg-amber-500 h-1.5 rounded-full transition-all duration-300"
-                style={{ width: `${exerciseProgress}%` }}
+                style={{ width: `${Math.min(exerciseProgress, 100)}%` }}
               />
             </div>
           </div>
