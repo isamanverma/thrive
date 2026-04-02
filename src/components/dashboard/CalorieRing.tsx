@@ -8,10 +8,12 @@ interface CalorieRingProps {
   target: number;
 }
 
-const CIRCUMFERENCE = 2 * Math.PI * 48; // ≈ 301.59
+const CIRCUMFERENCE = 2 * Math.PI * 48;
+const SIZE_CLASSES = "w-20 h-20 md:w-28 md:h-28";
 
 export function CalorieRing({ consumed, target }: CalorieRingProps) {
-  const progress = target > 0 ? Math.min(consumed / target, 1) : 0;
+  const clampedConsumed = Math.max(0, consumed);
+  const progress = target > 0 ? Math.min(clampedConsumed / target, 1) : 0;
   const isOver = consumed > target;
 
   const animatedProgress = useSpring(0, {
@@ -26,10 +28,11 @@ export function CalorieRing({ consumed, target }: CalorieRingProps) {
 
   useEffect(() => {
     animatedProgress.set(progress);
-  }, [progress, animatedProgress]);
+  }, [progress]);
 
-  const ringColor =
-    progress >= 0.8
+  const ringColor = isOver
+    ? "text-rose-500"
+    : progress >= 0.8
       ? "text-amber-500"
       : progress >= 0.5
         ? "text-amber-400"
@@ -37,7 +40,9 @@ export function CalorieRing({ consumed, target }: CalorieRingProps) {
 
   if (target === 0) {
     return (
-      <div className="w-20 h-20 md:w-28 md:h-28 flex flex-col items-center justify-center">
+      <div
+        className={`${SIZE_CLASSES} flex flex-col items-center justify-center`}
+      >
         <span className="text-lg md:text-2xl font-bold text-muted-foreground">
           —
         </span>
@@ -49,7 +54,7 @@ export function CalorieRing({ consumed, target }: CalorieRingProps) {
   }
 
   return (
-    <div className="w-20 h-20 md:w-28 md:h-28 relative">
+    <div className={`${SIZE_CLASSES} relative`}>
       <svg viewBox="0 0 120 120" className="w-full h-full">
         <circle
           cx="60"
@@ -81,11 +86,9 @@ export function CalorieRing({ consumed, target }: CalorieRingProps) {
         <span
           className={`font-bold tabular-nums ${isOver ? "text-rose-500" : "text-foreground"} text-lg md:text-2xl`}
         >
-          {consumed.toLocaleString()}
+          {clampedConsumed.toLocaleString()}
         </span>
-        <span
-          className={`text-muted-foreground tabular-nums text-xs md:text-sm`}
-        >
+        <span className="text-muted-foreground tabular-nums text-xs md:text-sm">
           / {target.toLocaleString()}
         </span>
       </div>
