@@ -1,58 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Flame, Leaf, Trophy, Target } from "lucide-react";
+import { ChevronLeft, ChevronRight, Dumbbell } from "lucide-react";
+import { addDays, isToday as isTodayFn } from "date-fns";
+import { motion } from "motion/react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { TipBanner } from "@/components/dashboard/TipBanner";
-import { DateSelector } from "@/components/dashboard/DateSelector";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { MealCard, type Meal } from "@/components/dashboard/MealCard";
 import {
   ExerciseCard,
   type Exercise,
 } from "@/components/dashboard/ExerciseCard";
-import { CircularProgress } from "@/components/dashboard/CircularProgress";
 import { WeeklyProgressChart } from "@/components/dashboard/WeeklyProgressChart";
-import { AchievementBadge } from "@/components/dashboard/AchievementBadge";
-import { MagicCard } from "@/components/magicui/magic-card";
+import { DailyProgressPanel } from "@/components/dashboard/DailyProgressPanel";
+import { useDashboardData } from "@/hooks/useDashboardData";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-// Sample data
-const sampleMeals: Meal[] = [
-  {
-    id: "1",
-    name: "Avocado Toast",
-    type: "Breakfast",
-    image:
-      "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=300&h=300&fit=crop&crop=center",
-    completed: true,
-    spoonacularId: 716429, // Avocado toast recipe ID
-  },
-  {
-    id: "2",
-    name: "Grilled Chicken Salad",
-    type: "Lunch",
-    image:
-      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=300&fit=crop&crop=center",
-    completed: true,
-    spoonacularId: 715538, // Chicken salad recipe ID
-    ingredients: [
-      "200g Chicken Breast",
-      "1 cup Mixed Greens",
-      "1/2 cup Cherry Tomatoes",
-      "1/4 Cucumber",
-    ],
-  },
-  {
-    id: "3",
-    name: "Salmon with Asparagus",
-    type: "Dinner",
-    image:
-      "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=300&h=300&fit=crop&crop=center",
-    completed: false,
-    spoonacularId: 716406, // Salmon recipe ID
-  },
-];
-
-const sampleExercises: Exercise[] = [
+const dummyExercises: Exercise[] = [
   {
     id: "1",
     name: "Morning Run",
@@ -71,77 +38,258 @@ const sampleExercises: Exercise[] = [
   },
 ];
 
-const weeklyMealData = [80, 85, 90, 88, 92, 95, 89];
-const weeklyExerciseData = [60, 65, 70, 68, 75, 78, 72];
-const weekLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+function ProgressPanelSkeleton() {
+  return (
+    <div className="border-t border-b py-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex items-center gap-6 px-4 py-3 md:py-0">
+            <Skeleton className="w-20 h-20 md:w-28 md:h-28 rounded-full shrink-0" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-6 w-24" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MealSkeleton() {
+  return (
+    <div className="space-y-3">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="flex items-center gap-4 py-3">
+          <Skeleton className="h-12 w-12 rounded-lg shrink-0" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const mealVariants = {
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0 },
+};
+
+const listVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 60 },
+  },
+};
 
 export default function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [meals, setMeals] = useState(sampleMeals);
-  const [exercises, setExercises] = useState(sampleExercises);
+  const { data, loading, error, toggleMeal } = useDashboardData(selectedDate);
+  const [exercises] = useState(dummyExercises);
 
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return date.toDateString() === today.toDateString();
-  };
+  const isToday = isTodayFn(selectedDate);
 
-  const handleMealToggle = (id: string) => {
-    setMeals(
-      meals.map((meal) =>
-        meal.id === id ? { ...meal, completed: !meal.completed } : meal
+  const handleExerciseToggle = (id: string) => {};
+
+  const mealData =
+    data?.todayMeals.map((m) => ({ ...m, completed: m.completed })) ?? [];
+
+  const weeklyMealCompletion = data?.weeklyData.map((d) =>
+    d.caloriesConsumed !== null
+      ? Math.min(
+          100,
+          Math.round(
+            (d.caloriesConsumed / Math.max(data.stats.totalCaloriesToday, 1)) *
+              100,
+          ),
+        )
+      : 0,
+  ) ?? [0, 0, 0, 0, 0, 0, 0];
+
+  const weeklyExerciseData = [60, 65, 70, 68, 75, 78, 72];
+
+  // Calculate adherence
+  const adherence = data?.weeklyData
+    ? Math.round(
+        (data.weeklyData.filter(
+          (d) =>
+            d.caloriesConsumed !== null &&
+            d.caloriesConsumed >=
+              0.8 * Math.max(data.stats.totalCaloriesToday, 1),
+        ).length /
+          Math.max(data.weeklyData.length, 1)) *
+          100,
       )
-    );
-  };
+    : 0;
 
-  const handleExerciseToggle = (id: string) => {
-    setExercises(
-      exercises.map((exercise) =>
-        exercise.id === id
-          ? { ...exercise, completed: !exercise.completed }
-          : exercise
-      )
+  // Exercise summary
+  const exerciseTotal = exercises.length;
+  const exerciseCompleted = exercises.filter((e) => e.completed).length;
+  const exerciseDuration = exercises.reduce((sum, e) => {
+    const match = e.duration.match(/(\d+)/);
+    return sum + (match ? parseInt(match[1], 10) : 0);
+  }, 0);
+
+  // Meal types for progress panel
+  const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"] as const;
+  const mealStatuses = mealTypes.map((type) => ({
+    type,
+    completed: mealData.find((m) => m.type === type)?.completed ?? false,
+  }));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="flex-1 overflow-y-auto px-4 py-6 max-w-7xl mx-auto">
+          <Skeleton className="h-8 w-48 mb-6" />
+          <ProgressPanelSkeleton />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div className="md:col-span-2">
+              <Skeleton className="h-6 w-20 mb-4" />
+              <MealSkeleton />
+            </div>
+            <div>
+              <Skeleton className="h-6 w-20 mb-4" />
+              <MealSkeleton />
+            </div>
+          </div>
+        </main>
+      </div>
     );
-  };
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="flex-1 overflow-y-auto px-4 py-6 max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <DashboardHeader />
+          </div>
+          <div className="border border-destructive/50 rounded-lg p-4">
+            <p className="text-sm text-destructive">
+              Failed to load dashboard data: {error}
+            </p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <main className="flex-1 overflow-y-auto px-4 py-6 max-w-7xl mx-auto">
-        <DashboardHeader />
-
-        <TipBanner tip="Batch cooking on Sunday can save you time during the week!" />
-
-        <div className="flex flex-col gap-6">
-          {/* Header and Date Selector */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h2 className="text-2xl font-bold text-foreground">
-              {isToday(selectedDate) ? "Today's Plans" : "Daily Plans"}
-            </h2>
-            <DateSelector
-              selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
+        {/* Top Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <DashboardHeader />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSelectedDate(addDays(selectedDate, -1))}
+              className="h-8 w-8"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <DateRangePicker
+              value={{ from: selectedDate, to: selectedDate }}
+              onChange={(range) => setSelectedDate(range.from)}
+              dayCount={1}
             />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSelectedDate(addDays(selectedDate, 1))}
+              className="h-8 w-8"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+            {data && data.stats.streakDays > 0 && (
+              <span className="text-sm text-muted-foreground whitespace-nowrap ml-2">
+                🔥 {data.stats.streakDays} day
+                {data.stats.streakDays > 1 ? "s" : ""}
+              </span>
+            )}
+            {!isToday && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedDate(new Date())}
+                className="text-xs font-medium h-8 ml-1"
+              >
+                Today
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Daily Progress Panel */}
+        {data && (
+          <DailyProgressPanel
+            caloriesConsumed={data.stats.caloriesConsumedToday}
+            caloriesTarget={data.stats.totalCaloriesToday}
+            meals={mealStatuses}
+            exerciseDuration={exerciseDuration}
+            exerciseCompleted={exerciseCompleted}
+            exerciseTotal={exerciseTotal}
+          />
+        )}
+
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          {/* Meals */}
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-lg font-semibold">Meals</h3>
+              <Badge variant="secondary">{mealData.length} today</Badge>
+            </div>
+            {mealData.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <p className="text-sm text-muted-foreground mb-4">
+                  No meals planned for this day.
+                </p>
+                <Button asChild variant="outline">
+                  <Link href="/dashboard/meal-plans">Generate meal plan</Link>
+                </Button>
+              </div>
+            ) : (
+              <motion.ul
+                className="divide-y divide-border/50"
+                variants={listVariants}
+                initial="hidden"
+                animate="show"
+              >
+                {mealData.map((meal) => (
+                  <motion.li key={meal.id} variants={mealVariants}>
+                    <MealCard
+                      meal={meal as Meal}
+                      onToggleComplete={toggleMeal}
+                    />
+                  </motion.li>
+                ))}
+              </motion.ul>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Meals Section */}
-            <MagicCard className="bg-card p-4 rounded-2xl shadow-sm border-0">
-              <h3 className="text-lg font-bold text-foreground mb-4">Meals</h3>
-              <div className="space-y-3">
-                {meals.map((meal, index) => (
-                  <MealCard
-                    key={meal.id}
-                    meal={meal}
-                    onToggleComplete={handleMealToggle}
-                    showIngredients={index === 1} // Show ingredients for lunch
-                  />
-                ))}
+          {/* Exercise */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Dumbbell className="h-4 w-4 text-amber-500" />
+              <h3 className="text-lg font-semibold">Exercise</h3>
+            </div>
+            {exercises.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <p className="text-sm text-muted-foreground mb-4">
+                  No exercise planned.
+                </p>
+                <Button asChild variant="outline">
+                  <Link href="/dashboard/exercise-plans">Browse exercises</Link>
+                </Button>
               </div>
-            </MagicCard>
-
-            {/* Exercise Section */}
-            <MagicCard className="bg-card p-4 rounded-2xl shadow-sm border-0">
-              <h3 className="text-lg font-bold text-foreground mb-4">Exercise</h3>
-              <div className="space-y-3">
+            ) : (
+              <div className="divide-y divide-border/50">
                 {exercises.map((exercise) => (
                   <ExerciseCard
                     key={exercise.id}
@@ -150,78 +298,35 @@ export default function DashboardPage() {
                   />
                 ))}
               </div>
-            </MagicCard>
+            )}
           </div>
+        </div>
 
-          {/* Progress & Infographics */}
-          <MagicCard className="bg-card p-4 rounded-2xl shadow-sm border-0">
-            <h2 className="text-xl font-bold text-foreground mb-4">Progress & Infographics</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Progress Charts */}
-              <div className="flex flex-col items-center justify-center gap-3">
-                <CircularProgress
-                  percentage={89}
-                  color="#16a34a"
-                  label="Meals"
-                />
-                <CircularProgress
-                  percentage={72}
-                  color="#2563eb"
-                  label="Exercise"
-                />
+        {/* Weekly Progress */}
+        {data && (
+          <div className="mt-6">
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-lg font-semibold">Weekly Progress</h3>
+              <Badge variant="secondary">{adherence}% adherence</Badge>
+            </div>
+            <WeeklyProgressChart
+              mealData={weeklyMealCompletion}
+              exerciseData={weeklyExerciseData}
+              labels={data.weeklyData.map((d) => d.day)}
+              adherence={adherence}
+            />
+            <div className="flex items-center justify-center gap-6 mt-2">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <span className="text-sm text-muted-foreground">Meals</span>
               </div>
-
-              {/* Weekly Progress Chart */}
-              <div className="md:col-span-2">
-                <h3 className="font-bold text-lg mb-2">Weekly Progress</h3>
-                <WeeklyProgressChart
-                  mealData={weeklyMealData}
-                  exerciseData={weeklyExerciseData}
-                  labels={weekLabels}
-                />
-                <div className="flex items-center justify-center gap-6 mt-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                    <span className="text-sm text-muted-foreground">Meals</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-                    <span className="text-sm text-muted-foreground">
-                      Exercise
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Achievements */}
-              <div className="md:col-span-3">
-                <h3 className="font-bold text-lg mb-2">Achievements</h3>
-                <div className="flex gap-3 overflow-x-auto pb-2">
-                  <AchievementBadge
-                    icon={<Flame className="h-8 w-8" />}
-                    title="15-Day Streak"
-                    isUnlocked={true}
-                  />
-                  <AchievementBadge
-                    icon={<Leaf className="h-8 w-8" />}
-                    title="Veggie Lover"
-                    isUnlocked={true}
-                  />
-                  <AchievementBadge
-                    icon={<Trophy className="h-8 w-8" />}
-                    title="Workout Warrior"
-                    isUnlocked={true}
-                  />
-                  <AchievementBadge
-                    icon={<Target className="h-8 w-8" />}
-                    title="Perfect Week"
-                    isUnlocked={false}
-                  />
-                </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+                <span className="text-sm text-muted-foreground">Exercise</span>
               </div>
             </div>
-          </MagicCard>
-        </div>
+          </div>
+        )}
       </main>
     </div>
   );
