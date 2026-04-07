@@ -14,7 +14,7 @@ import type {
   MealTypeCapitalized,
 } from "@/components/dashboard/meal-plans/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 export default function MealPlansPage() {
   const {
@@ -45,7 +45,15 @@ export default function MealPlansPage() {
   const [drawerDayIndex, setDrawerDayIndex] = useState(0);
   const [drawerDishes, setDrawerDishes] = useState<Dish[]>([]);
 
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const dayLabels = Array.from({ length: dayCount }, (_, i) => {
     const date = new Date(currentDate);
     date.setDate(date.getDate() + i);
@@ -82,6 +90,28 @@ export default function MealPlansPage() {
     },
     [drawerDayIndex, drawerMealType, updateMealDishes],
   );
+
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (viewMode !== "weekly") return;
+      const tag = (e.target as HTMLElement).tagName;
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        (e.target as HTMLElement).isContentEditable
+      )
+        return;
+
+      const num = parseInt(e.key, 10);
+      if (num >= 3 && num <= 7) {
+        e.preventDefault();
+        navigateDate("date", currentDate, num);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeydown);
+    return () => window.removeEventListener("keydown", handleKeydown);
+  }, [viewMode, currentDate, navigateDate]);
 
   // Drag and drop handlers (simplified — operate on whole meal slots now)
   const handleDragStart = useCallback(

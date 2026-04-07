@@ -27,6 +27,11 @@ interface MealItem {
 
 type _WeeklyMeals = Record<number, Record<string, MealItem>>;
 
+function parseDate(dateStr: string): Date {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 function resolveCalories(nutrition: unknown): number {
   if (!nutrition || typeof nutrition !== "object") return 0;
   const rn = nutrition as { [k: string]: unknown };
@@ -69,7 +74,7 @@ export async function GET(request: NextRequest) {
     // Allow the client to request a specific week via ?date=YYYY-MM-DD
     const url = new URL(request.url);
     const dateParam = url.searchParams.get("date");
-    const currentDate = dateParam ? new Date(dateParam) : new Date();
+    const currentDate = dateParam ? parseDate(dateParam) : new Date();
     const weekStartDay = Number(url.searchParams.get("weekStartDay") ?? 1) || 1;
 
     // Get week range for the target date based on user's weekStartDay

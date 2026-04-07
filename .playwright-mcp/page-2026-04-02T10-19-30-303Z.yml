@@ -1,0 +1,61 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - img "Thrive Mascot" [ref=e6]
+      - blockquote [ref=e8]:
+        - paragraph [ref=e9]: "\"Thrive helped me discover a healthier relationship with food. Every meal feels intentional and nourishing.\""
+        - contentinfo [ref=e10]: — Sarah, Thrive User
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - heading "Welcome back" [level=1] [ref=e14]
+        - paragraph [ref=e15]: Sign in to continue your wellness journey
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e21]:
+            - heading "Sign in to thrive" [level=1] [ref=e22]
+            - paragraph [ref=e23]: Welcome back! Please sign in to continue
+          - generic [ref=e24]:
+            - button "Sign in with Google Continue with Google" [ref=e27] [cursor=pointer]:
+              - generic [ref=e28]:
+                - img "Sign in with Google" [ref=e30]
+                - generic [ref=e31]: Continue with Google
+            - paragraph [ref=e34]: or
+            - generic [ref=e36]:
+              - generic [ref=e37]:
+                - generic [ref=e40]:
+                  - generic [ref=e42]: Email address
+                  - textbox "Email address" [ref=e43]:
+                    - /placeholder: Enter your email address
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Password
+                      - generic:
+                        - textbox "Password":
+                          - /placeholder: Enter your password
+                        - button "Show password":
+                          - img
+              - button "Continue" [ref=e46] [cursor=pointer]:
+                - generic [ref=e47]:
+                  - text: Continue
+                  - img [ref=e48]
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - generic [ref=e52]: Don’t have an account?
+            - link "Sign up" [ref=e53] [cursor=pointer]:
+              - /url: http://localhost:3000/sign-up#/?redirect_url=http%3A%2F%2F0.0.0.0%3A3000%2Fdashboard%2Fmeal-plans
+          - generic [ref=e55]:
+            - generic [ref=e57]:
+              - paragraph [ref=e58]: Secured by
+              - link "Clerk logo" [ref=e59] [cursor=pointer]:
+                - /url: https://go.clerk.com/components
+                - img [ref=e60]
+            - paragraph [ref=e65]: Development mode
+      - paragraph [ref=e66]:
+        - text: Don't have an account?
+        - link "Start free" [ref=e67] [cursor=pointer]:
+          - /url: /sign-up
+  - button "Open Next.js Dev Tools" [ref=e73] [cursor=pointer]:
+    - img [ref=e74]
+  - alert [ref=e77]

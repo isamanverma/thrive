@@ -182,9 +182,9 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background">
       <main className="flex-1 overflow-y-auto px-4 py-6 max-w-7xl mx-auto">
         {/* Top Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col gap-4 mb-6">
           <DashboardHeader />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <Button
               variant="ghost"
               size="icon"

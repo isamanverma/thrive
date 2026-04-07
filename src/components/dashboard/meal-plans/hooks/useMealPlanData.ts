@@ -15,7 +15,6 @@ import {
   updateMealDishesAPI,
 } from "@/lib/mealPlanClient";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
-import { endOfWeek, startOfWeek } from "date-fns";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export function useMealPlanData() {
@@ -61,7 +60,11 @@ export function useMealPlanData() {
           setIsRefreshing(true);
         }
 
-        const { ok, data, error } = await fetchCurrentMealPlan(date, undefined, ws);
+        const { ok, data, error } = await fetchCurrentMealPlan(
+          date,
+          undefined,
+          ws,
+        );
         if (!ok || !data) {
           console.warn("Failed to load meal plan, rendering empty week", error);
           const emptyMeals: WeeklyMeals = {};
@@ -423,26 +426,19 @@ export function useMealPlanData() {
     };
   };
 
-  const getTodayInCurrentWeek = (weekStartDay: number = 1): number | null => {
+  const todayInCurrentWeek = useMemo(() => {
     const today = new Date();
-    const currentWeekStart = startOfWeek(currentDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-    const currentWeekEnd = endOfWeek(currentDate, { weekStartsOn: weekStartDay as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-
-    if (today >= currentWeekStart && today <= currentWeekEnd) {
-      const dayIndex = (today.getDay() - weekStartDay + 7) % 7;
-      return dayIndex;
+    today.setHours(0, 0, 0, 0);
+    const gridStart = new Date(currentDate);
+    gridStart.setHours(0, 0, 0, 0);
+    const diffDays = Math.round(
+      (today.getTime() - gridStart.getTime()) / (1000 * 60 * 60 * 24),
+    );
+    if (diffDays >= 0 && diffDays < dayCount) {
+      return diffDays;
     }
     return null;
-  };
-
-  const getCurrentDayIndex = () => {
-    return currentDate.getDay();
-  };
-
-  const todayInCurrentWeek = useMemo(() => {
-    const weekStart = preferencesLoading ? 1 : (preferences.weekStartDay ?? 1);
-    return getTodayInCurrentWeek(weekStart);
-  }, [currentDate, preferences.weekStartDay, preferencesLoading]);
+  }, [currentDate, dayCount]);
 
   const [localDayCount, setLocalDayCount] = useState(dayCount);
 
@@ -453,7 +449,11 @@ export function useMealPlanData() {
     }
   }, [preferences.dayCount, preferencesLoading]);
 
-  const navigateDate = (direction: "prev" | "next" | "today" | "date", date?: Date, newDayCount?: number) => {
+  const navigateDate = (
+    direction: "prev" | "next" | "today" | "date",
+    date?: Date,
+    newDayCount?: number,
+  ) => {
     if (newDayCount !== undefined) {
       setLocalDayCount(newDayCount);
     }
@@ -484,7 +484,7 @@ export function useMealPlanData() {
     // State
     viewMode,
     currentDate,
-    currentDayIndex: getCurrentDayIndex(),
+    currentDayIndex: currentDate.getDay(),
     todayInCurrentWeek,
     weekStartDay,
     dayCount: localDayCount,
@@ -513,6 +513,5 @@ export function useMealPlanData() {
     updateMealDishes,
     removeMeal,
     swapMeals,
-    getTodayInCurrentWeek,
   };
 }

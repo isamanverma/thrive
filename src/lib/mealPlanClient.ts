@@ -92,7 +92,10 @@ function getSessionCache(
   }
 }
 
-function setSessionCache(key: string, entry: { ts: number; data: MealPlanResponse }) {
+function setSessionCache(
+  key: string,
+  entry: { ts: number; data: MealPlanResponse },
+) {
   try {
     sessionStorage.setItem(SESSION_CACHE_PREFIX + key, JSON.stringify(entry));
   } catch {
@@ -121,12 +124,16 @@ function clearSessionCache() {
   }
 }
 
+function toLocalDateString(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 function getWeekCacheKey(date?: Date, weekStartDay = 1): string {
   const d = date ? new Date(date) : new Date();
   const offset = (d.getDay() - weekStartDay + 7) % 7;
   d.setDate(d.getDate() - offset);
   d.setHours(0, 0, 0, 0);
-  return d.toISOString().split("T")[0] + `|${weekStartDay}`;
+  return toLocalDateString(d) + `|${weekStartDay}`;
 }
 
 export function invalidateMealPlanCache(date?: Date, weekStartDay?: number) {
@@ -156,7 +163,10 @@ export async function fetchCurrentMealPlan(
     }
     // Fallback to sessionStorage (survives page refresh)
     const sessionCached = getSessionCache(key);
-    if (sessionCached && Date.now() - sessionCached.ts < MEAL_PLAN_CACHE_TTL_MS) {
+    if (
+      sessionCached &&
+      Date.now() - sessionCached.ts < MEAL_PLAN_CACHE_TTL_MS
+    ) {
       // Promote back to in-memory and return immediately
       mealPlanCache.set(key, sessionCached);
       return { ok: true, data: sessionCached.data };
@@ -172,7 +182,7 @@ export async function fetchCurrentMealPlan(
     try {
       const params = new URLSearchParams();
       if (date) {
-        params.set("date", date.toISOString().split("T")[0]);
+        params.set("date", toLocalDateString(date));
       }
       if (weekStartDay != null) {
         params.set("weekStartDay", String(weekStartDay));
@@ -237,7 +247,7 @@ export async function updateMealDishesAPI(
       action,
     };
     if (date) {
-      body.date = date.toISOString().split("T")[0];
+      body.date = toLocalDateString(date);
     }
     const res = await fetch("/api/meal-plans/update-meal", {
       method: "POST",
@@ -269,7 +279,7 @@ export async function swapMealsAPI(
       targetMealType,
     };
     if (date) {
-      body.date = date.toISOString().split("T")[0];
+      body.date = toLocalDateString(date);
     }
     const res = await fetch("/api/meal-plans/swap-meals", {
       method: "POST",

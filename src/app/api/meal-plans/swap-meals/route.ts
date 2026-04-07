@@ -3,6 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 
+function parseDate(dateStr: string): Date {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 // POST: Swap two meals in the current meal plan
 export async function POST(request: NextRequest) {
   try {
@@ -68,7 +73,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate current week (Monday to Sunday)
-    const currentDate = date ? new Date(date) : new Date();
+    const currentDate = date ? parseDate(date) : new Date();
     const startOfWeek = new Date(currentDate);
     const mondayOffset =
       currentDate.getDay() === 0 ? -6 : 1 - currentDate.getDay();

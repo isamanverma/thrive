@@ -1,9 +1,8 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { addDays, format } from "date-fns";
+import { addDays, format, startOfWeek } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { useUserPreferences } from "@/hooks/useUserPreferences";
 import type { ViewMode } from "./types";
 import { useMemo, useCallback } from "react";
 
@@ -12,7 +11,11 @@ interface MealPlanHeaderProps {
   currentDate: Date;
   dayCount: number;
   onViewModeChange: (mode: ViewMode) => void;
-  onNavigate: (direction: "prev" | "next" | "today" | "date", date?: Date, newDayCount?: number) => void;
+  onNavigate: (
+    direction: "prev" | "next" | "today" | "date",
+    date?: Date,
+    newDayCount?: number,
+  ) => void;
 }
 
 export function MealPlanHeader({
@@ -22,7 +25,6 @@ export function MealPlanHeader({
   onViewModeChange,
   onNavigate,
 }: MealPlanHeaderProps) {
-  const { updatePreferences } = useUserPreferences();
   const isDaily = viewMode === "daily";
 
   // For multi-day, ensure dayCount is at least 3
@@ -35,16 +37,19 @@ export function MealPlanHeader({
     };
   }, [currentDate, multiDayCount, isDaily]);
 
-  const handleRangeChange = useCallback((range: { from: Date; to: Date }, newDayCount: number) => {
-    if (newDayCount > 1) {
-      updatePreferences({ dayCount: newDayCount });
-    }
-    onNavigate("date", range.from, newDayCount);
-  }, [onNavigate, updatePreferences]);
+  const handleRangeChange = useCallback(
+    (range: { from: Date; to: Date }, newDayCount: number) => {
+      onNavigate("date", range.from, newDayCount);
+    },
+    [onNavigate],
+  );
 
-  const handleSingleDateSelect = useCallback((date: Date) => {
-    onNavigate("date", date, 1);
-  }, [onNavigate]);
+  const handleSingleDateSelect = useCallback(
+    (date: Date) => {
+      onNavigate("date", date, 1);
+    },
+    [onNavigate],
+  );
 
   const isToday = () => {
     const today = new Date();
@@ -108,7 +113,10 @@ export function MealPlanHeader({
       <div className="flex rounded-lg border border-border/60 overflow-hidden">
         <button
           type="button"
-          onClick={() => onViewModeChange("daily")}
+          onClick={() => {
+            onNavigate("today");
+            onViewModeChange("daily");
+          }}
           className={`px-4 py-1.5 text-xs font-medium transition-colors ${
             isDaily
               ? "bg-primary text-primary-foreground"
@@ -119,7 +127,11 @@ export function MealPlanHeader({
         </button>
         <button
           type="button"
-          onClick={() => onViewModeChange("weekly")}
+          onClick={() => {
+            const monday = startOfWeek(new Date(), { weekStartsOn: 1 });
+            onNavigate("date", monday, 7);
+            onViewModeChange("weekly");
+          }}
           className={`px-4 py-1.5 text-xs font-medium transition-colors ${
             !isDaily
               ? "bg-primary text-primary-foreground"
